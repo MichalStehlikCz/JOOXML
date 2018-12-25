@@ -1,2 +1,2 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<calcChain xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><c r="C7" i="1" l="1"/><c r="C6" i="1"/><c r="C5" i="1"/><c r="C4" i="1"/><c r="B7" i="1" l="1"/></calcChain>
+<?xml version="1.0" encoding="UTF-8"?>
+<calcChain xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>
