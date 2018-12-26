@@ -16,4 +16,9 @@ public interface ReportDataSource {
      * @return internal name of data source
      */
     String getNameNm();
+
+    /**
+     * @return DataContext created based on given data source
+     */
+    DataContext getDataContext();
 }

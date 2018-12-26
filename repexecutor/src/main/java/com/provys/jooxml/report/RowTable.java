@@ -16,14 +16,15 @@ class RowTable extends RowRegion {
      * Constructor for row report region. Use RwTableBuilder to prepare parameters for constructor.
      * Does not verify that parameters are valid - it expects that this validation was performed by builder.
      *
-     * @param dataSource
+     * @param nameNm is internal name of this report region, unique within parent
+     * @param dataSource is data source this region takes data from
      * @param height     is height of row area (in rows)
      * @param rows       are row objects containing cells to be initialized in given region. Note that number of rows might
      *                   be actually lower than specified height as empty rows can be ommited
      * @param subRegions is collection of subregions, ordered by their first row
      */
-    RowTable(ReportDataSource dataSource, int height, Collection<ReportRegionRow> rows
+    RowTable(String nameNm, ReportDataSource dataSource, int height, Collection<ReportRegionRow> rows
             , Collection<ReportRegion> subRegions) {
-        super(dataSource, height, rows, subRegions);
+        super(nameNm, dataSource, height, rows, subRegions);
     }
 }

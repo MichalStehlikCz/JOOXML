@@ -1,10 +1,6 @@
 package com.provys.jooxml.report;
 
-import com.provys.jooxml.repexecutor.ReportDataSource;
 import com.provys.jooxml.repexecutor.ReportRegion;
-import com.provys.jooxml.repexecutor.ReportRegionRow;
-
-import java.util.Collection;
 
 /**
  * Class represents region that reads from parameters or single row query.
@@ -53,8 +49,9 @@ public class RowAreaBuilder extends RowRegionBuilder {
     }
 
     @Override
-    public ReportRegion build() {
-        return new RowArea(getReportDataSource(), maxRow - minRow + 1, buildRows(), buildSubRegions());
+    public ReportRegion build(TemplateWorkbook template) {
+        return new RowArea(getNameNm(), getReportDataSource(), maxRow - minRow + 1, buildRows(template)
+                , buildSubRegions(template));
     }
 
 }

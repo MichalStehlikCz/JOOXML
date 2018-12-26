@@ -2,17 +2,11 @@ package com.provys.jooxml.report;
 
 import com.provys.jooxml.repexecutor.ReportDataSource;
 import com.provys.jooxml.repexecutor.ReportRegion;
-import com.provys.jooxml.repexecutor.ReportRegionCell;
 import com.provys.jooxml.repexecutor.ReportRegionRow;
 import org.apache.poi.ss.util.CellReference;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,6 +22,8 @@ import java.util.stream.Stream;
  */
 abstract class RowRegionBuilder {
 
+    private String nameNm;
+    private int offset; // set during subregion validation.
     final private Map<CellReference, FieldBind> fieldBinds;
     final private SortedSet<RowRegionBuilder> subRegions;
     private ReportDataSource reportDataSource;
@@ -38,6 +34,43 @@ abstract class RowRegionBuilder {
     public RowRegionBuilder() {
         fieldBinds = new ConcurrentHashMap<>(5);
         subRegions = new TreeSet<>(Comparator.comparingInt(RowRegionBuilder::getFirstCoveredRow));
+    }
+
+    /**
+     * @return internal name of row area; might be null if it was not initialized yet
+     */
+    public String getNameNm() {
+        return nameNm;
+    }
+
+    /**
+     * Set internal name of report region
+     *
+     * @param nameNm is new internal name
+     */
+    public void setNameNm(String nameNm) {
+        if (nameNm.isEmpty()) {
+            throw new IllegalArgumentException("Internal name cannot be empty string");
+        }
+        this.nameNm = nameNm;
+    }
+
+    /**
+     * @return offset from parent region (0 means starts on the same row as parent region) / previous subregion (0 means
+     * starts right after last line of previous subregion)
+     */
+    public int getOffset() {
+        return this.offset;
+    }
+
+    /**
+     * Set offset of subregion. Usually called from subregion validation
+     */
+    protected void setOffset(int offset) {
+        if (offset < 0) {
+            throw new IllegalArgumentException("Offset cannot be negative");
+        }
+        this.offset = offset;
     }
 
     /**
@@ -199,10 +232,10 @@ abstract class RowRegionBuilder {
     protected void validateSubRegion(RowRegionBuilder subRegion) {
         Objects.requireNonNull(subRegion);
         // subregion must be inside area covered by region
-        if (subRegion.getFirstCoveredRow() < getFirstCoveredRow()) {
+        if (subRegion.getFirstCoveredRow() < getFirstTemplateRow()) {
             throw new IllegalArgumentException("First row of sub-region must be inside region area");
         }
-        if (subRegion.getLastCoveredRow() > getLastCoveredRow()) {
+        if (subRegion.getLastCoveredRow() > getLastTemplateRow()) {
             throw new IllegalArgumentException("Last row of region validity must be inside region area");
         }
     }
@@ -215,10 +248,13 @@ abstract class RowRegionBuilder {
         RowRegionBuilder previousRegion = null;
         for (RowRegionBuilder subRegion : subRegions) {
             validateSubRegion(subRegion);
-            if (previousRegion != null) {
+            if (previousRegion == null) {
+                subRegion.setOffset(subRegion.getFirstCoveredRow() - getFirstTemplateRow());
+            } else {
                 if (previousRegion.getLastCoveredRow() >= subRegion.getFirstCoveredRow()) {
                     throw new IllegalArgumentException("Regions overlap");
                 }
+                subRegion.setOffset(subRegion.getFirstCoveredRow() - previousRegion.getLastCoveredRow()-1);
             }
         }
     }
@@ -229,189 +265,13 @@ abstract class RowRegionBuilder {
      * actually considered valid region definition
      */
     public void validate() {
+        if (nameNm == null) {
+            throw new IllegalStateException("Internal name not initialized");
+        }
         validateFieldBinds();
         validateSubRegions();
     }
 
-    /**
-     * Class used to track and merge coordinates in combined cell
-     */
-    private static class Coordinates {
-        int row;
-        int column;
-
-        Coordinates(int row, int column) {
-            this.row = row;
-            this.column = column;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == null) {
-                return false;
-            }
-            if (other instanceof Coordinates) {
-                return ((row == ((Coordinates) other).row) && (column == ((Coordinates) other).column));
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return column + 31*row;
-        }
-    }
-
-    /**
-     * Class represents tuple of row index and report region cell... but as java doesn't have tuples
-     */
-    private static class ReportRegionCellWithRow {
-        private final int rowIndex;
-        private final ReportRegionCell cell;
-
-        ReportRegionCellWithRow(int rowIndex, ReportRegionCell cell) {
-            this.rowIndex = rowIndex;
-            this.cell = Objects.requireNonNull(cell);
-        }
-
-        public int getRowIndex() {
-            return rowIndex;
-        }
-
-        public ReportRegionCell getCell() {
-            return cell;
-        }
-    }
-    /**
-     * Class used to merge template cells and field bind
-     */
-    private static class ReportRegionCellBuilder {
-
-        private Coordinates index;
-        private TemplateCell templateCell;
-        private String bindColumn;
-
-        ReportRegionCellBuilder() {
-            this.index = null;
-            this.templateCell = null;
-            this.bindColumn = null;
-        }
-
-        ReportRegionCellBuilder(TemplateCell templateCell) {
-            this.index = new Coordinates(templateCell.getRowIndex(), templateCell.getColumnIndex());
-            this.templateCell = templateCell;
-            this.bindColumn = null;
-        }
-
-        ReportRegionCellBuilder(FieldBind fieldBind) {
-            this.index = new Coordinates(fieldBind.getCellReference().getRow(), fieldBind.getCellReference().getCol());
-            this.templateCell = null;
-            this.bindColumn = fieldBind.getSourceColumn();
-        }
-
-        Coordinates getIndex() {
-            return index;
-        }
-
-        ReportRegionCellBuilder combine(ReportRegionCellBuilder cell) {
-            if (this.index == null) {
-                this.index = cell.index;
-            } else if ((cell.index != null) && (!cell.index.equals(cell.index))) {
-                throw new IllegalArgumentException("Cannot merge two combined cells with different coordinates");
-            }
-            if (this.templateCell == null) {
-                this.templateCell = cell.templateCell;
-            } else if (cell.templateCell != null) {
-                throw new IllegalArgumentException("Cannot merge two template cells");
-            }
-            if (this.bindColumn == null) {
-                this.bindColumn = cell.bindColumn;
-            } else if (cell.bindColumn != null) {
-                throw new IllegalArgumentException("Cannot merge two bind cells");
-            }
-            return this;
-        }
-
-        ReportRegionCellWithRow build() {
-            if (index == null) {
-                throw new IllegalStateException("Cannot build region cell from empty combined cell");
-            }
-            ReportRegionCell cell;
-            if (templateCell != null) {
-                cell = new TemplateCellWithBind(index.column, templateCell, Optional.ofNullable(bindColumn));
-            } else {
-                if (bindColumn == null) {
-                    throw new IllegalStateException("Cannot build region cell from empty combined cell");
-                }
-                cell = new EmptyCellWithBind(index.column, bindColumn);
-            }
-            return new ReportRegionCellWithRow(index.row, cell);
-        }
-    }
-
-    /**
-     * Collector used to combine partial cells into ReportRegionCells
-     */
-    private static class CellBuilderCollector implements Collector<ReportRegionCellBuilder, ReportRegionCellBuilder
-            , ReportRegionCellWithRow> {
-
-        @Override
-        public Supplier<ReportRegionCellBuilder> supplier() {
-            return ReportRegionCellBuilder::new;
-        }
-
-        @Override
-        public BiConsumer<ReportRegionCellBuilder, ReportRegionCellBuilder> accumulator() {
-            return ReportRegionCellBuilder::combine;
-        }
-
-        @Override
-        public BinaryOperator<ReportRegionCellBuilder> combiner() {
-            return ReportRegionCellBuilder::combine;
-        }
-
-        @Override
-        public Function<ReportRegionCellBuilder, ReportRegionCellWithRow> finisher() {
-            return ReportRegionCellBuilder::build;
-        }
-
-        @Override
-        public Set<Characteristics> characteristics() {
-            return null;
-        }
-    }
-
-    private static class ReportRegionRowBuilder {
-        int rowIndex;
-
-    }
-    /**
-     * Collector used to combine cells into report region rows
-     */
-    private static class RowBuilderCollector implements Collector<ReportRegionCellWithRow, ReportRegionRowBuilder, ReportRegionRow> {
-
-    }
-    /**
-     * Class collects cells in row; cells are held in map, indexed by cell index unlike ReportRegionRow that holds cells
-     * in flat collection
-     */
-    private static class Row {
-        private final int rowNumber;
-        private final Map<Integer, ReportRegionCell> cells;
-
-        Row(Integer rowNumber, Map<Integer, ReportRegionCell> cells) {
-            this.rowNumber = rowNumber;
-            this.cells = cells;
-        }
-
-        public int getRowNumber() {
-            return rowNumber;
-        }
-
-        public Map<Integer, ReportRegionCell> getCells() {
-            return cells;
-        }
-    }
     /**
      * @return collection of rows for this region
      */
@@ -423,16 +283,23 @@ abstract class RowRegionBuilder {
                         .stream()
                 .flatMap(row -> row.getCells().stream())
                 .filter(cell -> this.isInTemplateRegion(cell.getRowIndex(), cell.getColumnIndex()))
-                .map(cell -> new ReportRegionCellBuilder(cell))
+                .map(cell -> new CellBuilder(cell, this))
                 , getFieldBinds().values().stream()
-                .map(fieldBind -> new ReportRegionCellBuilder(fieldBind))
-        ).collect(Collectors.groupingBy(ReportRegionCellBuilder::getIndex, new CellBuilderCollector()))
-        .values().stream()
-        .collect(Collectors.groupingBy(ReportRegionCellWithRow::getRowIndex, new RowBuilderCollector()));
+                .map(fieldBind -> new CellBuilder(fieldBind, this))
+        ).collect(Collectors.groupingBy(CellBuilder::getRowIndex
+                , new RowBuilder.RowBuilderCollector())).values();
+    }
+
+    /**
+     * @return collection of subregions for this region
+     */
+    protected Collection<ReportRegion> buildSubRegions(TemplateWorkbook template) {
+        return subRegions.stream().map(subRegion -> subRegion.build(template)).collect(Collectors.toList());
     }
 
     /**
      * Builds region from this builder
      */
     abstract public ReportRegion build(TemplateWorkbook template);
+
 }

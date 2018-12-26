@@ -6,14 +6,14 @@ import org.apache.poi.ss.util.CellReference;
 
 import java.util.*;
 
-public class ReportRegionRowImpl implements ReportRegionRow {
+public class Row implements ReportRegionRow {
 
     final private int rowIndex;
     final private List<ReportRegionCell> cells;
 
-    ReportRegionRowImpl(int rowIndex, List<ReportRegionCell> cells) {
+    Row(int rowIndex, Collection<ReportRegionCell> cells) {
         this.rowIndex = rowIndex;
-        this.cells = cells;
+        this.cells = new ArrayList<>(cells);
     }
 
     @Override

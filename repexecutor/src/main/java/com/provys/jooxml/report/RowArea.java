@@ -3,8 +3,10 @@ package com.provys.jooxml.report;
 import com.provys.jooxml.repexecutor.ReportDataSource;
 import com.provys.jooxml.repexecutor.ReportRegion;
 import com.provys.jooxml.repexecutor.ReportRegionRow;
+import com.provys.jooxml.repexecutor.ReportSubRegion;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Represents area for single row dataset. Does not iterate through rows, returned by dataset. If dataset is already
@@ -23,8 +25,8 @@ class RowArea extends RowRegion {
      *                   be actually lower than specified height as empty rows can be ommited
      * @param subRegions is collection of subregions, ordered by their first row
      */
-    RowArea(ReportDataSource dataSource, int height, Collection<ReportRegionRow> rows
-            , Collection<ReportRegion> subRegions) {
-        super(dataSource, height, rows, subRegions);
+    RowArea(String nameNm, Optional<ReportDataSource> dataSource, int height, Collection<ReportRegionRow> rows
+            , Collection<ReportSubRegion> subRegions) {
+        super(nameNm, dataSource, height, rows, subRegions);
     }
 }
