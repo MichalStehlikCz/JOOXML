@@ -15,6 +15,7 @@ public class ParameterReader implements Closeable {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
     private final InputStream inputStream;
+    private XMLStreamReader paramReader;
     private volatile List<Parameter> parameters;
 
     public ParameterReader(InputStream inputStream) {
@@ -30,40 +31,61 @@ public class ParameterReader implements Closeable {
         }
     }
 
-    private void parseParameter() {
-
+    private void parseParameters() throws XMLStreamException {
+        while (paramReader.hasNext()) {
+            int eventType = paramReader.next();
+            if (eventType == XMLStreamConstants.START_ELEMENT) {
+                Parameter parameter = new Parameter(paramReader.getLocalName(), paramReader.getElementText());
+                parameters.add(parameter);
+                eventType = paramReader.nextTag();
+                if (eventType != XMLStreamConstants.END_ELEMENT) {
+                    LOG.error("ReadParameters: End element expected for parameter {}, event type {} found"
+                            , parameter.getName(), eventType);
+                    throw new RuntimeException("ReadParameters: End element expected for parameter "
+                            + parameter.getName() + ", event type " + eventType + " found");
+                }
+                if (!paramReader.getLocalName().equals(parameter.getName())) {
+                    LOG.error("ReadParameters: End element expected for parameter {}, {} found", parameter.getName()
+                            , paramReader.getLocalName());
+                    throw new RuntimeException("ReadParameters: End element expected for parameter "
+                            + parameter.getName() + ", " + paramReader.getLocalName() + " found");
+                }
+            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
+                break;
+            }
+        }
     }
 
     private synchronized void parse() {
         if (parameters != null) {
             return;
         }
-        parameters = new ArrayList<> ();
-        XMLStreamReader paramReader;
+        parameters = new ArrayList<>(10);
         try {
             paramReader = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
-            List<Parameter> result = new ArrayList<>(10);
-            boolean rootRead = false;
-            while (paramReader.hasNext()) {
-                int eventType = paramReader.next();
-                if (eventType == XMLStreamConstants.START_ELEMENT) {
-                    if (!rootRead) {
-                        if (paramReader.getLocalName() != "PARAMETERS") {
-                            LOG.error("ReadParameters: Root elements should be PARAMETERS, not {}"
-                                    , paramReader.getLocalName());
-                            throw new RuntimeException("ReadParameters: Root elements should be PARAMETERS, not "
-                                    + paramReader.getLocalName());
-                        }
-                    } else {
-
-                    }
-                }
+            // PARAMETERS root level tag expected
+            int eventType = paramReader.nextTag();
+            if ((eventType != XMLStreamConstants.START_ELEMENT) || (!paramReader.getLocalName().equals("PARAMETERS"))) {
+                LOG.error("ReadParameters: Root elements should be PARAMETERS, not {}"
+                        , paramReader.getLocalName());
+                throw new RuntimeException("ReadParameters: Root elements should be PARAMETERS, not "
+                        + paramReader.getLocalName());
             }
-
-        } catch (
-                XMLStreamException e) {
+            parseParameters();
+            if ((eventType != XMLStreamConstants.END_ELEMENT) || (!paramReader.getLocalName().equals("PARAMETERS"))) {
+                LOG.error("ReadParameters: End PARAMETERS elements expected, not {}", paramReader.getLocalName());
+                throw new RuntimeException("ReadParameters: Root PARAMETERS elements expected, not "
+                        + paramReader.getLocalName());
+            }
+        } catch (XMLStreamException e) {
             LOG.error("ReadParameters: Exception reading XML parameter file {}", e);
             throw new RuntimeException("Exception reading XML parameter file", e);
+        } finally {
+            try {
+                paramReader.close();
+            } catch (XMLStreamException e) {
+                LOG.warn("ReadParameters: Exception closing XML parameter file {}", e);
+            }
         }
     }
 
@@ -71,6 +93,7 @@ public class ParameterReader implements Closeable {
         if (parameters == null) {
             parse();
         }
+        return parameters;
     }
 
     @Override

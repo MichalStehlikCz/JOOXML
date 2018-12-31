@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RepExecutor {
@@ -26,21 +27,21 @@ public class RepExecutor {
     private Map<String, String> parameters = new HashMap<>(1);
     final private RepWorkbookFactory repWorkBookFactory = new RXSSWorkbookFactory();
 
-    private static Map<String, String> readParameters(InputStream paramFileStream) {
-        XMLStreamReader paramReader;
-        try {
-            paramReader = XMLInputFactory.newInstance().createXMLStreamReader(paramFileStream);
-        } catch (XMLStreamException e) {
-            LOG.error("ReadParameters: Exception reading XML parameter file {}", e);
-            throw new RuntimeException("Exception reading XML parameter file", e);
-        }
-
-    }
-
     public RepExecutor(Report report, File targetFile, Map<String, String> parameters) {
         this.report = report;
         this.targetFile = targetFile;
         this.parameters.putAll(parameters);
+    }
+
+    public RepExecutor(Report report, File targetFile, File parameters) {
+        this.report = report;
+        this.targetFile = targetFile;
+        try (ParameterReader reader = new ParameterReader(parameters)) {
+            this.parameters.putAll(reader.getParameters().stream()
+                    .forEach(parameter -> parameters);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private RepWorkbook readWorkbook() {
