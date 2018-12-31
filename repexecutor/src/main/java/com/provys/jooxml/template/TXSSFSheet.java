@@ -36,6 +36,7 @@ public class TXSSFSheet implements TemplateSheet {
 
     @Override
     public Collection<TemplateRow> getRows(int firstRow, int lastRow) {
-        return Collections.unmodifiableCollection(rows.subMap(firstRow, lastRow + 1).values());
+        return Collections.unmodifiableCollection(rows.subMap(firstRow
+                , (lastRow == Integer.MAX_VALUE) ? lastRow : lastRow + 1).values());
     }
 }

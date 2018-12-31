@@ -1,6 +1,6 @@
 package com.provys.jooxml.report;
 
-import com.provys.jooxml.repexecutor.ReportRegionCell;
+import com.provys.jooxml.repexecutor.DataRecord;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Hyperlink;
@@ -12,7 +12,7 @@ import java.util.Optional;
  * Represents cell from template workbook. Has coordinates relative to its parent region and holds reference to
  * bind column if one exists for the cell.
  */
-class TemplateCellWithBind implements ReportRegionCell {
+class TemplateCellWithBind implements AreaCell {
 
     private final int columnIndex; // index of column within row, zero based; in theory, index could be taken from
                                    // template cell as long as we do not have column regions, but...
@@ -30,6 +30,12 @@ class TemplateCellWithBind implements ReportRegionCell {
     TemplateCellWithBind(int columnIndex, TemplateCell cell, Optional<String> bindColumn) {
         this.columnIndex = columnIndex;
         this.cell = Objects.requireNonNull(cell);
+        if ((cell.getCellType() == CellType.FORMULA) && (bindColumn.isPresent())) {
+            throw new IllegalArgumentException("Value binding to formula cell is not allowed");
+        }
+        if ((cell.getCellType() == CellType.ERROR) && (bindColumn.isPresent())) {
+            throw new IllegalArgumentException("Value binding to error cell is not allowed");
+        }
         this.bindColumn = Objects.requireNonNull(bindColumn);
     }
 
@@ -66,6 +72,26 @@ class TemplateCellWithBind implements ReportRegionCell {
     @Override
     public byte getErrorCellValue() {
         return cell.getErrorCellValue();
+    }
+
+    @Override
+    public String getStringEffectiveValue(DataRecord data) {
+        return bindColumn.map((column) -> data.getStringValue(column)).orElse(getStringCellValue());
+    }
+
+    @Override
+    public double getNumericEffectiveValue(DataRecord data) {
+        return bindColumn.map((column) -> data.getNumericValue(column)).orElse(getNumericCellValue());
+    }
+
+    @Override
+    public boolean getBooleanEffectiveValue(DataRecord data) {
+        return bindColumn.map((column) -> data.getBooleanValue(column)).orElse(getBooleanCellValue());
+    }
+
+    @Override
+    public int getCellStyleIndex() {
+        return cell.getStyleIndex();
     }
 
     @Override

@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.provys.jooxml.repexecutor.RepWSheet;
+import com.provys.jooxml.repexecutor.RowProperties;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.AutoFilter;
 import org.apache.poi.ss.usermodel.Cell;
@@ -64,7 +66,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 /**
  * Streaming version of XSSFSheet implementing the "BigGridDemo" strategy.
 */
-public class RXSSFSheet implements Sheet
+public class RXSSFSheet implements Sheet, RepWSheet
 {
     /*package*/ final XSSFSheet _sh;
     private final RXSSFWorkbook _workbook;
@@ -112,7 +114,7 @@ public class RXSSFSheet implements Sheet
      * Create a new row within the sheet and return the high level representation
      *
      * @param rownum  row number
-     * @return high level Row object representing a row in the sheet
+     * @return high level RowImpl object representing a row in the sheet
      * @throws IllegalArgumentException If the max. number of rows is exceeded or 
      *      a rownum is provided where the row is already flushed to disk.
      * @see #removeRow(Row)
@@ -133,13 +135,6 @@ public class RXSSFSheet implements Sheet
                     "in the range [0," + _writer.getLastFlushedRow() + "] that is already written to disk.");
         }
 
-        // attempt to overwrite a existing row in the input template
-        if(_sh.getPhysicalNumberOfRows() > 0 && rownum <= _sh.getLastRowNum() ) {
-            throw new IllegalArgumentException(
-                    "Attempting to write a row["+rownum+"] " +
-                            "in the range [0," + _sh.getLastRowNum() + "] that is already written to disk.");
-        }
-
         RXSSFRow newRow = new RXSSFRow(this);
         _rows.put(rownum, newRow);
         allFlushed = false;
@@ -151,6 +146,16 @@ public class RXSSFSheet implements Sheet
             }
         }
         return newRow;
+    }
+
+    @Override
+    public RXSSFRow createRow(int rowNum, RowProperties rowProperties) {
+        RXSSFRow row = createRow(rowNum);
+        row.setHeightInPoints(rowProperties.getHeightInPoints());
+        row.setZeroHeight(rowProperties.isHidden());
+        row.setRowStyle((rowProperties.getStyleIndex() < 0)
+                ? null : getWorkbook().getCellStyleAt(rowProperties.getStyleIndex()));
+        return row;
     }
 
     /**
@@ -212,12 +217,23 @@ public class RXSSFSheet implements Sheet
      * defined you get a null.  This is to say row 4 represents the fifth row on a sheet.
      *
      * @param rownum  row to get (0-based)
-     * @return Row representing the rownumber or null if its not defined on the sheet
+     * @return RowImpl representing the rownumber or null if its not defined on the sheet
      */
     @Override
     public RXSSFRow getRow(int rownum)
     {
         return _rows.get(rownum);
+    }
+
+    /**
+     * Get row on given index. If it doesn't exist, create it
+     *
+     * @param rownum index of row to get (zero-based)
+     * @return row on given index, existing or new
+     */
+    @Override
+    public RXSSFRow getOrCreateRow(int rownum) {
+        return (_rows.get(rownum) == null) ? createRow(rownum) : _rows.get(rownum);
     }
 
     /**
@@ -1277,7 +1293,7 @@ public class RXSSFSheet implements Sheet
      *       Workbook wb = new RXSSFWorkbook(100);  // keep 100 rows in memory
      *       Sheet sh = wb.createSheet();
      *       for (int rownum = 0; rownum &lt; 1000; rownum++) {
-     *           Row row = sh.createRow(rownum);
+     *           RowImpl row = sh.createRow(rownum);
      *           if(rownum == 200)  {
      *               sh.groupRow(100, 200);
      *           }
@@ -1291,7 +1307,7 @@ public class RXSSFSheet implements Sheet
      *       Workbook wb = new RXSSFWorkbook(100);  // keep 100 rows in memory
      *       Sheet sh = wb.createSheet();
      *       for (int rownum = 0; rownum &lt; 1000; rownum++) {
-     *           Row row = sh.createRow(rownum);
+     *           RowImpl row = sh.createRow(rownum);
      *       }
      *       sh.groupRow(100, 200); // the rows in the range [100, 200] are already flushed and groupRows has no effect
      *
@@ -1388,7 +1404,7 @@ public class RXSSFSheet implements Sheet
     private void collapseRow(int rowIndex) {
         RXSSFRow row = getRow(rowIndex);
         if(row == null) {
-            throw new IllegalArgumentException("Invalid row number("+ rowIndex + "). Row does not exist.");
+            throw new IllegalArgumentException("Invalid row number("+ rowIndex + "). RowImpl does not exist.");
         } else {
             int startRow = findStartOfRowOutlineGroup(rowIndex);
 

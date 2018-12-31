@@ -29,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import com.provys.jooxml.repexecutor.RepWSheet;
 import com.provys.jooxml.repexecutor.RepWorkbook;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -640,6 +641,11 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
         return getSXSSFSheet(_wb.getSheet(name));
     }
 
+    @Override
+    public RepWSheet getSheet() {
+        return getSheetAt(0);
+    }
+
     /**
      * Removes sheet at the given index
      *
@@ -924,8 +930,8 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @param sheetIndex Zero-based sheet index (0 = First Sheet)
      * @param startColumn Column to begin printarea
      * @param endColumn Column to end the printarea
-     * @param startRow Row to begin the printarea
-     * @param endRow Row to end the printarea
+     * @param startRow RowImpl to begin the printarea
+     * @param endRow RowImpl to end the printarea
      */
     @Override
     public void setPrintArea(int sheetIndex, int startColumn, int endColumn, int startRow, int endRow)

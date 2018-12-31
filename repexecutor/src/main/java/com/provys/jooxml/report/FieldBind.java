@@ -29,7 +29,7 @@ public final class FieldBind {
             throw new IllegalArgumentException("Cannot specify absolute ($) row position");
         }
         if (cellReference.getRow() == -1) {
-            throw new IllegalArgumentException("Row ot supplied in data binding");
+            throw new IllegalArgumentException("RowImpl ot supplied in data binding");
         }
         if (cellReference.getCol() == -1) {
             throw new IllegalArgumentException("Column not supplied in data binding");

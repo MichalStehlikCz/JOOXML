@@ -1,5 +1,6 @@
 package com.provys.jooxml.report;
 
+import com.provys.jooxml.repexecutor.RowProperties;
 import com.provys.jooxml.report.TemplateCell;
 
 import java.util.Collection;
@@ -16,11 +17,9 @@ public interface TemplateRow extends Iterable<TemplateCell> {
     int getRowNum();
 
     /**
-     * Return number of cells in row.
-     *
-     * @return number of cells existing in row (e.g. ignores cells that do not have corresponding object)
+     * @return row properties for given row
      */
-    int getPhysicalNumberOfCells();
+    RowProperties getRowProperties();
 
     /**
      * Return cell with given index.

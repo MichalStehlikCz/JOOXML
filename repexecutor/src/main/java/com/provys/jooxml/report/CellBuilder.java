@@ -1,9 +1,8 @@
 package com.provys.jooxml.report;
 
-import com.provys.jooxml.repexecutor.ReportRegionCell;
-
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -27,15 +26,15 @@ class CellBuilder {
         this.bindColumn = null;
     }
 
-    CellBuilder(TemplateCell templateCell, RowRegionBuilder region) {
-        this.index = new CellCoordinates(templateCell.getRowIndex() - region.getFirstTemplateRow()
+    CellBuilder(TemplateCell templateCell, RowAreaBuilder region) {
+        this.index = new CellCoordinates(templateCell.getRowIndex() - region.getFirstRow()
                 , templateCell.getColumnIndex());
         this.templateCell = templateCell;
         this.bindColumn = null;
     }
 
-    CellBuilder(FieldBind fieldBind, RowRegionBuilder region) {
-        this.index = new CellCoordinates(fieldBind.getCellReference().getRow() - region.getFirstTemplateRow()
+    CellBuilder(FieldBind fieldBind, RowAreaBuilder region) {
+        this.index = new CellCoordinates(fieldBind.getCellReference().getRow() - region.getFirstRow()
                 , fieldBind.getCellReference().getCol());
         this.templateCell = null;
         this.bindColumn = fieldBind.getSourceColumn();
@@ -50,7 +49,7 @@ class CellBuilder {
 
     int getCellIndex() {
         if (index != null) {
-            return index.row;
+            return index.column;
         }
         return -1;
     }
@@ -74,11 +73,11 @@ class CellBuilder {
         return this;
     }
 
-    ReportRegionCell build() {
+    AreaCell build() {
         if (index == null) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
-        ReportRegionCell cell;
+        AreaCell cell;
         if (templateCell != null) {
             return new TemplateCellWithBind(index.column, templateCell, Optional.ofNullable(bindColumn));
         } else if (bindColumn == null) {
@@ -125,7 +124,7 @@ class CellBuilder {
      * CellBuilder with same coordinates
      */
     static class CellBuilderCollector implements Collector<CellBuilder, CellBuilder
-            , ReportRegionCell> {
+            , AreaCell> {
 
         @Override
         public Supplier<CellBuilder> supplier() {
@@ -143,13 +142,13 @@ class CellBuilder {
         }
 
         @Override
-        public Function<CellBuilder, ReportRegionCell> finisher() {
+        public Function<CellBuilder, AreaCell> finisher() {
             return CellBuilder::build;
         }
 
         @Override
         public Set<Characteristics> characteristics() {
-            return null;
+            return new TreeSet<>();
         }
     }
 

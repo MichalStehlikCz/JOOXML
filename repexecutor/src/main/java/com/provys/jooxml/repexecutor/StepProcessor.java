@@ -1,4 +1,8 @@
 package com.provys.jooxml.repexecutor;
 
-public class StepProcessor {
+public interface StepProcessor {
+    /**
+     * Execution of step should push data to target worksheet
+     */
+    void execute();
 }

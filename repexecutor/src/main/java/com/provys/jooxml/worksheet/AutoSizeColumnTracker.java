@@ -305,7 +305,7 @@ import org.apache.poi.util.Internal;
             // loop over the tracked columns, because there are fewer tracked columns than cells in this row
             for (final Entry<Integer, ColumnWidthPair> e : maxColumnWidths.entrySet()) {
                 final int column = e.getKey();
-                final Cell cell = row.getCell(column); //is MissingCellPolicy=Row.RETURN_NULL_AND_BLANK needed?
+                final Cell cell = row.getCell(column); //is MissingCellPolicy=RowImpl.RETURN_NULL_AND_BLANK needed?
 
                 // FIXME: if cell belongs to a merged region, some of the merged region may have fallen outside of the random access window
                 // In this case, getting the column width may result in an error. Need to gracefully handle this.

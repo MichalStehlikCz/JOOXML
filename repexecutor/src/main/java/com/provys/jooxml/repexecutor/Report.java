@@ -8,9 +8,9 @@ import java.io.File;
  */
 public interface Report {
     /**
-     * @return root region
+     * @return root step
      */
-    ReportRegion getRootRegion();
+    ReportStep getRootStep();
 
     /**
      * @return template workbook this report is based on

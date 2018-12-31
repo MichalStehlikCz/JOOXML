@@ -106,9 +106,9 @@ public class RXSSFCell implements Cell {
     }
 
     /**
-     * Returns the Row this cell belongs to
+     * Returns the RowImpl this cell belongs to
      *
-     * @return the Row that owns this cell
+     * @return the RowImpl that owns this cell
      */
     @Override
     public Row getRow()
@@ -551,6 +551,13 @@ public class RXSSFCell implements Cell {
     public void setCellStyle(CellStyle style)
     {
         _style=style;
+    }
+
+    /**
+     * Set the style for cell. Style is identified by its index, negative index indicates style should be removed
+     */
+    public void setCellStyle(int styleIndex) {
+        setCellStyle((styleIndex<0) ? null : getSheet().getWorkbook().getCellStyleAt(styleIndex));
     }
 
     /**

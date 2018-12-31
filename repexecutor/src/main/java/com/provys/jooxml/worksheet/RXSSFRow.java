@@ -25,20 +25,17 @@ import java.util.NoSuchElementException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.provys.jooxml.repexecutor.RepWRow;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.eval.NotImplementedException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.Internal;
 import org.apache.poi.util.NotImplemented;
 
 /**
  * Streaming version of XSSFRow implementing the "BigGridDemo" strategy.
  */
-public class RXSSFRow implements Row, Comparable<RXSSFRow>
+public class RXSSFRow implements Row, RepWRow, Comparable<RXSSFRow>
 {
     private static final Boolean UNDEFINED = null;
 
@@ -439,14 +436,57 @@ public class RXSSFRow implements Row, Comparable<RXSSFRow>
     {
         return _sheet;
     }
-//end of interface implementation
 
+    @Override
+    public void addFormulaCell(int colIndex, String cellFormula, int styleIndex, Comment comment, Hyperlink hyperlink) {
+        RXSSFCell cell = createCell(colIndex, CellType.FORMULA);
+        cell.setCellFormula(cellFormula);
+        cell.setCellStyle(styleIndex);
+        cell.setCellComment(comment);
+        cell.setHyperlink(hyperlink);
+    }
+
+    @Override
+    public void addStringCell(int colIndex, String cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
+        RXSSFCell cell = createCell(colIndex, CellType.STRING);
+        cell.setCellValue(cellValue);
+        cell.setCellStyle(styleIndex);
+        cell.setCellComment(comment);
+        cell.setHyperlink(hyperlink);
+    }
+
+    @Override
+    public void addNumericCell(int colIndex, double cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
+        RXSSFCell cell = createCell(colIndex, CellType.NUMERIC);
+        cell.setCellValue(cellValue);
+        cell.setCellStyle(styleIndex);
+        cell.setCellComment(comment);
+        cell.setHyperlink(hyperlink);
+    }
+
+    @Override
+    public void addBooleanCell(int colIndex, boolean cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
+        RXSSFCell cell = createCell(colIndex, CellType.BOOLEAN);
+        cell.setCellValue(cellValue);
+        cell.setCellStyle(styleIndex);
+        cell.setCellComment(comment);
+        cell.setHyperlink(hyperlink);
+    }
+
+    @Override
+    public void addErrorCell(int colIndex, byte cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
+        RXSSFCell cell = createCell(colIndex, CellType.ERROR);
+        cell.setCellValue(cellValue);
+        cell.setCellStyle(styleIndex);
+        cell.setCellComment(comment);
+        cell.setHyperlink(hyperlink);
+    }
 
     /**
      * Create an iterator over the cells from [0, getLastCellNum()).
      * Includes blank cells, excludes empty cells
      *
-     * Returns an iterator over all filled cells (created via Row.createCell())
+     * Returns an iterator over all filled cells (created via RowImpl.createCell())
      * Throws ConcurrentModificationException if cells are added, moved, or
      * removed after the iterator is created.
      */

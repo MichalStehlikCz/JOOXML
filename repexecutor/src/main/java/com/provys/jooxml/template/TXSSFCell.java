@@ -14,6 +14,16 @@ public class TXSSFCell implements TemplateCell {
     }
 
     @Override
+    public int getRowIndex() {
+        return cell.getRowIndex();
+    }
+
+    @Override
+    public int getColumnIndex() {
+        return cell.getColumnIndex();
+    }
+
+    @Override
     public CellType getCellType() {
         return cell.getCellType();
     }
@@ -41,6 +51,11 @@ public class TXSSFCell implements TemplateCell {
     @Override
     public byte getErrorCellValue() {
         return cell.getErrorCellValue();
+    }
+
+    @Override
+    public int getStyleIndex() {
+        return (cell.getCellStyle() == null) ? -1 : cell.getCellStyle().getIndex();
     }
 
     @Override

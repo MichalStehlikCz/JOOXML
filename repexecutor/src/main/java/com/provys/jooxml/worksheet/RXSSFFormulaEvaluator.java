@@ -145,7 +145,7 @@ public final class RXSSFFormulaEvaluator extends BaseXSSFFormulaEvaluator {
     }
     public static class RowFlushedException extends IllegalStateException {
         protected RowFlushedException(int rowNum) {
-            super("Row " + rowNum + " has been flushed, cannot evaluate all cells");
+            super("RowImpl " + rowNum + " has been flushed, cannot evaluate all cells");
         }
     }
 }

@@ -1,13 +1,17 @@
 package com.provys.jooxml.report;
 
 import com.provys.jooxml.repexecutor.ReportDataSource;
-import com.provys.jooxml.repexecutor.ReportRegion;
+import com.provys.jooxml.repexecutor.ReportStep;
+import com.provys.jooxml.template.TXSSFWorkbookFactory;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -16,8 +20,10 @@ import java.util.stream.Collectors;
  * interface used by report executor.
  */
 public class ReportImpl implements com.provys.jooxml.repexecutor.Report {
+
+    private final TemplateWorkbookFactory templateWorkbookFactory = new TXSSFWorkbookFactory();
     private final Map<String, ReportDataSource> dataSources;
-    private ReportRegion rootRegion;
+    private ReportStep rootRegion;
     private File template;
 
     /**
@@ -31,10 +37,10 @@ public class ReportImpl implements com.provys.jooxml.repexecutor.Report {
     private static Map<String, ReportDataSource> initDataSources(Collection<ReportDataSource> dataSources) {
         // collector throws exception if data source nameNms are not unique
         Map<String, ReportDataSource> result = dataSources.stream().collect(
-                Collectors.toMap(ReportDataSource::getNameNm, dataSource -> dataSource));
+                Collectors.toMap(ReportDataSource::getNameNm, Function.identity()));
         // verify that each data source points to other data source in collection
         dataSources.stream()
-                .filter(dataSource -> (dataSource.getParent() != null))
+                .filter(dataSource -> (dataSource.getParent().isPresent()))
                 .map(ReportDataSource::getParent).map(Optional::get)
                 .filter(parent -> (parent != result.get(parent.getNameNm())))
                 .findAny()
@@ -46,35 +52,23 @@ public class ReportImpl implements com.provys.jooxml.repexecutor.Report {
     }
 
     /**
-     * Validate that root region points to root data source of this report
-     *
-     * @param rootRegion is region being validated
-     * @param dataSources is map of data sources belonging to this report
-     * @return root region if everything goes ok
-     * @throws IllegalArgumentException if root region is not connected to root data source
-     * @throws IllegalArgumentException is root region's data source is not found between supplied data sources
-     */
-    private static ReportRegion validateRootRegion(ReportRegion rootRegion, Map<String, ReportDataSource> dataSources) {
-        ReportDataSource dataSource = rootRegion.getReportDataSource();
-        if (dataSource.getParent() != null) {
-            throw new IllegalArgumentException("Root region must be connected to root data source");
-        }
-        if (dataSource != dataSources.get(dataSource.getNameNm())) {
-            throw new IllegalArgumentException("Root region must be connected to data source from the same report");
-        }
-        return rootRegion;
-    }
-
-    /**
      * Constructor creates report based on supplied data
      *
      * @param dataSources is collection of data sources for the new report
-     * @param rootRegion is root region, one that should be used with root data source
+     * @param rootRegionBuilder is builder that can be used to build root region; building is done by report constructor
+     *                         as built region references items (cells etc.) in template workbook and we do not want to
+     *                         reference something mutable out of our control
      * @param template is file containing template excel workbook
      */
-    public ReportImpl(Collection<ReportDataSource> dataSources, ReportRegion rootRegion, File template) {
+    public ReportImpl(Collection<ReportDataSource> dataSources, StepBuilder rootRegionBuilder, File template) {
         this.dataSources = initDataSources(dataSources);
-        this.rootRegion = validateRootRegion(rootRegion, this.dataSources);
+        try (TemplateWorkbook workbook = templateWorkbookFactory.get(template)) {
+            this.rootRegion = rootRegionBuilder.build(workbook);
+        } catch (InvalidFormatException e) {
+            throw new RuntimeException("Failed to parse template", e);
+        } catch (IOException e) {
+            throw new RuntimeException("IO error working with template file", e);
+        }
         this.template = Objects.requireNonNull(template);
     }
 
@@ -98,7 +92,7 @@ public class ReportImpl implements com.provys.jooxml.repexecutor.Report {
      * @return root region
      */
     @Override
-    public ReportRegion getRootRegion() {
+    public ReportStep getRootStep() {
         return rootRegion;
     }
 

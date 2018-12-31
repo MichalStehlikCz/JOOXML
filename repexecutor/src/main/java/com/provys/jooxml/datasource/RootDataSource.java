@@ -1,5 +1,6 @@
 package com.provys.jooxml.datasource;
 
+import com.provys.jooxml.repexecutor.DataContext;
 import com.provys.jooxml.repexecutor.ReportDataSource;
 
 import java.util.Optional;
@@ -42,5 +43,10 @@ class RootDataSource implements ReportDataSource {
     @Override
     public String getNameNm() {
         return "ROOT";
+    }
+
+    @Override
+    public DataContext getDataContext() {
+        return null;
     }
 }

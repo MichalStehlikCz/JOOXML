@@ -1,34 +1,26 @@
 package com.provys.jooxml.report;
 
-import com.provys.jooxml.repexecutor.ReportRegionCell;
-import com.provys.jooxml.repexecutor.ReportRegionRow;
-import org.apache.poi.ss.util.CellReference;
+import com.provys.jooxml.repexecutor.RowProperties;
 
-import java.util.*;
+import java.util.List;
 
-public class Row implements ReportRegionRow {
+/**
+ * Represents data row in region. Supports iteration through row's cells
+ */
+public interface Row extends Iterable<AreaCell> {
 
-    final private int rowIndex;
-    final private List<ReportRegionCell> cells;
+    /**
+     * @return row index of given row; rows are numbered from 0 within region
+     */
+    int getRowIndex();
 
-    Row(int rowIndex, Collection<ReportRegionCell> cells) {
-        this.rowIndex = rowIndex;
-        this.cells = new ArrayList<>(cells);
-    }
+    /**
+     * @return row properties
+     */
+    RowProperties getRowProperties();
 
-    @Override
-    public int getRowIndex() {
-        return rowIndex;
-    }
-
-    @Override
-    public List<ReportRegionCell> getCells() {
-        return Collections.unmodifiableList(cells);
-    }
-
-    @Override
-    public Iterator<ReportRegionCell> iterator() {
-        return Collections.unmodifiableList(cells).iterator();
-    }
-
+    /**
+     * Returns list of cells in row
+     */
+    List<AreaCell> getCells();
 }

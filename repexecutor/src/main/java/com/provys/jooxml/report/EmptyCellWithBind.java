@@ -1,6 +1,6 @@
 package com.provys.jooxml.report;
 
-import com.provys.jooxml.repexecutor.ReportRegionCell;
+import com.provys.jooxml.repexecutor.DataRecord;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Hyperlink;
@@ -11,7 +11,7 @@ import java.util.Optional;
  * Represents cell created because of binding. Cell was not present in template sheet, but there is data binding
  * for this cell in region description, thus we consider this cell to be String cell without any special formatting
  */
-class EmptyCellWithBind implements ReportRegionCell {
+class EmptyCellWithBind implements AreaCell {
 
     final private int columnIndex;
     final Optional<String> bindColumn; // in fact, this field is always filled in; but getter needs Optional to be compatible
@@ -51,17 +51,37 @@ class EmptyCellWithBind implements ReportRegionCell {
 
     @Override
     public double getNumericCellValue() {
-        throw new RuntimeException("Cannot access formula in empty template cell");
+        throw new RuntimeException("Cannot access numeric value in empty template cell");
     }
 
     @Override
     public boolean getBooleanCellValue() {
-        throw new RuntimeException("Cannot access formula in empty template cell");
+        throw new RuntimeException("Cannot access boolean value in empty template cell");
     }
 
     @Override
     public byte getErrorCellValue() {
-        throw new RuntimeException("Cannot access formula in empty template cell");
+        throw new RuntimeException("Cannot access error value in empty template cell");
+    }
+
+    @Override
+    public String getStringEffectiveValue(DataRecord data) {
+        return data.getStringValue(bindColumn.get());
+    }
+
+    @Override
+    public double getNumericEffectiveValue(DataRecord data) {
+        throw new RuntimeException("Cannot access numeric value in empty template cell");
+    }
+
+    @Override
+    public boolean getBooleanEffectiveValue(DataRecord data) {
+        throw new RuntimeException("Cannot access error value in empty template cell");
+    }
+
+    @Override
+    public int getCellStyleIndex() {
+        return -1;
     }
 
     @Override

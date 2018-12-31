@@ -47,6 +47,11 @@ public interface TemplateCell {
     byte getErrorCellValue();
 
     /**
+     * @return index of style associated with cell, -1 if no style is applied
+     */
+    int getStyleIndex();
+
+    /**
      * @return comment attached to given cell
      */
     Comment getCellComment();
