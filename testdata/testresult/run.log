@@ -18,3 +18,10 @@ ReadWorkbook: Read template workbook from file TestSheet.xlsx
 WriteWorkbook: Write workbook to file testresult\ResultSheet.xlsx
 ReadWorkbook: Read template workbook from file TestSheet.xlsx
 WriteWorkbook: Write workbook to file testresult\ResultSheet.xlsx
+ReadParameters: End element expected for parameter REPORTNAME, PARAMETERS found
+ReadParameters: End element expected for parameter REPORTNAME, PARAMETERS found
+ReadParameters: Root elements should be PARAMETERS, not REPORTNAME
+ReadWorkbook: Read template workbook from file TestSheet.xlsx
+WriteWorkbook: Write workbook to file testresult\ResultSheet.xlsx
+ReadWorkbook: Read template workbook from file TestSheet.xlsx
+WriteWorkbook: Write workbook to file testresult\ResultSheet.xlsx

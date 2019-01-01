@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.provys.report.jooxml.repexecutor.ParameterReaderTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.39 s - in com.provys.report.jooxml.repexecutor.ParameterReaderTest
