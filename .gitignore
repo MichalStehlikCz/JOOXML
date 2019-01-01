@@ -1,0 +1,3 @@
+/java/*/*/target/
+/java/*/target/
+/java/testdata/testresult/
