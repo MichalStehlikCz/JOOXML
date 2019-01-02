@@ -22,8 +22,6 @@ import picocli.CommandLine;
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.se.SeContainerInitializer;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @CommandLine.Command(description = "Evaluate JOOXML report", name="jooxml", mixinStandardHelpOptions = true, version = "0.9")
 class JooxmlInitializer implements Runnable {
@@ -49,21 +47,26 @@ class JooxmlInitializer implements Runnable {
     private void configureLogger() {
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setConfigurationName("RootLogger");
+        AppenderComponentBuilder appenderBuilder;
         if (logFile != null) {
-            AppenderComponentBuilder appenderBuilder = builder.newAppender("Log", "File").
+            appenderBuilder = builder.newAppender("Log", "File").
                     addAttribute("fileName", logFile.getPath());
-            builder.add(appenderBuilder);
         } else {
-            AppenderComponentBuilder appenderBuilder = builder.newAppender("Log", "Console")
+            appenderBuilder = builder.newAppender("Log", "Console")
                     .addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-            builder.add(appenderBuilder);
         }
+        appenderBuilder.add(builder.newLayout("PatternLayout").
+                addAttribute("pattern", "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %-10t %-50c{-2} %msg%n%throwable"));
+        builder.add(appenderBuilder);
         builder.add(builder.newRootLogger(logLevel).
                 add(builder.newAppenderRef("Log")).
                 addAttribute("additivity", true));
         builder.add(builder.newLogger("org.jboss.weld", Level.WARN).
                 addAttribute("additivity", true));
         Configurator.initialize(builder.build());
+        final Logger logger = LogManager.getLogger(JooxmlInitializer.class);
+        logger.info("LoggerInit: Logger initialized: " +
+                ((logFile != null) ? "file " + logFile.getPath() : "console") + ", level " + logLevel);
     }
 
     @Override
@@ -75,7 +78,6 @@ class JooxmlInitializer implements Runnable {
                 setParamFile(paramFile).
                 setTargetFile(targetFile).
                 run();
-        System.out.println("Processing successfully finished");
     }
 
 }

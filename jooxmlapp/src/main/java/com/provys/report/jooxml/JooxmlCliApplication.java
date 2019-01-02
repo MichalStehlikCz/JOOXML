@@ -10,6 +10,7 @@ public class JooxmlCliApplication {
         commandLine.registerConverter(Level.class, Level::valueOf);
         commandLine.parseWithHandlers(new CommandLine.RunLast().useOut(System.out)
                 , (CommandLine.IExceptionHandler2)(new CommandLine.DefaultExceptionHandler().useErr(System.err)), args);
+        System.out.println("Processing successfully finished");
     }
 
 }

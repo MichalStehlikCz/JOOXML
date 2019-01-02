@@ -67,7 +67,6 @@ class RunReport implements Runnable {
                 setParamFile(paramFile).
                 setTargetFile(targetFile).
                 run();
-        System.out.println("Processing successfully finished");
     }
 
 }
