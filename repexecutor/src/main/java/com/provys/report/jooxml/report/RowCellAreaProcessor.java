@@ -1,7 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ContextCoordinates;
-import com.provys.report.jooxml.repexecutor.RepWRow;
+import com.provys.report.jooxml.repworkbook.RepRow;
 import com.provys.report.jooxml.repexecutor.StepContext;
 
 import java.util.Objects;
@@ -20,7 +20,7 @@ public class RowCellAreaProcessor extends StepProcessorAncestor {
         ContextCoordinates coordinates = getStepContext().getCoordinates();
         // populate cells in sheet with cells from region
         for (Row regionRow : region.getRows()) {
-            RepWRow targetRow;
+            RepRow targetRow;
             if (region.isTopLevel()) {
                 targetRow = coordinates.getSheet().createRow(coordinates.getRowIndex() + regionRow.getRowIndex()
                         , regionRow.getRowProperties());

@@ -1,7 +1,5 @@
 package com.provys.report.jooxml.datasource;
 
-import com.provys.report.jooxml.repexecutor.ReportDataSource;
-
 /**
  * Factory class that produces various data sources available
  */

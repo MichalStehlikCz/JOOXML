@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.repexecutor;
 
+import com.provys.report.jooxml.datasource.DataRecord;
+
 import java.util.Objects;
 
 /**

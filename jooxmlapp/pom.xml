@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>JOOXML</artifactId>
-        <groupId>com.provys.jooxml</groupId>
+        <groupId>com.provys.report.jooxml</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,8 +12,13 @@
     <artifactId>jooxmlapp</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.provys.jooxml</groupId>
+            <groupId>com.provys.report.jooxml</groupId>
             <artifactId>repexecutor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.provys.report.jooxml</groupId>
+            <artifactId>workbook</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -23,6 +28,10 @@
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-shaded</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
     </dependencies>
     <build>

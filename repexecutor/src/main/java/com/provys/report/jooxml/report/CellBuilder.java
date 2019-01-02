@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.tplworkbook.TplCell;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,26 +19,26 @@ class CellBuilder {
 
     private CellCoordinates index; // might be null when new empty cell builder is created. Coordinates are relative to
                                    // region
-    private TemplateCell templateCell;
+    private TplCell tplCell;
     private String bindColumn;
 
     CellBuilder() {
         this.index = null;
-        this.templateCell = null;
+        this.tplCell = null;
         this.bindColumn = null;
     }
 
-    CellBuilder(TemplateCell templateCell, RowAreaBuilder region) {
-        this.index = new CellCoordinates(templateCell.getRowIndex() - region.getFirstRow()
-                , templateCell.getColumnIndex());
-        this.templateCell = templateCell;
+    CellBuilder(TplCell tplCell, RowAreaBuilder region) {
+        this.index = new CellCoordinates(tplCell.getRowIndex() - region.getFirstRow()
+                , tplCell.getColumnIndex());
+        this.tplCell = tplCell;
         this.bindColumn = null;
     }
 
     CellBuilder(FieldBind fieldBind, RowAreaBuilder region) {
         this.index = new CellCoordinates(fieldBind.getCellReference().getRow() - region.getFirstRow()
                 , fieldBind.getCellReference().getCol());
-        this.templateCell = null;
+        this.tplCell = null;
         this.bindColumn = fieldBind.getSourceColumn();
     }
 
@@ -60,9 +62,9 @@ class CellBuilder {
         } else if ((cell.index != null) && (!cell.index.equals(cell.index))) {
             throw new IllegalArgumentException("Cannot merge two combined cells with different coordinates");
         }
-        if (this.templateCell == null) {
-            this.templateCell = cell.templateCell;
-        } else if (cell.templateCell != null) {
+        if (this.tplCell == null) {
+            this.tplCell = cell.tplCell;
+        } else if (cell.tplCell != null) {
             throw new IllegalArgumentException("Cannot merge two template cells");
         }
         if (this.bindColumn == null) {
@@ -78,8 +80,8 @@ class CellBuilder {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
         AreaCell cell;
-        if (templateCell != null) {
-            return new TemplateCellWithBind(index.column, templateCell, Optional.ofNullable(bindColumn));
+        if (tplCell != null) {
+            return new TemplateCellWithBind(index.column, tplCell, Optional.ofNullable(bindColumn));
         } else if (bindColumn == null) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
@@ -120,7 +122,7 @@ class CellBuilder {
 
     /**
      * Collector used to combine partial cells into ReportRegionCells.
-     * Used to collect cells from stream that might contain TemplateCell-based and FiledBind-based instances of
+     * Used to collect cells from stream that might contain TplCell-based and FiledBind-based instances of
      * CellBuilder with same coordinates
      */
     static class CellBuilderCollector implements Collector<CellBuilder, CellBuilder

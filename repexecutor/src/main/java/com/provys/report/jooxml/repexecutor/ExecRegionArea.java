@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.repexecutor;
 
-import org.apache.poi.ss.util.CellReference;
+import com.provys.report.jooxml.workbook.CellAddress;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import java.util.Optional;
 
@@ -20,8 +21,8 @@ public class ExecRegionArea implements ExecRegion {
         this.firstColumn = firstColumn;
     }
 
-    CellReference getCell(int cellRow, int cellColumn) {
-        return new CellReference(cellRow + firstRow, cellColumn + firstColumn);
+    CellAddress getCell(int cellRow, int cellColumn) {
+        return new CellAddress(cellRow + firstRow, cellColumn + firstColumn);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class ExecRegionArea implements ExecRegion {
         if (!(path instanceof CellPathCell)) {
             throw new IllegalArgumentException("Cannot evaluate CellPath - Cell expected in lowest level region");
         }
-        CellReference cell = ((CellPathCell) path).getCellReference();
+        CellReference cell = ((CellPathCell) path).getCellAddress();
         return Optional.of(new CellReference(cell.getSheetName(), cell.getRow() + firstRow
                 , cell.getCol() + firstColumn, cell.isRowAbsolute(), cell.isColAbsolute()));
     }

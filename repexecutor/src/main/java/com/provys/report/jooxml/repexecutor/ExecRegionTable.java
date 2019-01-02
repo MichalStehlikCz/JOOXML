@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.repexecutor;
 
+import com.provys.report.jooxml.workbook.CellReference;
 import org.apache.poi.ss.util.CellReference;
 
 import java.util.ArrayList;

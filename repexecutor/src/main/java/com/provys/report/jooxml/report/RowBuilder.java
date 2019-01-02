@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.RowProperties;
+import com.provys.report.jooxml.tplworkbook.TplRow;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -24,7 +25,7 @@ class RowBuilder {
     /**
      * Constructor initializing row values from template row
      */
-    RowBuilder(TemplateRow row, RowAreaBuilder region) {
+    RowBuilder(TplRow row, RowAreaBuilder region) {
         this.rowIndex = row.getRowNum() - region.getFirstRow();
         this.rowProperties = row.getRowProperties();
     }

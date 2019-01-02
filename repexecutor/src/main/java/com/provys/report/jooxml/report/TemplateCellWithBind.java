@@ -1,9 +1,10 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.DataRecord;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.Hyperlink;
+import com.provys.report.jooxml.datasource.DataRecord;
+import com.provys.report.jooxml.tplworkbook.TplCell;
+import com.provys.report.jooxml.workbook.CellProperties;
+import com.provys.report.jooxml.workbook.CellType;
+import com.provys.report.jooxml.workbook.CellValue;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -16,7 +17,7 @@ class TemplateCellWithBind implements AreaCell {
 
     private final int columnIndex; // index of column within row, zero based; in theory, index could be taken from
                                    // template cell as long as we do not have column regions, but...
-    private final TemplateCell cell;
+    private final TplCell cell;
     private final Optional<String> bindColumn;
 
     /**
@@ -27,7 +28,7 @@ class TemplateCellWithBind implements AreaCell {
      * @param cell
      * @param bindColumn
      */
-    TemplateCellWithBind(int columnIndex, TemplateCell cell, Optional<String> bindColumn) {
+    TemplateCellWithBind(int columnIndex, TplCell cell, Optional<String> bindColumn) {
         this.columnIndex = columnIndex;
         this.cell = Objects.requireNonNull(cell);
         if ((cell.getCellType() == CellType.FORMULA) && (bindColumn.isPresent())) {
@@ -40,8 +41,8 @@ class TemplateCellWithBind implements AreaCell {
     }
 
     @Override
-    public int getColumnIndex() {
-        return cell.getColumnIndex();
+    public int getColIndex() {
+        return cell.getColIndex();
     }
 
     @Override
@@ -50,58 +51,18 @@ class TemplateCellWithBind implements AreaCell {
     }
 
     @Override
-    public String getCellFormula() {
-        return cell.getCellFormula();
+    public Optional<CellValue> getCellValue() {
+        return Optional.of(cell.getCellValue());
     }
 
     @Override
-    public Optional<String> getStringCellValue() {
-        return cell.getStringCellValue();
+    public CellValue getEffectiveValue(DataRecord data) {
+        return bindColumn.map((column) -> data.getValue(column, getCellType())).orElse(cell.getCellValue());
     }
 
     @Override
-    public Optional<Double> getNumericCellValue() {
-        return cell.getNumericCellValue();
-    }
-
-    @Override
-    public Optional<Boolean> getBooleanCellValue() {
-        return cell.getBooleanCellValue();
-    }
-
-    @Override
-    public Optional<Byte> getErrorCellValue() {
-        return cell.getErrorCellValue();
-    }
-
-    @Override
-    public Optional<String> getStringEffectiveValue(DataRecord data) {
-        return bindColumn.map((column) -> data.getStringValue(column)).orElse(getStringCellValue());
-    }
-
-    @Override
-    public Optional<Double> getNumericEffectiveValue(DataRecord data) {
-        return bindColumn.map((column) -> data.getNumericValue(column)).orElse(getNumericCellValue());
-    }
-
-    @Override
-    public Optional<Boolean> getBooleanEffectiveValue(DataRecord data) {
-        return bindColumn.map((column) -> data.getBooleanValue(column)).orElse(getBooleanCellValue());
-    }
-
-    @Override
-    public int getCellStyleIndex() {
-        return cell.getStyleIndex();
-    }
-
-    @Override
-    public Comment getCellComment() {
-        return cell.getCellComment();
-    }
-
-    @Override
-    public Hyperlink getHyperlink() {
-        return cell.getHyperlink();
+    public Optional<CellProperties> getProperties() {
+        return cell.getCellProperties();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.repexecutor;
 
+import com.provys.report.jooxml.repworkbook.RepWorkbook;
+
 /**
  * RegionProcessor is worker able to process given report region and push its lines to resulting worksheet. Processing
  * should use following sequence of steps

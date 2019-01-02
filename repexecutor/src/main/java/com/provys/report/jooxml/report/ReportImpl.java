@@ -1,10 +1,10 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.Report;
-import com.provys.report.jooxml.repexecutor.ReportDataSource;
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.template.TXSSFWorkbookFactory;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  */
 public class ReportImpl implements Report {
 
-    private final TemplateWorkbookFactory templateWorkbookFactory = new TXSSFWorkbookFactory();
     private final Map<String, ReportDataSource> dataSources;
     private ReportStep rootRegion;
     private File template;
@@ -61,12 +60,11 @@ public class ReportImpl implements Report {
      *                         reference something mutable out of our control
      * @param template is file containing template excel workbook
      */
-    public ReportImpl(Collection<ReportDataSource> dataSources, StepBuilder rootRegionBuilder, File template) {
+    public ReportImpl(Collection<ReportDataSource> dataSources, StepBuilder rootRegionBuilder, File template,
+                      TplWorkbookFactory tplWorkbookFactory) {
         this.dataSources = initDataSources(dataSources);
-        try (TemplateWorkbook workbook = templateWorkbookFactory.get(template)) {
+        try (TplWorkbook workbook = tplWorkbookFactory.get(template)) {
             this.rootRegion = rootRegionBuilder.build(workbook);
-        } catch (InvalidFormatException e) {
-            throw new RuntimeException("Failed to parse template", e);
         } catch (IOException e) {
             throw new RuntimeException("IO error working with template file", e);
         }

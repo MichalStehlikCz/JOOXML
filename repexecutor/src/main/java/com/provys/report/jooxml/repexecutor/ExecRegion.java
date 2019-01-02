@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.repexecutor;
 
-import org.apache.poi.ss.util.CellReference;
+import com.provys.report.jooxml.workbook.CellAddress;
 
 import java.util.Optional;
 
@@ -9,5 +9,5 @@ import java.util.Optional;
  * Used for mapping cell references to actual cells in generated sheet
  */
 public interface ExecRegion {
-    Optional<CellReference> getCell(CellPath path);
+    Optional<CellAddress> getCell(CellPath path);
 }

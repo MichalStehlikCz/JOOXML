@@ -1,16 +1,8 @@
 package com.provys.report.jooxml;
 
-import com.provys.report.jooxml.datasource.DataSourceFactory;
-import com.provys.report.jooxml.repexecutor.RepExecutor;
-import com.provys.report.jooxml.repexecutor.Report;
-import com.provys.report.jooxml.repexecutor.ReportDataSource;
-import com.provys.report.jooxml.report.FieldBind;
-import com.provys.report.jooxml.report.ReportImpl;
-import com.provys.report.jooxml.report.RowCellAreaBuilder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;

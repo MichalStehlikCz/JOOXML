@@ -1,8 +1,9 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.ReportDataSource;
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import org.apache.poi.ss.util.CellReference;
+import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
 import java.util.*;
 
@@ -160,7 +161,7 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
     /**
      * Builds region from this builder. Called from build after validation.
      */
-    abstract protected ReportStep doBuild(TemplateWorkbook template);
+    abstract protected ReportStep doBuild(TplWorkbook template);
 
     /**
      * Method allows fluent build for children of this type
@@ -172,7 +173,7 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
     /**
      * Validates and builds step from builder.
      */
-    public ReportStep build(TemplateWorkbook template) {
+    public ReportStep build(TplWorkbook template) {
         validate();
         return doBuild(template);
     }

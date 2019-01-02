@@ -3,9 +3,9 @@ package com.provys.report.jooxml;
 import com.provys.report.jooxml.datasource.DataSourceFactory;
 import com.provys.report.jooxml.repexecutor.RepExecutor;
 import com.provys.report.jooxml.repexecutor.Report;
-import com.provys.report.jooxml.repexecutor.ReportDataSource;
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.report.FieldBind;
-import com.provys.report.jooxml.report.ReportImpl;
+import com.provys.report.jooxml.report.ReportFactory;
 import com.provys.report.jooxml.report.RowCellAreaBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +26,8 @@ class RunReport implements Runnable {
     private File targetFile;
     @Inject
     private RepExecutor executor;
+    @Inject
+    private ReportFactory reportFactory;
 
     RunReport setTemplate(File template) {
         this.template = template;
@@ -62,7 +64,7 @@ class RunReport implements Runnable {
         RowCellAreaBuilder rootStepBuilder = new RowCellAreaBuilder().setNameNm("ROOT").setFirstRow(0)
                 .setLastRow(Integer.MAX_VALUE).setTopLevel(true)
                 .addFieldBind(new FieldBind("REPORTNAME", "A1"));
-        Report report = new ReportImpl(dataSources, rootStepBuilder, template);
+        Report report = reportFactory.build(dataSources, rootStepBuilder, template);
         executor.setReport(report).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).

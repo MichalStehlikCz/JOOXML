@@ -2,6 +2,7 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import org.apache.poi.ss.util.CellReference;
+import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,7 +89,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
     /**
      * @return collection of rows for this region
      */
-    private Collection<Row> buildRows(TemplateWorkbook template) {
+    private Collection<Row> buildRows(TplWorkbook template) {
         // first we will go through cells in template and we will try to find corresponding bindings
         return Stream.concat(
                 Stream.concat( // rows built from cells
@@ -110,7 +111,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
     }
 
     @Override
-    protected ReportStep doBuild(TemplateWorkbook template) {
+    protected ReportStep doBuild(TplWorkbook template) {
         return new RowCellArea(getNameNm(), isTopLevel(), getLastRow() - getFirstRow() + 1, buildRows(template));
     }
 

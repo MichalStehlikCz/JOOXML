@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import org.apache.poi.ss.util.CellReference;
+import com.provys.report.jooxml.workbook.CellAddress;
 
 import java.util.Objects;
 
@@ -10,41 +10,29 @@ import java.util.Objects;
 public final class FieldBind {
 
     private final String sourceColumn;
-    private final CellReference cellReference;
+    private final CellAddress cellAddress;
 
     /**
      * Verifikuje, ze se jedna o referenci pouzitelnou pro binding - nesmi mit zadany sheet a musi mit relativni pozice
      *
-     * @param cellReference is reference being validated
+     * @param cellAddress is reference being validated
      */
-    private static CellReference validateCellReference(CellReference cellReference) {
-        Objects.requireNonNull(cellReference);
-        if (cellReference.getSheetName() != null) {
-            throw new IllegalArgumentException("Cannot specify sheet name in binding " + cellReference.getSheetName());
+    private static CellAddress validateCellAddress(CellAddress cellAddress) {
+        Objects.requireNonNull(cellAddress);
+        if (cellAddress.getSheetName().isPresent()) {
+            throw new IllegalArgumentException("Cannot specify sheet name in binding " + cellAddress.getSheetName().get());
         }
-        if (cellReference.isColAbsolute()) {
-            throw new IllegalArgumentException("Cannot specify absolute ($) column position");
-        }
-        if (cellReference.isRowAbsolute()) {
-            throw new IllegalArgumentException("Cannot specify absolute ($) row position");
-        }
-        if (cellReference.getRow() == -1) {
-            throw new IllegalArgumentException("RowImpl ot supplied in data binding");
-        }
-        if (cellReference.getCol() == -1) {
-            throw new IllegalArgumentException("Column not supplied in data binding");
-        }
-        return cellReference;
+        return cellAddress;
     }
     /**
      * Creates FieldBind from supplied data.
      *
      * @param sourceColumn is name of column in dataset used to populate cell
-     * @param cellReference is reference to cell as used in internal representation in POI spreadsheets
+     * @param cellAddress is reference to cell as used in internal representation in POI spreadsheets
      */
-    public FieldBind(String sourceColumn, CellReference cellReference) {
+    public FieldBind(String sourceColumn, CellAddress cellAddress) {
         this.sourceColumn = Objects.requireNonNull(sourceColumn);
-        this.cellReference = Objects.requireNonNull(validateCellReference(cellReference));
+        this.cellAddress = validateCellAddress(cellAddress);
     }
 
     /**
@@ -80,14 +68,14 @@ public final class FieldBind {
      */
     public FieldBind(String sourceColumn, String sheetName, int row, int column) {
         this.sourceColumn = sourceColumn;
-        this.cellReference = new CellReference(sheetName, row, column, false, false);
+        this.cellAddress = new CellAddress(sheetName, row, column, false, false);
     }
 
     public String getSourceColumn() {
         return sourceColumn;
     }
 
-    public CellReference getCellReference() {
-        return cellReference;
+    public CellAddress getCellAddress() {
+        return cellAddress;
     }
 }

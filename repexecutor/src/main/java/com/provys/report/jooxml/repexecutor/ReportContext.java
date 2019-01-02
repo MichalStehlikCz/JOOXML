@@ -1,8 +1,11 @@
 package com.provys.report.jooxml.repexecutor;
 
+import com.provys.report.jooxml.repworkbook.RepWorkbook;
+import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
 import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,19 +21,21 @@ public class ReportContext implements AutoCloseable {
     private final List<DataContext> dataContexts = new ArrayList<>(3);
     private final Map<String, Connection> connections = new HashMap<>(3);
     private final Map<String, Optional<String>> parameters;
+    private final CellValueFactory cellValueFactory;
     private RepWorkbook workbook;
 
     /**
-     * Creates report context for execution of reort with given parameters.
+     * Creates report context for execution of report with given parameters.
      *
      * @param parameters
      */
-    ReportContext(List<Parameter> parameters) {
+    ReportContext(List<Parameter> parameters, CellValueFactory cellValueFactory) {
         if (parameters == null) {
             this.parameters = new HashMap<>(0);
         } else {
             this.parameters = parameters.stream().collect(Collectors.toMap(Parameter::getName, Parameter::getValue));
         }
+        this.cellValueFactory = cellValueFactory;
     }
 
     /**
@@ -81,5 +86,12 @@ public class ReportContext implements AutoCloseable {
      */
     public RepWorkbook getWorkbook() {
         return workbook;
+    }
+
+    /**
+     * @return cell value factory that can be used to produce cell values during execution of report
+     */
+    public CellValueFactory getCellValueFactory() {
+        return cellValueFactory;
     }
 }

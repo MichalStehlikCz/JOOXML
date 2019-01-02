@@ -4,13 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.provys.jooxml</groupId>
+    <groupId>com.provys.report.jooxml</groupId>
     <artifactId>JOOXML</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>jooxmlapp</module>
         <module>repexecutor</module>
+        <module>workbook</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,6 +88,12 @@
                 <artifactId>mockito-core</artifactId>
                 <version>2.17.0</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>16.0.3</version>
+                <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

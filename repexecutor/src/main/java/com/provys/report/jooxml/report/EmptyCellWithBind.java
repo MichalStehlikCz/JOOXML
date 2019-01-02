@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.DataRecord;
+import com.provys.report.jooxml.datasource.DataRecord;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Hyperlink;

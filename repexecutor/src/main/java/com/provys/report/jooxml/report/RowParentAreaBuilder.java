@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ReportStep;
+import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
 import java.util.*;
 
@@ -105,7 +106,7 @@ public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuil
     /**
      * @return collection of subregions for this region
      */
-    private Collection<ReportStep> doBuildChildren(TemplateWorkbook template) {
+    private Collection<ReportStep> doBuildChildren(TplWorkbook template) {
         List<ReportStep> builtChildren = new ArrayList<>(children.size());
         for (RowAreaBuilder child : children) {
             builtChildren.add(child.doBuild(template));
@@ -114,7 +115,7 @@ public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuil
     }
 
     @Override
-    protected ReportStep doBuild(TemplateWorkbook template) {
+    protected ReportStep doBuild(TplWorkbook template) {
         return new RowParentArea(getNameNm(), doBuildChildren(template));
     }
 }
