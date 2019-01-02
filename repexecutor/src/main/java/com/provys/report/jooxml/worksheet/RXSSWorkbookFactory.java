@@ -20,9 +20,11 @@ import com.provys.report.jooxml.repexecutor.RepWorkbook;
 import com.provys.report.jooxml.repexecutor.RepWorkbookFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 
+@Singleton
 public class RXSSWorkbookFactory implements RepWorkbookFactory {
     @Override
     public RepWorkbook get(File template) throws IOException, InvalidFormatException {

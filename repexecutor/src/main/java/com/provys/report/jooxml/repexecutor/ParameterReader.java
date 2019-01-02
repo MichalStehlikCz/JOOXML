@@ -105,6 +105,7 @@ public class ParameterReader implements Closeable {
                 LOG.warn("ReadParameters: Exception closing XML parameter file {}", e);
             }
         }
+        LOG.debug("ReadParameters: Loaded {} parameters from XML", () -> parameters.size());
     }
 
     /**

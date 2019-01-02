@@ -3,8 +3,8 @@ package com.provys.report.jooxml.repexecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import com.provys.report.jooxml.worksheet.RXSSWorkbookFactory;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -16,62 +16,83 @@ public class RepExecutor {
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
     private Report report;
     private File targetFile;
-    private List<Parameter> parameters;
-    final private RepWorkbookFactory repWorkBookFactory = new RXSSWorkbookFactory();
+    private List<Parameter> parameters = new ArrayList<>();
+    @Inject
+    private RepWorkbookFactory repWorkBookFactory;
 
-    public RepExecutor(Report report, File targetFile, List<Parameter> parameters) {
-        this.report = report;
-        this.targetFile = targetFile;
-        this.parameters = new ArrayList<>(parameters);
+    public Report getReport() {
+        return report;
     }
 
-    public RepExecutor(Report report, File targetFile, File paramFile) {
-        this.report = Objects.requireNonNull(report);
-        this.targetFile = Objects.requireNonNull(targetFile);
-        if (paramFile != null) {
-            try (ParameterReader reader = new ParameterReader(paramFile)) {
-                this.parameters = new ArrayList<>(reader.getParameters());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            this.parameters = new ArrayList<>(0);
-        }
+    public RepExecutor setReport(Report report) {
+        this.report = report;
+        return this;
+    }
+
+    public File getTargetFile() {
+        return targetFile;
+    }
+
+    public RepExecutor setTargetFile(File targetFile) {
+        this.targetFile = targetFile;
+        return this;
+    }
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public RepExecutor setParameters(List<Parameter> parameters) {
+        this.parameters.clear();
+        this.parameters.addAll(parameters);
+        return this;
+    }
+
+    public RepExecutor setParamFile(File paramFile) {
+        return this;
+    }
+
+    public RepWorkbookFactory getRepWorkBookFactory() {
+        return repWorkBookFactory;
+    }
+
+    public void setRepWorkBookFactory(RepWorkbookFactory repWorkBookFactory) {
+        this.repWorkBookFactory = repWorkBookFactory;
     }
 
     private RepWorkbook readWorkbook() {
         try {
-            LOG.info("ReadWorkbook: Read template workbook from file {}", report.getTemplate());
-            return repWorkBookFactory.get(report.getTemplate());
+            LOG.info("ReadWorkbook: Read template workbook from file {}", getReport().getTemplate());
+            return getRepWorkBookFactory().get(getReport().getTemplate());
         } catch (IOException ex) {
-            LOG.error("ReadWorkbook: IO error reading workbook {} {}", report.getTemplate(), ex);
+            LOG.error("ReadWorkbook: IO error reading workbook {} {}", getReport().getTemplate(), ex);
             throw new RuntimeException("IO error reading workbook", ex);
         } catch (InvalidFormatException ex) {
-            LOG.error("ReadWorkbook: Invalid format exception reading {} {}", report.getTemplate(), ex);
+            LOG.error("ReadWorkbook: Invalid format exception reading {} {}", getReport().getTemplate(), ex);
             throw new RuntimeException("Format error reading workbook", ex);
         }
     }
 
     private void writeWorkbook(RepWorkbook workbook) {
-        LOG.info("WriteWorkbook: Write workbook to file {}", targetFile);
-        try (OutputStream stream = Files.newOutputStream(targetFile.toPath(),
+        LOG.info("WriteWorkbook: Write workbook to file {}", getTargetFile());
+        try (OutputStream stream = Files.newOutputStream(getTargetFile().toPath(),
                 StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             workbook.write(stream);
         } catch (IOException ex) {
-            LOG.error("WriteWorkbook: IO error writing workbook {} {}", targetFile, ex);
+            LOG.error("WriteWorkbook: IO error writing workbook {} {}", getTargetFile(), ex);
             throw new RuntimeException("IO error writing workbook", ex);
         }
     }
 
-    public void Run() {
-        try (ReportContext reportContext = new ReportContext(parameters)) {
+    public void run() {
+        try (ReportContext reportContext = new ReportContext(getParameters())) {
             try (RepWorkbook workbook = readWorkbook()) {
                 reportContext.open(workbook);
                 StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)
                         , new ContextCoordinates(workbook.getSheet(), 0, 0));
                 Stream<StepProcessor> pipeline
-                        = Stream.of(report.getRootStep().getProcessorSupplier().apply(stepContext));
-                report.getRootStep().addStepProcessing(pipeline).forEachOrdered(StepProcessor::execute);
+                        = Stream.of(getReport().getRootStep().getProcessorSupplier().apply(stepContext));
+                getReport().getRootStep().addStepProcessing(pipeline).forEachOrdered(StepProcessor::execute);
                 writeWorkbook(workbook);
             } catch (IOException ex) {
                 LOG.error("Workbook: IO error closing workbook {}", ex);

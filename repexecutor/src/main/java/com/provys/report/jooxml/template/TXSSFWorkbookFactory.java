@@ -20,9 +20,11 @@ import com.provys.report.jooxml.report.TemplateWorkbook;
 import com.provys.report.jooxml.report.TemplateWorkbookFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 
+@Singleton
 public class TXSSFWorkbookFactory implements TemplateWorkbookFactory {
     @Override
     public TemplateWorkbook get(File template) throws IOException, InvalidFormatException {

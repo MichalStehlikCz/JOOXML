@@ -10,8 +10,5 @@
         <module name="repexecutor" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="workbook" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
