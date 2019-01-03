@@ -1,9 +1,8 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.Hyperlink;
+import com.provys.report.jooxml.workbook.CellType;
+import com.provys.report.jooxml.workbook.CellValue;
 
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ class EmptyCellWithBind implements AreaCell {
     }
 
     @Override
-    public int getColumnIndex() {
+    public int getColIndex() {
         return columnIndex;
     }
 
@@ -40,7 +39,7 @@ class EmptyCellWithBind implements AreaCell {
     }
 
     @Override
-    public String getCellFormula() {
+    public Optional<CellValue> getCellValue() {
         throw new RuntimeException("Cannot access formula in empty template cell");
     }
 

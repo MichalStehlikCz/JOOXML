@@ -35,42 +35,6 @@ public final class FieldBind {
         this.cellAddress = validateCellAddress(cellAddress);
     }
 
-    /**
-     * Creates FieldBind from supplied data.
-     *
-     * @param sourceColumn is name of column in dataset used to populate cell
-     * @param cellAddress is cell name (e.g. A5)
-     */
-    public FieldBind(String sourceColumn, String cellAddress) {
-        this.sourceColumn = Objects.requireNonNull(sourceColumn);
-        this.cellReference = validateCellReference(new CellReference(Objects.requireNonNull(cellAddress)));
-    }
-
-    /**
-     * Creates FieldBind from supplied data.
-     *
-     * @param sourceColumn is name of column in dataset used to populate cell
-     * @param row is row number
-     * @param column is column number
-     */
-    public FieldBind(String sourceColumn, int row, int column) {
-        this.sourceColumn = sourceColumn;
-        this.cellReference = new CellReference(row, column);
-    }
-
-    /**
-     * Creates FieldBind from supplied data.
-     *
-     * @param sourceColumn is name of column in dataset used to populate cell
-     * @param sheetName is name of sheet this rule is targeted at
-     * @param row is row number
-     * @param column is column number
-     */
-    public FieldBind(String sourceColumn, String sheetName, int row, int column) {
-        this.sourceColumn = sourceColumn;
-        this.cellAddress = new CellAddress(sheetName, row, column, false, false);
-    }
-
     public String getSourceColumn() {
         return sourceColumn;
     }

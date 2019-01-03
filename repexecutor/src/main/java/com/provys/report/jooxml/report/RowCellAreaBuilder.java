@@ -1,8 +1,9 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ReportStep;
-import org.apache.poi.ss.util.CellReference;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellAddress;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +12,7 @@ import java.util.stream.Stream;
 
 public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
 
-    final private Map<CellReference, FieldBind> fieldBinds;
+    final private Map<CellAddress, FieldBind> fieldBinds;
 
     /**
      * Default constructor of empty area.
@@ -33,7 +34,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @param fieldBind is rule to be used for populating region
      */
     public RowCellAreaBuilder addFieldBind(FieldBind fieldBind) {
-        fieldBinds.put(fieldBind.getCellReference(), fieldBind);
+        fieldBinds.put(fieldBind.getCellAddress(), fieldBind);
         return self();
     }
 
@@ -45,7 +46,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @return reference to field bind if one exists, empty optional if no bind exists for given field
      */
     public Optional<FieldBind> getFieldBindAt(int row, int col) {
-        return Optional.ofNullable(fieldBinds.get(new CellReference(row, col)));
+        return Optional.ofNullable(fieldBinds.get(new CellAddress(row, col)));
     }
 
     @Override

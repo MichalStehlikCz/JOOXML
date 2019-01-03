@@ -2,7 +2,7 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
-import org.apache.poi.ss.util.CellReference;
+import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
 import java.util.*;
@@ -116,7 +116,7 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
     /**
      * @return value indicating if cell with given position is inside template area of region
      */
-    public boolean isInTemplateRegion(CellReference cell) {
+    public boolean isInTemplateRegion(CellAddress cell) {
         return isInTemplateRegion(cell.getRow(), cell.getCol());
     }
 
