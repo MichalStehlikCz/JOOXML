@@ -16,11 +16,6 @@ public interface TplRow extends Iterable<TplCell> {
     int getRowIndex();
 
     /**
-     * @return row properties for given row
-     */
-    RowProperties getRowProperties();
-
-    /**
      * Return cell with given index.
      *
      * @param colIndex index of cell to be retrieved (starting from 0)
@@ -32,4 +27,9 @@ public interface TplRow extends Iterable<TplCell> {
      * Return read-only collection of cells; only existing cells are returned.
      */
     Collection<TplCell> getCells();
+
+    /**
+     * @return row properties for given row
+     */
+    RowProperties getProperties();
 }

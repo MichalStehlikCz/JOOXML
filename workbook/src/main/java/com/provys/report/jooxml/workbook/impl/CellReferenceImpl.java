@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import com.provys.report.jooxml.repexecutor.CellReference;
+import com.provys.report.jooxml.workbook.CellReference;
 
 public class CellReferenceImpl extends CellAddressImpl implements CellReference {
 

@@ -27,7 +27,7 @@ class RowBuilder {
      */
     RowBuilder(TplRow row, RowAreaBuilder region) {
         this.rowIndex = row.getRowIndex() - region.getFirstRow();
-        this.rowProperties = row.getRowProperties();
+        this.rowProperties = row.getProperties();
     }
 
     /**

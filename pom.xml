@@ -48,19 +48,19 @@
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>1</version>
-                <scope>PROVIDED</scope>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.enterprise</groupId>
                 <artifactId>cdi-api</artifactId>
                 <version>2.0</version>
-                <scope>PROVIDED</scope>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
-                <scope>PROVIDED</scope>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.weld.se</groupId>

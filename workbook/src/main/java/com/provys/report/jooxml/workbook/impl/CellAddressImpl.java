@@ -1,10 +1,11 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import com.provys.report.jooxml.repexecutor.CellAddress;
+import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.repexecutor.RepExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.util.CellReference;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.Optional;
 public class CellAddressImpl implements CellAddress {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
-    private final Optional<String> sheetName;
+    private final String sheetName;
     private final int row;
     private final int col;
 
@@ -27,7 +28,7 @@ public class CellAddressImpl implements CellAddress {
             LOG.error("Absolute column reference not supported in CellAddress {}", address);
             throw new IllegalArgumentException("Absolute column reference not supported in CellAddress - " + address);
         }
-        return new CellAddressImpl(Optional.ofNullable(cellReference.getSheetName()), cellReference.getRow(),
+        return new CellAddressImpl(cellReference.getSheetName(), cellReference.getRow(),
                 cellReference.getCol());
     }
 
@@ -40,13 +41,13 @@ public class CellAddressImpl implements CellAddress {
      * @param row is row index (zero based)
      * @param col is column index (zero based)
      */
-    public CellAddressImpl(Optional<String> sheetName, int row, int col) {
-        this.sheetName = Objects.requireNonNull(sheetName);
-        if (sheetName.isPresent()) {
-            if (sheetName.get().equals("")) {
+    CellAddressImpl(@Nullable String sheetName, int row, int col) {
+        if (sheetName != null) {
+            if (sheetName.equals("")) {
                 throw new RuntimeException("Empty sheet name sent to CellAddress constructor");
             }
         }
+        this.sheetName = sheetName;
         if (row < 0) {
             LOG.error("Row index must be positive, not {}", row);
             throw new IllegalArgumentException("Row index must be positive");
@@ -60,30 +61,18 @@ public class CellAddressImpl implements CellAddress {
     }
 
     /**
-     * Create cell address from specified sheet name, row and column.
-     *
-     * @param sheetName is name of sheet this object addresses. Cannot be null nor empty - use other form of constructor
-     *                  to create reference relative in sheet
-     * @param row is row index (zero based)
-     * @param col is column index (zero based)
-     */
-    CellAddressImpl(String sheetName, int row, int col) {
-        this(Optional.of(sheetName), row, col);
-    }
-
-    /**
      * Create cell address without sheet reference. It is used when referencing cells on the same sheet
      *
      * @param row is row index (zero based)
      * @param col is column index (zero based)
      */
     CellAddressImpl(int row, int col) {
-        this(Optional.empty(), row, col);
+        this(null, row, col);
     }
 
     @Override
     public Optional<String> getSheetName() {
-        return sheetName;
+        return Optional.ofNullable(sheetName);
     }
 
     @Override
@@ -102,5 +91,10 @@ public class CellAddressImpl implements CellAddress {
             return this;
         }
         return new CellAddressImpl(sheetName, row + rowShift, col + colShift);
+    }
+
+    @Override
+    public CellAddress shiftBy(CellAddress shift) {
+        return shiftBy(shift.getRow(), shift.getCol());
     }
 }

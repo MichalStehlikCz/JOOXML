@@ -1,19 +1,19 @@
 package com.provys.report.jooxml.tplworkbook.impl;
 
 import com.provys.report.jooxml.repexecutor.RowProperties;
-import com.provys.report.jooxml.report.TemplateCell;
-import com.provys.report.jooxml.report.TemplateRow;
+import com.provys.report.jooxml.tplworkbook.TplCell;
+import com.provys.report.jooxml.tplworkbook.TplRow;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.*;
 
-public class TXSSFRow implements TemplateRow {
+public class TXSSFRow implements TplRow {
 
-    private final int rowNum;
-    private final RowProperties rowProperties;
-    private final SortedMap<Integer, TemplateCell> cells;
+    private final int rowIndex;
+    private final RowProperties properties;
+    private final SortedMap<Integer, TplCell> cells;
 
     private static RowProperties initRowProperties(Row row) {
         // problem is that underlying XSSFRow does not give access to explicitly set row height - it returns default
@@ -27,8 +27,8 @@ public class TXSSFRow implements TemplateRow {
         return RowProperties.get(heightInPoints, row.getZeroHeight(), styleIndex);
     }
 
-    private static SortedMap<Integer, TemplateCell> initCells(Row row) {
-        SortedMap<Integer, TemplateCell> result = new TreeMap();
+    private static SortedMap<Integer, TplCell> initCells(Row row) {
+        SortedMap<Integer, TplCell> result = new TreeMap();
         for (Cell cell : row) {
             if (cell.getCellType() != CellType.BLANK) {
                 result.put(cell.getColumnIndex(), new TXSSFCell(cell));
@@ -38,33 +38,33 @@ public class TXSSFRow implements TemplateRow {
     }
 
     public TXSSFRow(Row row) {
-        this.rowNum = row.getRowNum();
-        this.rowProperties = initRowProperties(row);
+        this.rowIndex = row.getRowNum();
+        this.properties = initRowProperties(row);
         this.cells = initCells(row);
     }
 
     @Override
-    public int getRowNum() {
-        return rowNum;
+    public int getRowIndex() {
+        return rowIndex;
     }
 
     @Override
-    public RowProperties getRowProperties() {
-        return rowProperties;
-    }
-
-    @Override
-    public Optional<TemplateCell> getCell(int i) {
+    public Optional<TplCell> getCell(int i) {
         return Optional.ofNullable(cells.get(i));
     }
 
     @Override
-    public Iterator<TemplateCell> iterator() {
+    public Iterator<TplCell> iterator() {
         return cells.values().iterator();
     }
 
     @Override
-    public Collection<TemplateCell> getCells() {
+    public Collection<TplCell> getCells() {
         return Collections.unmodifiableCollection(cells.values());
+    }
+
+    @Override
+    public RowProperties getProperties() {
+        return properties;
     }
 }

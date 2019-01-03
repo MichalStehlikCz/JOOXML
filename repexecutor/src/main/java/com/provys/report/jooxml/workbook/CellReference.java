@@ -24,4 +24,14 @@ public interface CellReference extends CellAddress {
      */
     @Override
     CellReference shiftBy(int rowShift, int colShift);
+
+    /**
+     * Get cell reference shifted by offset, specified by another CellAddress.
+     *
+     * @param shift is cell address taken as shift offset. If supplied coordinates are in fact address, it must either
+     *             have same sheet as cell address it is applied to or no sheet; especially if base cell address has no
+     *             sheet, supplied cell address also cannot have sheet
+     * @return cell address shifted by specified offset
+     */
+    CellReference shiftBy(CellCoordinates shift);
 }

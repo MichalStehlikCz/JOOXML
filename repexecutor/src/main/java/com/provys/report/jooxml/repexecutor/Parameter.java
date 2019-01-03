@@ -68,11 +68,11 @@ public class Parameter {
     }
 
     /**
-     * String representation of parameter is Parameter(NAME: "value"); empty value is represented as <null>
+     * String representation of parameter is Parameter(NAME="value"); empty value is represented as null
      */
     @Override
     public String toString() {
-        return "Parameter(" + getName() + ": " + getValue().map(value -> ("\"" + value + "\"")).orElse("<null>")
-                + ")";
+        return "Parameter{" + getName() + "=" + getValue().map(value -> ('"' + value + '"')).orElse("null")
+                + "}";
     }
 }

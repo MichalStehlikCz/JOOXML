@@ -1,11 +1,9 @@
 package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
-import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.inject.Inject;
 import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;

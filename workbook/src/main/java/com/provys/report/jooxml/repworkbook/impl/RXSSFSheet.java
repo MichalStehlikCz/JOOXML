@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.provys.report.jooxml.repexecutor.RepWSheet;
+import com.provys.report.jooxml.repworkbook.RepSheet;
 import com.provys.report.jooxml.repexecutor.RowProperties;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.AutoFilter;
@@ -66,7 +66,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 /**
  * Streaming version of XSSFSheet implementing the "BigGridDemo" strategy.
 */
-public class RXSSFSheet implements Sheet, RepWSheet
+public class RXSSFSheet implements Sheet, RepSheet
 {
     /*package*/ final XSSFSheet _sh;
     private final RXSSFWorkbook _workbook;

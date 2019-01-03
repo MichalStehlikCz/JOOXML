@@ -12,7 +12,7 @@
     <artifactId>workbook</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.provys.jooxml</groupId>
+            <groupId>com.provys.report.jooxml</groupId>
             <artifactId>repexecutor</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -39,22 +39,18 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
