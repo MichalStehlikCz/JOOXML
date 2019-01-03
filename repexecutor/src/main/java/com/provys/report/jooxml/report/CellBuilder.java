@@ -30,14 +30,14 @@ class CellBuilder {
 
     CellBuilder(TplCell tplCell, RowAreaBuilder region) {
         this.index = new CellCoordinates(tplCell.getRowIndex() - region.getFirstRow()
-                , tplCell.getColumnIndex());
+                , tplCell.getColIndex());
         this.tplCell = tplCell;
         this.bindColumn = null;
     }
 
     CellBuilder(FieldBind fieldBind, RowAreaBuilder region) {
-        this.index = new CellCoordinates(fieldBind.getCellReference().getRow() - region.getFirstRow()
-                , fieldBind.getCellReference().getCol());
+        this.index = new CellCoordinates(fieldBind.getCellAddress().getRow() - region.getFirstRow()
+                , fieldBind.getCellAddress().getCol());
         this.tplCell = null;
         this.bindColumn = fieldBind.getSourceColumn();
     }

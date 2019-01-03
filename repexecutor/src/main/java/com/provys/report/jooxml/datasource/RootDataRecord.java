@@ -3,6 +3,8 @@ package com.provys.report.jooxml.datasource;
 import com.provys.report.jooxml.repexecutor.ReportContext;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
+import com.provys.report.jooxml.workbook.CellValueFactory;
+import com.provys.report.jooxml.workbook.Workbooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -35,17 +37,18 @@ public class RootDataRecord implements DataRecord {
     @Override
     public CellValue getValue(String columnName, @Nullable CellType prefType) {
         String value = reportContext.getParameterValue(columnName).orElse(null);
+        CellValueFactory valueFactory = Workbooks.getCellValueFactory();
         CellValue result;
         if (prefType == null) {
-            result = reportContext.getCellValueFactory().getStringValue(value);
+            result = valueFactory.getStringValue(value);
         } else {
             switch (prefType) {
                 case FORMULA:
                     LOG.warn("GetRecordValue: Request to retrieve data value made for cell type formula");
-                    result = reportContext.getCellValueFactory().getStringValue(value);
+                    result = valueFactory.getStringValue(value);
                     break;
                 case STRING:
-                    result = reportContext.getCellValueFactory().getStringValue(value);
+                    result = valueFactory.getStringValue(value);
                     break;
                 case NUMERIC:
                     if (value != null) {
@@ -55,28 +58,28 @@ public class RootDataRecord implements DataRecord {
                                         "(\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" + // digits and floating point
                                         "[\\x00-\\x20]*";                         // Optional trailing "whitespace"
                         if (Pattern.matches(fpRegex, value)) {
-                            result = reportContext.getCellValueFactory().getNumericValue(Double.valueOf(value));
+                            result = valueFactory.getNumericValue(Double.valueOf(value));
                         } else {
-                            result = reportContext.getCellValueFactory().getStringValue(value);
+                            result = valueFactory.getStringValue(value);
                         }
                     } else {
-                        result = reportContext.getCellValueFactory().getNumericValue(null);
+                        result = valueFactory.getNumericValue(null);
                     }
                     break;
                 case BOOLEAN:
                     if (value == null) {
-                        result = reportContext.getCellValueFactory().getBooleanValue(null);
+                        result = valueFactory.getBooleanValue(null);
                     } else if (value.equals("Y")) {
-                        result = reportContext.getCellValueFactory().getBooleanValue(true);
+                        result = valueFactory.getBooleanValue(true);
                     } else if (value.equals("N")) {
-                        result = reportContext.getCellValueFactory().getBooleanValue(false);
+                        result = valueFactory.getBooleanValue(false);
                     } else {
-                        result = reportContext.getCellValueFactory().getStringValue(value);
+                        result = valueFactory.getStringValue(value);
                     }
                     break;
                 case ERROR:
                     LOG.warn("GetRecordValue: Request to retrieve data value made for cell type error");
-                    result = reportContext.getCellValueFactory().getStringValue(value);
+                    result = valueFactory.getStringValue(value);
                     break;
                 default:
                     throw new RuntimeException("Unsupported preferred cell type " + prefType);

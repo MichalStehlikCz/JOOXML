@@ -26,7 +26,7 @@ class RowBuilder {
      * Constructor initializing row values from template row
      */
     RowBuilder(TplRow row, RowAreaBuilder region) {
-        this.rowIndex = row.getRowNum() - region.getFirstRow();
+        this.rowIndex = row.getRowIndex() - region.getFirstRow();
         this.rowProperties = row.getRowProperties();
     }
 

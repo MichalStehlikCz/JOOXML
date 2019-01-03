@@ -29,39 +29,9 @@ public class RowCellAreaProcessor extends StepProcessorAncestor {
                         coordinates.getRowIndex() + regionRow.getRowIndex());
             }
             for (AreaCell regionCell : regionRow.getCells()) {
-                switch (regionCell.getCellType()) {
-                    case FORMULA:
-                        targetRow.addFormulaCell(coordinates.getColumnIndex() + regionCell.getColumnIndex()
-                                , regionCell.getCellFormula(), regionCell.getCellStyleIndex()
-                                , regionCell.getCellComment(), regionCell.getHyperlink());
-                        break;
-                    case BLANK:
-                    case STRING:
-                        targetRow.addStringCell(coordinates.getColumnIndex() + regionCell.getColumnIndex()
-                                , regionCell.getStringEffectiveValue(getStepContext().getData())
-                                , regionCell.getCellStyleIndex()
-                                , regionCell.getCellComment(), regionCell.getHyperlink());
-                        break;
-                    case NUMERIC:
-                        targetRow.addNumericCell(coordinates.getColumnIndex() + regionCell.getColumnIndex()
-                                , regionCell.getNumericEffectiveValue(getStepContext().getData())
-                                , regionCell.getCellStyleIndex()
-                                , regionCell.getCellComment(), regionCell.getHyperlink());
-                        break;
-                    case BOOLEAN:
-                        targetRow.addBooleanCell(coordinates.getColumnIndex() + regionCell.getColumnIndex()
-                                , regionCell.getBooleanEffectiveValue(getStepContext().getData())
-                                , regionCell.getCellStyleIndex()
-                                , regionCell.getCellComment(), regionCell.getHyperlink());
-                        break;
-                    case ERROR:
-                        targetRow.addErrorCell(coordinates.getColumnIndex() + regionCell.getColumnIndex()
-                                , regionCell.getErrorCellValue(), regionCell.getCellStyleIndex()
-                                , regionCell.getCellComment(), regionCell.getHyperlink());
-                        break;
-                    default:
-                        throw new RuntimeException("Unexpected cell type populating cells in area");
-                }
+                targetRow.addCell(coordinates.getColumnIndex() + regionCell.getColIndex()
+                        , regionCell.getEffectiveValue(getStepContext().getData())
+                        , regionCell.getProperties().orElse(null));
             }
         }
         // and move coordinates for the next area

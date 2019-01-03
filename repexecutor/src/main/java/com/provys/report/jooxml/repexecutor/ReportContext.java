@@ -21,7 +21,6 @@ public class ReportContext implements AutoCloseable {
     private final List<DataContext> dataContexts = new ArrayList<>(3);
     private final Map<String, Connection> connections = new HashMap<>(3);
     private final Map<String, Optional<String>> parameters;
-    private final CellValueFactory cellValueFactory;
     private RepWorkbook workbook;
 
     /**
@@ -29,13 +28,12 @@ public class ReportContext implements AutoCloseable {
      *
      * @param parameters
      */
-    ReportContext(List<Parameter> parameters, CellValueFactory cellValueFactory) {
+    ReportContext(List<Parameter> parameters) {
         if (parameters == null) {
             this.parameters = new HashMap<>(0);
         } else {
             this.parameters = parameters.stream().collect(Collectors.toMap(Parameter::getName, Parameter::getValue));
         }
-        this.cellValueFactory = cellValueFactory;
     }
 
     /**
@@ -88,10 +86,4 @@ public class ReportContext implements AutoCloseable {
         return workbook;
     }
 
-    /**
-     * @return cell value factory that can be used to produce cell values during execution of report
-     */
-    public CellValueFactory getCellValueFactory() {
-        return cellValueFactory;
-    }
 }

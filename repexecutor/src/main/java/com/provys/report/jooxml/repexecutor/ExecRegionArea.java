@@ -21,8 +21,8 @@ public class ExecRegionArea implements ExecRegion {
         this.firstColumn = firstColumn;
     }
 
-    CellAddress getCell(int cellRow, int cellColumn) {
-        return new CellAddress(cellRow + firstRow, cellColumn + firstColumn);
+    CellAddress getCell(CellAddress relativeAddress) {
+        return relativeAddress.shiftBy(firstRow, firstColumn);
     }
 
     @Override
@@ -30,8 +30,6 @@ public class ExecRegionArea implements ExecRegion {
         if (!(path instanceof CellPathCell)) {
             throw new IllegalArgumentException("Cannot evaluate CellPath - Cell expected in lowest level region");
         }
-        CellReference cell = ((CellPathCell) path).getCellAddress();
-        return Optional.of(new CellReference(cell.getSheetName(), cell.getRow() + firstRow
-                , cell.getCol() + firstColumn, cell.isRowAbsolute(), cell.isColAbsolute()));
+        return Optional.of(((CellPathCell) path).getCellReference().shiftBy(firstColumn, firstRow));
     }
 }

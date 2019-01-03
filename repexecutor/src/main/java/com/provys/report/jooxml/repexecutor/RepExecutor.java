@@ -5,7 +5,6 @@ import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -70,9 +69,6 @@ public class RepExecutor {
         } catch (IOException ex) {
             LOG.error("ReadWorkbook: IO error reading workbook {} {}", getReport().getTemplate(), ex);
             throw new RuntimeException("IO error reading workbook", ex);
-        } catch (InvalidFormatException ex) {
-            LOG.error("ReadWorkbook: Invalid format exception reading {} {}", getReport().getTemplate(), ex);
-            throw new RuntimeException("Format error reading workbook", ex);
         }
     }
 

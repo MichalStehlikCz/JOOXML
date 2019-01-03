@@ -1,17 +1,18 @@
 package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.workbook.CellAddress;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import java.util.Objects;
 
 public class CellPathCell implements CellPath {
-    final CellAddress cell;
+    final CellReference cell;
 
-    public CellPathCell(CellAddress cell) {
+    public CellPathCell(CellReference cell) {
         this.cell = Objects.requireNonNull(cell);
     }
 
-    public CellAddress getCellAddress() {
+    public CellReference getCellReference() {
         return cell;
     }
 }
