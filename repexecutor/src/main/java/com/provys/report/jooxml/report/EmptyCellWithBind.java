@@ -1,9 +1,11 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
+import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Optional;
 class EmptyCellWithBind implements AreaCell {
 
     final private int columnIndex;
-    final Optional<String> bindColumn; // in fact, this field is always filled in; but getter needs Optional to be compatible
+    final String bindColumn; // in fact, this field is always filled in; but getter needs Optional to be compatible
                                  // with other region cell types, thus it is more effective to store value as optional
                                  // even in this case
 
@@ -25,7 +27,7 @@ class EmptyCellWithBind implements AreaCell {
      */
     EmptyCellWithBind(int columnIndex, String bindColumn) {
         this.columnIndex = columnIndex;
-        this.bindColumn = Optional.of(bindColumn);
+        this.bindColumn = Objects.requireNonNull(bindColumn);
     }
 
     @Override
@@ -40,57 +42,17 @@ class EmptyCellWithBind implements AreaCell {
 
     @Override
     public Optional<CellValue> getCellValue() {
-        throw new RuntimeException("Cannot access formula in empty template cell");
-    }
-
-    @Override
-    public Optional<String> getStringCellValue() {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Double> getNumericCellValue() {
-        throw new RuntimeException("Cannot access numeric value in empty template cell");
+    public CellValue getEffectiveValue(DataRecord data) {
+        return data.getValue(bindColumn);
     }
 
     @Override
-    public Optional<Boolean> getBooleanCellValue() {
-        throw new RuntimeException("Cannot access boolean value in empty template cell");
-    }
-
-    @Override
-    public Optional<Byte> getErrorCellValue() {
-        throw new RuntimeException("Cannot access error value in empty template cell");
-    }
-
-    @Override
-    public Optional<String> getStringEffectiveValue(DataRecord data) {
-        return data.getStringValue(bindColumn.get());
-    }
-
-    @Override
-    public Optional<Double> getNumericEffectiveValue(DataRecord data) {
-        throw new RuntimeException("Cannot access numeric value in empty template cell");
-    }
-
-    @Override
-    public Optional<Boolean> getBooleanEffectiveValue(DataRecord data) {
-        throw new RuntimeException("Cannot access error value in empty template cell");
-    }
-
-    @Override
-    public int getCellStyleIndex() {
-        return -1;
-    }
-
-    @Override
-    public Comment getCellComment() {
-        return null;
-    }
-
-    @Override
-    public Hyperlink getHyperlink() {
-        return null;
+    public Optional<CellProperties> getProperties() {
+        return Optional.empty();
     }
 
     /**
@@ -100,6 +62,6 @@ class EmptyCellWithBind implements AreaCell {
      */
     @Override
     public Optional<String> getBindColumn() {
-        return bindColumn;
+        return Optional.of(bindColumn);
     }
 }

@@ -30,4 +30,14 @@ public interface CellAddress {
      * @return CellAddress shifted by specified offset
      */
     CellAddress shiftBy(int rowShift, int colShift);
+
+    /**
+     * Get cell reference shifted by offset, specified by another CellAddress.
+     *
+     * @param shift is cell address taken as shift offset. Supplied cell addres must wither have same sheet as cell
+     *              reference it is applied on or no sheet; especially if base cell address has no sheet, supplied
+     *              cell address also cannot have sheet
+     * @return cell address shifted by specified offset
+     */
+    CellAddress shiftBy(CellAddress shift);
 }

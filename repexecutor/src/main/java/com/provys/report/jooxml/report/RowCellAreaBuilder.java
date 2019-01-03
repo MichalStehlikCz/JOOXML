@@ -24,7 +24,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
     /**
      * @return list of value rules, applicable on area
      */
-    private Map<CellReference, FieldBind> getFieldBinds() {
+    private Map<CellAddress, FieldBind> getFieldBinds() {
         return Collections.unmodifiableMap(fieldBinds);
     }
 
@@ -46,7 +46,9 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @return reference to field bind if one exists, empty optional if no bind exists for given field
      */
     public Optional<FieldBind> getFieldBindAt(int row, int col) {
-        return Optional.ofNullable(fieldBinds.get(new CellAddress(row, col)));
+// TODO fix this
+//        return Optional.ofNullable(fieldBinds.get(new CellAddress(row, col)));
+        throw new RuntimeException("RowCellAreaBuilder - not implemented");
     }
 
     @Override
@@ -62,13 +64,13 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      */
     private void validateFieldBind(FieldBind fieldBind) {
         Objects.requireNonNull(fieldBind);
-        if (fieldBind.getCellReference().getRow() < getFirstRow()) {
+        if (fieldBind.getCellAddress().getRow() < getFirstRow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
-                    + getFirstRow() + ", bind row " + fieldBind.getCellReference().getRow());
+                    + getFirstRow() + ", bind row " + fieldBind.getCellAddress().getRow());
         }
-        if (fieldBind.getCellReference().getRow() > getLastRow()) {
+        if (fieldBind.getCellAddress().getRow() > getLastRow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
-                    + getLastRow() + ", bind row " + fieldBind.getCellReference().getRow());
+                    + getLastRow() + ", bind row " + fieldBind.getCellAddress().getRow());
         }
     }
 
@@ -98,7 +100,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
                                 .getRows(getFirstRow(), getLastRow())
                                 .stream()
                                 .flatMap(row -> row.getCells().stream())
-                                .filter(cell -> this.isInTemplateRegion(cell.getRowIndex(), cell.getColumnIndex()))
+                                .filter(cell -> this.isInTemplateRegion(cell.getRowIndex(), cell.getColIndex()))
                                 .map(cell -> new CellBuilder(cell, this))
                         , getFieldBinds().values().stream() // cells construed from required field binds
                                 .map(fieldBind -> new CellBuilder(fieldBind, this))

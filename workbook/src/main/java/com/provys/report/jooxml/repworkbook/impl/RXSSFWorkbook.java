@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import com.provys.report.jooxml.repexecutor.RepWSheet;
-import com.provys.report.jooxml.repexecutor.RepWorkbook;
+import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -639,7 +638,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
     }
 
     @Override
-    public RepWSheet getSheet() {
+    public RepSheet getSheet() {
         return getSheetAt(0);
     }
 
