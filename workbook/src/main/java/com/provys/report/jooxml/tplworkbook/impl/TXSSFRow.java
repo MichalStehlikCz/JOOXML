@@ -6,6 +6,7 @@ import com.provys.report.jooxml.tplworkbook.TplRow;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -27,17 +28,17 @@ public class TXSSFRow implements TplRow {
         return RowProperties.get(heightInPoints, row.getZeroHeight(), styleIndex);
     }
 
-    private static SortedMap<Integer, TplCell> initCells(Row row) {
-        SortedMap<Integer, TplCell> result = new TreeMap();
+    private SortedMap<Integer, TplCell> initCells(Row row) {
+        var result = new TreeMap<Integer, TplCell>();
         for (Cell cell : row) {
             if (cell.getCellType() != CellType.BLANK) {
-                result.put(cell.getColumnIndex(), new TXSSFCell(cell));
+                result.put(cell.getColumnIndex(), new TXSSFCell(this, cell));
             }
         }
         return result;
     }
 
-    public TXSSFRow(Row row) {
+    TXSSFRow(Row row) {
         this.rowIndex = row.getRowNum();
         this.properties = initRowProperties(row);
         this.cells = initCells(row);
@@ -54,7 +55,7 @@ public class TXSSFRow implements TplRow {
     }
 
     @Override
-    public Iterator<TplCell> iterator() {
+    public @NotNull Iterator<TplCell> iterator() {
         return cells.values().iterator();
     }
 

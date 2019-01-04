@@ -24,8 +24,7 @@ public interface CellCoordinates {
     /**
      * Get cell coordinates shifted by offset, specified by another CellCoordinates.
      *
-     * @param shift are cell coordinates taken as shift offset. If supplied coordinates are in fact address and it has
-     *             specified sheet, call fails
+     * @param shift are cell coordinates taken as shift offset.
      * @return cell address shifted by specified offset
      */
     CellCoordinates shiftBy(CellCoordinates shift);
