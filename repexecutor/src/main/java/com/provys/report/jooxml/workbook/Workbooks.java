@@ -2,20 +2,27 @@ package com.provys.report.jooxml.workbook;
 
 import org.jetbrains.annotations.Nullable;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.servlet.ServletContext;
 
 @Singleton
-public class WorkbookFactory {
+public class Workbooks {
 
-    private static WorkbookFactory instance;
+    private static Workbooks instance;
+
+    /**
+     * Create cell coordinates for specified row and column.
+     *
+     * @param row is row index (zero based)
+     * @param col is column index (zero based)
+     * @return coordinates based on specified indices
+     */
+    public static CellCoordinates getCellCoordinates(int row, int col) {
+        return instance.getWorkbookFactory().getCellCoordinates(row, col);
+    }
 
     public static CellCoordinates parseCellCoordinates(String address) {
-        return instance.parseCellCoordinates(address);
+        return instance.getWorkbookFactory().parseCellCoordinates(address);
     }
 
     public static CellValue getFormulaValue(String formula) {
@@ -46,14 +53,18 @@ public class WorkbookFactory {
         return instance.getWorkbookFactory().getProperties(styleIndex);
     }
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
     private WorkbookFactoryInt workbookFactory;
 
-    void load(@Observes @Initialized(ApplicationScoped.class) ServletContext payload) {
+    /**
+     * Initializes static pointer to Workbooks instance. Invoked from WorkbooksSEInitializer or WorkbooksEEInitializer.
+     */
+    void init() {
         instance = this;
     }
 
-    WorkbookFactoryInt getWorkbookFactory() {
+    private WorkbookFactoryInt getWorkbookFactory() {
         return workbookFactory;
     }
 }

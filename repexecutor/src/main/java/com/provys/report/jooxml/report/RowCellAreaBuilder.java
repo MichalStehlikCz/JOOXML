@@ -3,8 +3,15 @@ package com.provys.report.jooxml.report;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.workbook.CellAddress;
+import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellReference;
+import com.provys.report.jooxml.workbook.Workbooks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -12,7 +19,9 @@ import java.util.stream.Stream;
 
 public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
 
-    final private Map<CellAddress, FieldBind> fieldBinds;
+    private static final Logger LOG = LogManager.getLogger(RowCellAreaBuilder.class.getName());
+
+    final private Map<CellCoordinates, FieldBind> fieldBinds;
 
     /**
      * Default constructor of empty area.
@@ -24,7 +33,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
     /**
      * @return list of value rules, applicable on area
      */
-    private Map<CellAddress, FieldBind> getFieldBinds() {
+    private Map<CellCoordinates, FieldBind> getFieldBinds() {
         return Collections.unmodifiableMap(fieldBinds);
     }
 
@@ -34,7 +43,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @param fieldBind is rule to be used for populating region
      */
     public RowCellAreaBuilder addFieldBind(FieldBind fieldBind) {
-        fieldBinds.put(fieldBind.getCellAddress(), fieldBind);
+        fieldBinds.put(fieldBind.getCoordinates(), fieldBind);
         return self();
     }
 
@@ -46,13 +55,67 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @return reference to field bind if one exists, empty optional if no bind exists for given field
      */
     public Optional<FieldBind> getFieldBindAt(int row, int col) {
-// TODO fix this
-//        return Optional.ofNullable(fieldBinds.get(new CellAddress(row, col)));
-        throw new RuntimeException("RowCellAreaBuilder - not implemented");
+        return Optional.ofNullable(fieldBinds.get(Workbooks.getCellCoordinates(row, col)));
     }
 
     @Override
     protected RowCellAreaBuilder self() {
+        return this;
+    }
+
+    private void parseBind(XMLStreamReader reader) throws XMLStreamException {
+        String column = null;
+        String coordinates = null;
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            if (eventType == XMLStreamConstants.START_ELEMENT) {
+                switch (reader.getLocalName()) {
+                    case "COLUMN":
+                        if (column != null) {
+                            LOG.warn("RowCellArea: Duplicate COLUMN definition in bind");
+                        }
+                        column = reader.getElementText();
+                        break;
+                    case "CELL":
+                        if (coordinates != null) {
+                            LOG.warn("RowCellArea: Duplicate CELL definition in bind");
+                        }
+                        coordinates = reader.getElementText();
+                        break;
+                    default:
+                        LOG.error("RowCellArea: Unsupported element {} in BIND; supported elements are CELL, COLUMN",
+                                reader.getLocalName());
+                        throw new RuntimeException("RowCellArea: Unsupported element " + reader.getLocalName() +
+                                " in BIND; supported elements are CELL, COLUMN");
+                }
+            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
+                break;
+            }
+        }
+        if (column == null) {
+            LOG.warn("RowCellArea: Column missing in bind definition");
+        } else if (coordinates == null) {
+            LOG.warn("RowCellArea: Cell coordinates missing in bind definition");
+        } else {
+            addFieldBind(new FieldBind(column, coordinates));
+        }
+    }
+
+    RowCellAreaBuilder parse(XMLStreamReader reader) throws XMLStreamException {
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            if (eventType == XMLStreamConstants.START_ELEMENT) {
+                if (reader.getLocalName().equals("BIND")) {
+                    parseBind(reader);
+                } else {
+                    LOG.error("RowCellArea: Unsupported element {}; supported elements are BIND", reader.getLocalName());
+                    throw new RuntimeException("RowCellArea: Skipping unsupported element " + reader.getLocalName() +
+                            "; supported elements are BIND");
+                }
+            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
+                break;
+            }
+        }
         return this;
     }
 
@@ -64,13 +127,13 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      */
     private void validateFieldBind(FieldBind fieldBind) {
         Objects.requireNonNull(fieldBind);
-        if (fieldBind.getCellAddress().getRow() < getFirstRow()) {
+        if (fieldBind.getCoordinates().getRow() < getFirstRow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
-                    + getFirstRow() + ", bind row " + fieldBind.getCellAddress().getRow());
+                    + getFirstRow() + ", bind row " + fieldBind.getCoordinates().getRow());
         }
-        if (fieldBind.getCellAddress().getRow() > getLastRow()) {
+        if (fieldBind.getCoordinates().getRow() > getLastRow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
-                    + getLastRow() + ", bind row " + fieldBind.getCellAddress().getRow());
+                    + getLastRow() + ", bind row " + fieldBind.getCoordinates().getRow());
         }
     }
 

@@ -2,6 +2,8 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.workbook.CellCoordinates;
+import com.provys.report.jooxml.workbook.Workbooks;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -18,50 +20,52 @@ import java.util.stream.Collector;
  */
 class CellBuilder {
 
-    private CellCoordinates index; // might be null when new empty cell builder is created. Coordinates are relative to
-                                   // region
-    private TplCell tplCell;
-    private String bindColumn;
+    @Nullable private CellCoordinates coordinates; // coordinates are relative to region
+    @Nullable private TplCell tplCell;
+    @Nullable private String bindColumn;
 
-    CellBuilder() {
-        this.index = null;
+    private CellBuilder() {
+        this.coordinates = null;
         this.tplCell = null;
         this.bindColumn = null;
     }
 
     CellBuilder(TplCell tplCell, RowAreaBuilder region) {
-        this.index = new CellCoordinates(tplCell.getRowIndex() - region.getFirstRow()
+        this.coordinates = Workbooks.getCellCoordinates(tplCell.getRowIndex() - region.getFirstRow()
                 , tplCell.getColIndex());
         this.tplCell = tplCell;
         this.bindColumn = null;
     }
 
     CellBuilder(FieldBind fieldBind, RowAreaBuilder region) {
-        this.index = new CellCoordinates(fieldBind.getCellAddress().getRow() - region.getFirstRow()
-                , fieldBind.getCellAddress().getCol());
+        this.coordinates = fieldBind.getCoordinates().shiftBy(-region.getFirstRow(), 0);
         this.tplCell = null;
         this.bindColumn = fieldBind.getSourceColumn();
     }
 
-    int getRowIndex() {
-        if (index != null) {
-            return index.row;
-        }
-        return -1;
+    Optional<Integer> getRowIndex() {
+        return (coordinates == null) ? Optional.empty() : Optional.of(coordinates.getRow());
     }
 
-    int getCellIndex() {
-        if (index != null) {
-            return index.column;
-        }
-        return -1;
+    Optional<Integer> getCellIndex() {
+        return (coordinates == null) ? Optional.empty() : Optional.of(coordinates.getCol());
     }
 
-    CellBuilder combine(CellBuilder cell) {
-        if (this.index == null) {
-            this.index = cell.index;
-        } else if ((cell.index != null) && (!cell.index.equals(cell.index))) {
-            throw new IllegalArgumentException("Cannot merge two combined cells with different coordinates");
+    void setCoordinates(@Nullable CellCoordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    Optional<CellCoordinates> getCoordinates() {
+        return Optional.ofNullable(coordinates);
+    }
+
+    private CellBuilder combine(CellBuilder cell) {
+        if (getCoordinates().isEmpty()) {
+            setCoordinates(cell.getCoordinates().orElse(null));
+        } else {
+            if ((cell.getCoordinates().isPresent()) && (!getCoordinates().equals(cell.getCoordinates()))) {
+                throw new IllegalArgumentException("Cannot merge two combined cells with different coordinates");
+            }
         }
         if (this.tplCell == null) {
             this.tplCell = cell.tplCell;
@@ -76,17 +80,16 @@ class CellBuilder {
         return this;
     }
 
-    AreaCell build() {
-        if (index == null) {
+    private AreaCell build() {
+        if (getCellIndex().isEmpty()) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
-        AreaCell cell;
         if (tplCell != null) {
-            return new TemplateCellWithBind(index.column, tplCell, Optional.ofNullable(bindColumn));
+            return new TemplateCellWithBind(getCellIndex().get(), tplCell, Optional.ofNullable(bindColumn));
         } else if (bindColumn == null) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
-        return new EmptyCellWithBind(index.column, bindColumn);
+        return new EmptyCellWithBind(getCellIndex().get(), bindColumn);
     }
 
     /**

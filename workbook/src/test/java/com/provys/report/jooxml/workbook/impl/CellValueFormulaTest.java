@@ -14,8 +14,8 @@ class CellValueFormulaTest {
     static Stream<Object[]> newTest() {
         return Stream.of(
                 new Object[] {"SUM(A1:A10)", null}
-                , new Object[] {"", null, IllegalArgumentException.class}
-                , new Object[] {null, "VALUE", NullPointerException.class});
+                , new Object[] {"", IllegalArgumentException.class}
+                , new Object[] {null, NullPointerException.class});
     }
 
     @ParameterizedTest

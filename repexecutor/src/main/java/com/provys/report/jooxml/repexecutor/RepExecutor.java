@@ -1,11 +1,14 @@
 package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.datasource.RootDataRecord;
+import com.provys.report.jooxml.report.StepBuilder;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.Files;
@@ -18,7 +21,7 @@ public class RepExecutor {
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
     private Report report;
     private File targetFile;
-    private List<Parameter> parameters = new ArrayList<>();
+    private List<Parameter> parameters = new ArrayList<>(0);
     @Inject
     private RepWorkbookFactory repWorkBookFactory;
 
@@ -45,12 +48,17 @@ public class RepExecutor {
     }
 
     public RepExecutor setParameters(List<Parameter> parameters) {
-        this.parameters.clear();
-        this.parameters.addAll(parameters);
+        this.parameters = new ArrayList<>(parameters);
         return this;
     }
 
     public RepExecutor setParamFile(File paramFile) {
+        try (ParameterReader reader = new ParameterReader(paramFile)) {
+            setParameters(reader.getParameters());
+        } catch (IOException e) {
+            LOG.error("Failed to read parameters from file {} {}", paramFile, e);
+            throw new RuntimeException("Failed to read parameters from file " + paramFile, e);
+        }
         return this;
     }
 

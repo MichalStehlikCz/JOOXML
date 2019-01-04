@@ -1,8 +1,9 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.WorkbookFactory;
+import com.provys.report.jooxml.workbook.Workbooks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
 
@@ -10,6 +11,8 @@ import java.util.Objects;
  * Represents rule for population of single field in sheet from source dataset.
  */
 public final class FieldBind {
+
+    private static final Logger LOG = LogManager.getLogger(FieldBind.class.getName());
 
     private final String sourceColumn;
     private final CellCoordinates coordinates;
@@ -32,7 +35,7 @@ public final class FieldBind {
      * @param address is string reference to cell in Excel format
      */
     public FieldBind(String sourceColumn, String address) {
-        this(sourceColumn, WorkbookFactory.parseCellCoordinates(address));
+        this(sourceColumn, Workbooks.parseCellCoordinates(address));
     }
 
     public String getSourceColumn() {

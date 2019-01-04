@@ -11,7 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
@@ -22,6 +25,7 @@ import java.util.List;
 class RunReport implements Runnable {
 
     private File template;
+    private File bodyFile;
     private File paramFile;
     private File targetFile;
     @Inject
@@ -31,6 +35,11 @@ class RunReport implements Runnable {
 
     RunReport setTemplate(File template) {
         this.template = template;
+        return this;
+    }
+
+    RunReport setBodyFile(File bodyFile) {
+        this.bodyFile = bodyFile;
         return this;
     }
 
@@ -61,14 +70,13 @@ class RunReport implements Runnable {
         addLoggerShutdownHook();
         List<ReportDataSource> dataSources = new ArrayList<>(1);
         dataSources.add(DataSourceFactory.getRootDataSource());
-        RowCellAreaBuilder rootStepBuilder = new RowCellAreaBuilder().setNameNm("ROOT").setFirstRow(0)
+/*        RowCellAreaBuilder rootStepBuilder = new RowCellAreaBuilder().setNameNm("ROOT").setFirstRow(0)
                 .setLastRow(Integer.MAX_VALUE).setTopLevel(true)
-                .addFieldBind(new FieldBind("REPORTNAME", "A1"));
-        Report report = reportFactory.build(dataSources, rootStepBuilder, template);
+                .addFieldBind(new FieldBind("REPORTNAME", "A1"));*/
+        Report report = reportFactory.build(dataSources, bodyFile, template);
         executor.setReport(report).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).
                 run();
     }
-
 }

@@ -37,10 +37,10 @@ class RowBuilder {
      * @throws IllegalArgumentException if cell does not belong to given row
      */
     private void addCell(CellBuilder cell) {
-        if (cell.getRowIndex() != -1) {
+        if (cell.getRowIndex().isPresent()) {
             if (rowIndex == -1) {
-                rowIndex = cell.getRowIndex();
-            } else if (cell.getRowIndex() != rowIndex) {
+                rowIndex = cell.getRowIndex().get();
+            } else if (cell.getRowIndex().get() != rowIndex) {
                 throw new IllegalArgumentException("Supplied cell does not belong to this row");
             }
         }

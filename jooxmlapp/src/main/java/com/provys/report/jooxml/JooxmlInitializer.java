@@ -9,6 +9,7 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 import picocli.CommandLine;
 
 import javax.enterprise.inject.se.SeContainer;
@@ -20,6 +21,9 @@ class JooxmlInitializer implements Runnable {
 
     @CommandLine.Option(names = {"-t", "--template"}, required = true, description = "Template xlsx file")
     private File template;
+
+    @CommandLine.Option(names = {"-b", "--body"}, required = true, description = "Report body xml file")
+    private File bodyFile;
 
     @CommandLine.Option(names = {"-l", "--logfile"}, description = "Log file")
     private File logFile;
@@ -64,12 +68,13 @@ class JooxmlInitializer implements Runnable {
     @Override
     public void run() {
         configureLogger();
-        SeContainer container = SeContainerInitializer.newInstance().initialize();
+        SeContainer container = SeContainerInitializer.newInstance()
+                .addProperty("org.jboss.weld.se.archive.isolation", false).initialize();
         RunReport runner = container.select(RunReport.class).get();
         runner.setTemplate(template).
+                setBodyFile(bodyFile).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).
                 run();
     }
-
 }

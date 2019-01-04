@@ -1,4 +1,4 @@
-package com.provys.report.jooxml.repexecutor;
+package com.provys.report.jooxml.report;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,16 +9,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class ParameterReader implements Closeable {
+public class StepReader implements Closeable {
 
-    private static final Logger LOG = LogManager.getLogger(ParameterReader.class.getName());
+    private static final Logger LOG = LogManager.getLogger(StepReader.class.getName());
     private final Reader inputReader;
-    private XMLStreamReader paramReader;
-    private volatile List<Parameter> parameters;
+    private XMLStreamReader stepReader;
+    private volatile StepBuilder rootStep;
 
     /**
      * Creates parameter reader from reader. Reader will be kept by ParameterReader and closed when ParameterReader is
@@ -26,7 +25,7 @@ public class ParameterReader implements Closeable {
      *
      * @param inputReader is reader that is source of XML data used to read parameters
      */
-    public ParameterReader(Reader inputReader) {
+    public StepReader(Reader inputReader) {
         this.inputReader = inputReader;
     }
 
@@ -36,7 +35,7 @@ public class ParameterReader implements Closeable {
      *
      * @param inputStream is input stream with XML representation of parameters
      */
-    public ParameterReader(InputStream inputStream) {
+    public StepReader(InputStream inputStream) {
         this.inputReader = new InputStreamReader(inputStream, UTF_8);
     }
 
@@ -44,22 +43,24 @@ public class ParameterReader implements Closeable {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            LOG.error("ReadParameters: Parameter file not found {} {}", file.getName(), e);
-            throw new RuntimeException("Parameter file not found", e);
+            LOG.error("ReadSteps: Definition file not found {} {}", file.getName(), e);
+            throw new RuntimeException("Definition file not found", e);
         }
     }
 
     /**
-     * Reads parameters from XML file.
+     * Reads region definition from XML file.
      *
-     * @param file is file parameters should be read from
+     * @param file is file regions should be read from
      * @throws RuntimeException when file is not found
      */
-    public ParameterReader(File file) {
+    public StepReader(File file) {
         this(openFile(file));
     }
 
+/*
     private void parseParameters() throws XMLStreamException {
+     /
         while (paramReader.hasNext()) {
             int eventType = paramReader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
@@ -75,13 +76,7 @@ public class ParameterReader implements Closeable {
         }
     }
 
-    private synchronized void parse() {
-        if (parameters != null) {
-            return;
-        }
-        parameters = new ArrayList<>(10);
-        try {
-            paramReader = XMLInputFactory.newInstance().createXMLStreamReader(inputReader);
+
             // PARAMETERS root level tag expected
             int eventType = paramReader.nextTag();
             if (eventType != XMLStreamConstants.START_ELEMENT) {
@@ -94,17 +89,49 @@ public class ParameterReader implements Closeable {
                         + paramReader.getLocalName());
             }
             parseParameters();
+*/
+
+    /**
+     * Invoked when pointer is already on start element of step to be read (as caller makes sure that follows step and
+     * not end tag)
+     *
+     * @return created step builder
+     */
+    private StepBuilder parseStep() throws XMLStreamException {
+        StepBuilder step;
+        switch (stepReader.getLocalName()) {
+            case "ROWCELLAREA":
+                step = new RowCellAreaBuilder().parse(stepReader);
+                break;
+            default:
+                throw new RuntimeException("ReadSteps: Unsupported step type " + stepReader.getLocalName());
+        }
+        return step;
+    }
+
+    private synchronized void parse() {
+        if (rootStep != null) {
+            return;
+        }
+        try {
+            stepReader = XMLInputFactory.newInstance().createXMLStreamReader(inputReader);
+            int eventType = stepReader.nextTag();
+            if (eventType != XMLStreamConstants.START_ELEMENT) {
+                LOG.error("ReadSteps: Root start element expected, not {}", eventType);
+                throw new RuntimeException("ReadSteps: Root start element expected, not " + eventType);
+            }
+            rootStep = parseStep();
         } catch (XMLStreamException e) {
-            LOG.error("ReadParameters: Exception reading XML parameter file {}", e);
-            throw new RuntimeException("Exception reading XML parameter file", e);
+            LOG.error("ReadSteps: Exception reading XML report definition file {}", e);
+            throw new RuntimeException("Exception reading XML report definition file", e);
         } finally {
             try {
-                paramReader.close();
+                stepReader.close();
             } catch (XMLStreamException e) {
-                LOG.warn("ReadParameters: Exception closing XML parameter file {}", e);
+                LOG.warn("ReadSteps: Exception closing XML report definition file {}", e);
             }
         }
-        LOG.debug("ReadParameters: Loaded {} parameters from XML", () -> parameters.size());
+        LOG.debug("ReadSteps: Loaded step definition from XML");
     }
 
     /**
@@ -112,11 +139,11 @@ public class ParameterReader implements Closeable {
      *
      * @return list of parameters and their values
      */
-    public List<Parameter> getParameters() {
-        if (parameters == null) {
+    public StepBuilder getRootStep() {
+        if (rootStep == null) {
             parse();
         }
-        return parameters;
+        return rootStep;
     }
 
     /**
@@ -128,4 +155,5 @@ public class ParameterReader implements Closeable {
     public void close() throws IOException {
         inputReader.close();
     }
+
 }
