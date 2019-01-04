@@ -4,5 +4,4 @@ import java.util.Optional;
 
 public interface CellProperties {
     Optional<Integer> getStyleIndex();
-    Optional<Comment> getComment();
 }

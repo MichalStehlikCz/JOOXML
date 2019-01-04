@@ -3,6 +3,7 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.util.CellReference;
 
 import java.util.Objects;
 
@@ -11,6 +12,24 @@ public class CellCoordinatesImpl implements CellCoordinates {
     private static final Logger LOG = LogManager.getLogger(CellCoordinatesImpl.class.getName());
     private final int row;
     private final int col;
+
+    static CellCoordinatesImpl parse(String address) {
+        Objects.requireNonNull(address);
+        CellReference cellReference = new CellReference(address);
+        if (cellReference.getSheetName() != null) {
+            LOG.error("Sheet is not supportd in CellCoordinates - parse of {} failed", address);
+            throw new IllegalArgumentException("Sheet is not supportd in CellCoordinates - parse failed " + address);
+        }
+        if (cellReference.isRowAbsolute()) {
+            LOG.error("Absolute row reference not supported in CellAddress {}", address);
+            throw new IllegalArgumentException("Absolute row reference not supported in CellAddress - " + address);
+        }
+        if (cellReference.isColAbsolute()) {
+            LOG.error("Absolute column reference not supported in CellAddress {}", address);
+            throw new IllegalArgumentException("Absolute column reference not supported in CellAddress - " + address);
+        }
+        return new CellCoordinatesImpl(cellReference.getRow(), cellReference.getCol());
+    }
 
     CellCoordinatesImpl(int row, int col) {
         if (row < 0) {

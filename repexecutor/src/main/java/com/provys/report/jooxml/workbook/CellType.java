@@ -5,5 +5,6 @@ public enum CellType {
     STRING,
     NUMERIC,
     BOOLEAN,
-    ERROR
+    ERROR,
+    BLANK
 }

@@ -38,12 +38,8 @@ public class WorkbookFactory {
         return instance.getWorkbookFactory().getBlankValue();
     }
 
-    public static CellProperties getProperties(@Nullable Integer styleIndex, @Nullable Comment comment) {
-        return instance.getWorkbookFactory().getProperties(styleIndex, comment);
-    }
-
-    public static Comment getComment(boolean visible, @Nullable String author, @Nullable String text) {
-        return instance.getWorkbookFactory().getComment(visible, author, text);
+    public static CellProperties getProperties(@Nullable Integer styleIndex) {
+        return instance.getWorkbookFactory().getProperties(styleIndex);
     }
 
     @Inject

@@ -22,17 +22,20 @@ package com.provys.report.jooxml.repworkbook.impl;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.provys.report.jooxml.repexecutor.RepWRow;
+import com.provys.report.jooxml.repworkbook.RepRow;
+import com.provys.report.jooxml.workbook.CellProperties;
+import com.provys.report.jooxml.workbook.impl.CellValueFormula;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.Internal;
 import org.apache.poi.util.NotImplemented;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Streaming version of XSSFRow implementing the "BigGridDemo" strategy.
  */
-public class RXSSFRow implements Row, RepWRow, Comparable<RXSSFRow>
+public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
 {
     private static final Boolean UNDEFINED = null;
 
@@ -435,45 +438,32 @@ public class RXSSFRow implements Row, RepWRow, Comparable<RXSSFRow>
     }
 
     @Override
-    public void addFormulaCell(int colIndex, String cellFormula, int styleIndex, Comment comment, Hyperlink hyperlink) {
-        RXSSFCell cell = createCell(colIndex, CellType.FORMULA);
+    public void addCell(int colIndex, com.provys.report.jooxml.workbook.CellValue value,
+                        @Nullable CellProperties properties) {
+        RXSSFCell cell;
+        switch (value.getCellType()) {
+            case FORMULA:
+                cell = createCell(colIndex, CellType.FORMULA);
+                if (value instanceof CellValueFormula) {
+                    cell.setCellFormula(((CellValueFormula) value).getFormula());
+                } else {
+                    throw new RuntimeException("Cell value with type formula expected to be of type CellTypeFormula");
+                }
+                break;
+            case STRING:
+                cellType = CellType.STRING;
+                break;
+            case NUMERIC:
+                cellType = CellType.NUMERIC;
+                break;
+            case BOOLEAN:
+                cellType = CellType.BOOLEAN;
+                break;
+            case ERROR:
+                cellType =
+        }
+        RXSSFCell cell = createCell(colIndex, );
         cell.setCellFormula(cellFormula);
-        cell.setCellStyle(styleIndex);
-        cell.setCellComment(comment);
-        cell.setHyperlink(hyperlink);
-    }
-
-    @Override
-    public void addStringCell(int colIndex, Optional<String> cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
-        RXSSFCell cell = createCell(colIndex, CellType.STRING);
-        cellValue.ifPresent(cell::setCellValue); // if empty value was received, we do not have to set value...
-        cell.setCellStyle(styleIndex);
-        cell.setCellComment(comment);
-        cell.setHyperlink(hyperlink);
-    }
-
-    @Override
-    public void addNumericCell(int colIndex, Optional<Double> cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
-        RXSSFCell cell = createCell(colIndex, CellType.NUMERIC);
-        cellValue.ifPresent(cell::setCellValue); // if empty value was received, we do not have to set value...
-        cell.setCellStyle(styleIndex);
-        cell.setCellComment(comment);
-        cell.setHyperlink(hyperlink);
-    }
-
-    @Override
-    public void addBooleanCell(int colIndex, Optional<Boolean> cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
-        RXSSFCell cell = createCell(colIndex, CellType.BOOLEAN);
-        cellValue.ifPresent(cell::setCellValue); // if empty value was received, we do not have to set value...
-        cell.setCellStyle(styleIndex);
-        cell.setCellComment(comment);
-        cell.setHyperlink(hyperlink);
-    }
-
-    @Override
-    public void addErrorCell(int colIndex, Optional<Byte> cellValue, int styleIndex, Comment comment, Hyperlink hyperlink) {
-        RXSSFCell cell = createCell(colIndex, CellType.ERROR);
-        cellValue.ifPresent(cell::setCellValue); // if empty value was received, we do not have to set value...
         cell.setCellStyle(styleIndex);
         cell.setCellComment(comment);
         cell.setHyperlink(hyperlink);

@@ -1,7 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellAddress;
-import com.provys.report.jooxml.repexecutor.RepExecutor;
 import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,11 +12,11 @@ import java.util.Optional;
 
 public class CellAddressImpl implements CellAddress {
 
-    private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
+    private static final Logger LOG = LogManager.getLogger(CellAddressImpl.class.getName());
     private final String sheetName;
     private final CellCoordinates coordinates;
 
-    public static CellAddressImpl parse(String address) {
+    static CellAddressImpl parse(String address) {
         Objects.requireNonNull(address);
         CellReference cellReference = new CellReference(address);
         if (cellReference.isRowAbsolute()) {
@@ -28,8 +27,8 @@ public class CellAddressImpl implements CellAddress {
             LOG.error("Absolute column reference not supported in CellAddress {}", address);
             throw new IllegalArgumentException("Absolute column reference not supported in CellAddress - " + address);
         }
-        return new CellAddressImpl(cellReference.getSheetName(), cellReference.getRow(),
-                cellReference.getCol());
+        return new CellAddressImpl(cellReference.getSheetName(),
+                Workbooks.getCellCoordinates(cellReference.getRow(), cellReference.getCol()));
     }
 
     /**
@@ -47,38 +46,6 @@ public class CellAddressImpl implements CellAddress {
         }
         this.sheetName = sheetName;
         this.coordinates = Objects.requireNonNull(coordinates);
-    }
-
-    /**
-     * Create cell address with optional sheet reference. Only producess full references (e.g. neither column nor row
-     * missing)
-     *
-     * @param sheetName is name of sheet this object addresses. Can be empty, in that case cell address is considered
-     *                  relative within sheet
-     * @param row is row index (zero based)
-     * @param col is column index (zero based)
-     */
-    CellAddressImpl(@Nullable String sheetName, int row, int col) {
-        this(sheetName, new CellCoordinatesImpl(row, col));
-    }
-
-    /**
-     * Create cell address without sheet reference. It is used when referencing cells on the same sheet
-     *
-     * @param row is row index (zero based)
-     * @param col is column index (zero based)
-     */
-    CellAddressImpl(int row, int col) {
-        this(null, row, col);
-    }
-
-    /**
-     * Create cell address without reference.
-     *
-     * @param coordinates are coordinates of cell on sheet
-     */
-    CellAddressImpl(CellCoordinates coordinates) {
-        this(null, coordinates);
     }
 
     @Override
@@ -106,7 +73,8 @@ public class CellAddressImpl implements CellAddress {
         if ((rowShift == 0) && (colShift == 0)) {
             return this;
         }
-        return new CellAddressImpl(sheetName, getRow() + rowShift, getCol() + colShift);
+        return new CellAddressImpl(sheetName,
+                Workbooks.getCellCoordinates(getRow() + rowShift, getCol() + colShift));
     }
 
     @Override

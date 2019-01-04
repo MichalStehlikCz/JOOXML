@@ -1,14 +1,37 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellReference;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CellReferenceImpl extends CellAddressImpl implements CellReference {
+import java.util.Objects;
 
+class CellReferenceImpl extends CellAddressImpl implements CellReference {
+
+    private static final Logger LOG = LogManager.getLogger(CellReferenceImpl.class.getName());
     private final boolean rowAbsolute;
     private final boolean colAbsolute;
 
-    public CellReferenceImpl(String sheetName, int row, int col, boolean rowAbsolute, boolean colAbsolute) {
-        super(sheetName, row, col);
+    static CellReferenceImpl parse(String address) {
+        Objects.requireNonNull(address);
+        org.apache.poi.ss.util.CellReference cellReference = new org.apache.poi.ss.util.CellReference(address);
+        if (cellReference.isRowAbsolute()) {
+            LOG.error("Absolute row reference not supported in CellAddress {}", address);
+            throw new IllegalArgumentException("Absolute row reference not supported in CellAddress - " + address);
+        }
+        if (cellReference.isColAbsolute()) {
+            LOG.error("Absolute column reference not supported in CellAddress {}", address);
+            throw new IllegalArgumentException("Absolute column reference not supported in CellAddress - " + address);
+        }
+        return new CellReferenceImpl(cellReference.getSheetName(),
+                Workbooks.getCellCoordinates(cellReference.getRow(), cellReference.getCol()),
+                cellReference.isRowAbsolute(), cellReference.isColAbsolute());
+    }
+
+
+    CellReferenceImpl(String sheetName, CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
+        super(sheetName, coordinates);
         this.rowAbsolute = rowAbsolute;
         this.colAbsolute = colAbsolute;
     }
@@ -25,7 +48,16 @@ public class CellReferenceImpl extends CellAddressImpl implements CellReference 
 
     @Override
     public CellReferenceImpl shiftBy(int rowShift, int colShift) {
-        return new CellReferenceImpl(getSheetName().orElse(null), getRow() + rowShift, getCol() + colShift,
+        if ((rowShift == 0) && (colShift == 0)) {
+            return this;
+        }
+        return new CellReferenceImpl(getSheetName().orElse(null),
+                Workbooks.getCellCoordinates(getRow() + rowShift, getCol() + colShift),
                 isRowAbsolute(), isColAbsolute());
+    }
+
+    @Override
+    public CellReferenceImpl shiftBy(CellCoordinates shift) {
+        return shiftBy(shift.getRow(), shift.getCol());
     }
 }

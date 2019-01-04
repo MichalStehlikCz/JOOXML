@@ -25,6 +25,5 @@ public interface WorkbookFactoryInt {
     CellValue getBooleanValue(@Nullable Boolean value);
     CellValue getErrorValue(@Nullable Byte value);
     CellValue getBlankValue();
-    CellProperties getProperties(@Nullable Integer styleIndex, @Nullable Comment comment);
-    Comment getComment(boolean visible, @Nullable String author, @Nullable String text);
+    CellProperties getProperties(@Nullable Integer styleIndex);
 }
