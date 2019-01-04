@@ -16,17 +16,17 @@ package com.provys.report.jooxml.tplworkbook.impl;
    limitations under the License.
 ==================================================================== */
 
-import com.provys.report.jooxml.report.TemplateWorkbook;
-import com.provys.report.jooxml.report.TemplateWorkbookFactory;
+import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
 
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 
 @Singleton
-public class TXSSFWorkbookFactory implements TemplateWorkbookFactory {
+public class TXSSFWorkbookFactory implements TplWorkbookFactory {
     @Override
-    public TemplateWorkbook get(File template) throws IOException {
+    public TplWorkbook get(File template) throws IOException {
         return new TXSSFWorkbook(template);
     }
 }

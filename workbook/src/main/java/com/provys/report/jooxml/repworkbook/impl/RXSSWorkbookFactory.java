@@ -16,8 +16,10 @@
 
 package com.provys.report.jooxml.repworkbook.impl;
 
-import com.provys.report.jooxml.repexecutor.RepWorkbook;
-import com.provys.report.jooxml.repexecutor.RepWorkbookFactory;
+import com.provys.report.jooxml.repworkbook.RepWorkbook;
+import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import javax.inject.Singleton;
@@ -26,8 +28,15 @@ import java.io.IOException;
 
 @Singleton
 public class RXSSWorkbookFactory implements RepWorkbookFactory {
+    private static Logger LOG = LogManager.getLogger(RXSSWorkbookFactory.class.getName());
+
     @Override
-    public RepWorkbook get(File template) throws IOException, InvalidFormatException {
-        return new RXSSFWorkbook(template);
+    public RepWorkbook get(File template) throws IOException {
+        try {
+            return new RXSSFWorkbook(template);
+        } catch (InvalidFormatException e) {
+            LOG.error("Supplied template is not valid workbook {} {}", template, e);
+            throw new RuntimeException("Supplied template is not valid workbook " + template, e);
+        }
     }
 }

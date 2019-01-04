@@ -32,10 +32,8 @@ public class TXSSFCell implements TplCell {
         }
         Integer styleIndex = ((cell.getCellStyle() == null) ? null : (int) cell.getCellStyle().getIndex());
         org.apache.poi.ss.usermodel.Comment cellComment = cell.getCellComment();
-        Comment comment = (cellComment == null) ? null : factory.getComment(
-                cellComment.isVisible(), cellComment.getAuthor(), cellComment.getString().getString());
-        if ((styleIndex != null) || (comment != null)) {
-            properties = factory.getProperties(styleIndex, comment);
+        if (styleIndex != null) {
+            properties = factory.getProperties(styleIndex);
         } else {
             properties = null;
         }

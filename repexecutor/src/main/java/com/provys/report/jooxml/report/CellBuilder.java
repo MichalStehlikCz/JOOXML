@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
+import com.provys.report.jooxml.workbook.CellCoordinates;
 
 import java.util.Optional;
 import java.util.Set;
@@ -86,38 +87,6 @@ class CellBuilder {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
         return new EmptyCellWithBind(index.column, bindColumn);
-    }
-
-    /**
-     * Class used to track and merge coordinates in combined cell
-     */
-    private static class CellCoordinates {
-        private final int row;
-        private final int column;
-
-        CellCoordinates(int row, int column) {
-            if ((row < 0) || (column < 0)) {
-                throw new IllegalArgumentException("Cell coordinates cannot be negative");
-            }
-            this.row = row;
-            this.column = column;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == null) {
-                return false;
-            }
-            if (other instanceof CellCoordinates) {
-                return ((row == ((CellCoordinates) other).row) && (column == ((CellCoordinates) other).column));
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return column + 31*row;
-        }
     }
 
     /**

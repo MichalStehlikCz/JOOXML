@@ -4,6 +4,8 @@ import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellCoordinates;
+import com.provys.report.jooxml.workbook.WorkbookFactory;
 
 import java.util.*;
 
@@ -23,6 +25,7 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
     private boolean topLevel = false;
     private int firstRow = -1;
     private int lastRow = -1;
+    private CellCoordinates coordinates = null;
     private Optional<ReportDataSource> reportDataSource;
 
     /**
@@ -64,7 +67,19 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
             throw new IllegalArgumentException("First row cannot be negative");
         }
         this.firstRow = firstRow;
+        this.coordinates = null;
         return self();
+    }
+
+    /**
+     * Get coordinates of top left corner of region
+     *
+     * @return coordinates
+     */
+    public CellCoordinates getCoordinates() {
+        if (coordinates == null) {
+            coordinates = WorkbookFactory.getCellCoordinates(getFirstRow())
+        }
     }
 
     /**
@@ -85,6 +100,7 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
             throw new IllegalArgumentException("Last row cannot be negative");
         }
         this.lastRow = lastRow;
+        this.coordinates = null;
         return self();
     }
 

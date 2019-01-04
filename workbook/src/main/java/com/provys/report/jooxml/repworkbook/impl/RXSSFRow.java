@@ -24,7 +24,9 @@ import java.util.Map.Entry;
 
 import com.provys.report.jooxml.repworkbook.RepRow;
 import com.provys.report.jooxml.workbook.CellProperties;
-import com.provys.report.jooxml.workbook.impl.CellValueFormula;
+import com.provys.report.jooxml.workbook.impl.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.apache.poi.ss.usermodel.*;
@@ -37,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
 {
+    private static final Logger LOG = LogManager.getLogger(RXSSFRow.class.getName());
     private static final Boolean UNDEFINED = null;
 
     private final RXSSFSheet _sheet; // parent sheet
@@ -447,26 +450,54 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
                 if (value instanceof CellValueFormula) {
                     cell.setCellFormula(((CellValueFormula) value).getFormula());
                 } else {
-                    throw new RuntimeException("Cell value with type formula expected to be of type CellTypeFormula");
+                    LOG.warn("Cell value expected to be of type CellTypeFormula, not {}; formula not set",
+                            () -> value.getClass().getName());
                 }
                 break;
             case STRING:
-                cellType = CellType.STRING;
+                cell = createCell(colIndex, CellType.STRING);
+                if (value instanceof CellValueString) {
+                    ((CellValueString) value).getValue().ifPresent(cell::setCellValue);
+                } else {
+                    LOG.warn("Cell value expected to be of type CellTypeString, not {}; value not set",
+                            () -> value.getClass().getName());
+                }
                 break;
             case NUMERIC:
-                cellType = CellType.NUMERIC;
+                cell = createCell(colIndex, CellType.NUMERIC);
+                if (value instanceof CellValueNumeric) {
+                    ((CellValueNumeric) value).getValue().ifPresent(cell::setCellValue);
+                } else {
+                    LOG.warn("Cell value expected to be of type CellTypeNumeric, not {}; value not set",
+                            () -> value.getClass().getName());
+                }
                 break;
             case BOOLEAN:
-                cellType = CellType.BOOLEAN;
+                cell = createCell(colIndex, CellType.STRING);
+                if (value instanceof CellValueBoolean) {
+                    ((CellValueBoolean) value).getValue().ifPresent(cell::setCellValue);
+                } else {
+                    LOG.warn("Cell value expected to be of type CellTypeBoolean, not {}; value not set",
+                            () -> value.getClass().getName());
+                }
                 break;
             case ERROR:
-                cellType =
+                cell = createCell(colIndex, CellType.ERROR);
+                if (value instanceof CellValueError) {
+                    ((CellValueError) value).getValue().ifPresent(cell::setCellErrorValue);
+                } else {
+                    LOG.warn("Cell value expected to be of type CellTypeError, not {}; value not set",
+                            () -> value.getClass().getName());
+                }
+                break;
+            case BLANK:
+                cell = createCell(colIndex, CellType.BLANK);
+                break;
+                default:
+                    LOG.warn("Unexpected cell type {}; value ignored", value.getCellType());
+                    cell = createCell(colIndex);
         }
-        RXSSFCell cell = createCell(colIndex, );
-        cell.setCellFormula(cellFormula);
-        cell.setCellStyle(styleIndex);
-        cell.setCellComment(comment);
-        cell.setHyperlink(hyperlink);
+        properties.getStyleIndex().ifPresent(styleIndex -> cell.setCellStyle(styleIndex));
     }
 
     /**

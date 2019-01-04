@@ -1,8 +1,8 @@
 package com.provys.report.jooxml.tplworkbook.impl;
 
 import com.provys.report.jooxml.repexecutor.RepExecutor;
-import com.provys.report.jooxml.report.TemplateSheet;
-import com.provys.report.jooxml.report.TemplateWorkbook;
+import com.provys.report.jooxml.tplworkbook.TplSheet;
+import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -22,22 +22,22 @@ import java.util.List;
  * It is not intended to be generic library for work with Excel file like POI and it is intentionally read-only, as
  * JOOXML report should read template, but it should not modify it
  */
-public class TXSSFWorkbook implements TemplateWorkbook {
+public class TXSSFWorkbook implements TplWorkbook {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
 
     private final Workbook workbook;
-    final private List<TemplateSheet> sheets;
+    final private List<TplSheet> sheets;
 
-    private static List<TemplateSheet> initSheets(Workbook workbook) {
-        List<TemplateSheet> result = new ArrayList(workbook.getNumberOfSheets());
+    private static List<TplSheet> initSheets(Workbook workbook) {
+        var result = new ArrayList<TplSheet>(workbook.getNumberOfSheets());
         for (Sheet sheet : workbook) {
             result.add(new TXSSFSheet(sheet));
         }
         return result;
     }
 
-    public TXSSFWorkbook(File file) throws IOException {
+    TXSSFWorkbook(File file) throws IOException {
         try {
             workbook = new XSSFWorkbook(file);
         } catch (InvalidFormatException e) {
@@ -48,12 +48,12 @@ public class TXSSFWorkbook implements TemplateWorkbook {
     }
 
     @Override
-    public TemplateSheet getSheetAt(int i) {
+    public TplSheet getSheetAt(int i) {
         return sheets.get(i);
     }
 
     @Override
-    public TemplateSheet getSheet() {
+    public TplSheet getSheet() {
         return getSheetAt(0);
     }
 
@@ -63,7 +63,7 @@ public class TXSSFWorkbook implements TemplateWorkbook {
     }
 
     @Override
-    public Iterator<TemplateSheet> iterator() {
+    public Iterator<TplSheet> iterator() {
         return sheets.listIterator();
     }
 }

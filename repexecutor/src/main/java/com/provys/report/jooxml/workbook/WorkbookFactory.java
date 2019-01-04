@@ -14,6 +14,10 @@ public class WorkbookFactory {
 
     private static WorkbookFactory instance;
 
+    public static CellCoordinates parseCellCoordinates(String address) {
+        return instance.parseCellCoordinates(address);
+    }
+
     public static CellValue getFormulaValue(String formula) {
         return instance.getWorkbookFactory().getFormulaValue(formula);
     }

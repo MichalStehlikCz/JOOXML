@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.workbook.CellAddress;
+import com.provys.report.jooxml.workbook.CellCoordinates;
+import com.provys.report.jooxml.workbook.WorkbookFactory;
 
 import java.util.Objects;
 
@@ -10,36 +12,34 @@ import java.util.Objects;
 public final class FieldBind {
 
     private final String sourceColumn;
-    private final CellAddress cellAddress;
+    private final CellCoordinates coordinates;
 
-    /**
-     * Verifikuje, ze se jedna o referenci pouzitelnou pro binding - nesmi mit zadany sheet a musi mit relativni pozice
-     *
-     * @param cellAddress is reference being validated
-     */
-    private static CellAddress validateCellAddress(CellAddress cellAddress) {
-        Objects.requireNonNull(cellAddress);
-        if (cellAddress.getSheetName().isPresent()) {
-            throw new IllegalArgumentException("Cannot specify sheet name in binding " + cellAddress.getSheetName().get());
-        }
-        return cellAddress;
-    }
     /**
      * Creates FieldBind from supplied data.
      *
      * @param sourceColumn is name of column in dataset used to populate cell
-     * @param cellAddress is reference to cell as used in internal representation in POI spreadsheets
+     * @param coordinates is reference to cell as used in internal representation in POI spreadsheets
      */
-    public FieldBind(String sourceColumn, CellAddress cellAddress) {
+    public FieldBind(String sourceColumn, CellCoordinates coordinates) {
         this.sourceColumn = Objects.requireNonNull(sourceColumn);
-        this.cellAddress = validateCellAddress(cellAddress);
+        this.coordinates = Objects.requireNonNull(coordinates);
+    }
+
+    /**
+     * Creates FieldBind from supplied data.
+     *
+     * @param sourceColumn is name of column in dataset used to populate cell
+     * @param address is string reference to cell in Excel format
+     */
+    public FieldBind(String sourceColumn, String address) {
+        this(sourceColumn, WorkbookFactory.parseCellCoordinates(address));
     }
 
     public String getSourceColumn() {
         return sourceColumn;
     }
 
-    public CellAddress getCellAddress() {
-        return cellAddress;
+    public CellCoordinates getCoordinates() {
+        return coordinates;
     }
 }
