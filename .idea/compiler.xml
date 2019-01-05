@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="jooxmlapp" />
         <module name="repexecutor" />
+        <module name="report" />
         <module name="workbook" />
       </profile>
     </annotationProcessing>

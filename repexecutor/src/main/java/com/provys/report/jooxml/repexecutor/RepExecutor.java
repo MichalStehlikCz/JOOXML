@@ -1,14 +1,11 @@
 package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.datasource.RootDataRecord;
-import com.provys.report.jooxml.report.StepBuilder;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.weld.environment.se.events.ContainerInitialized;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.Files;

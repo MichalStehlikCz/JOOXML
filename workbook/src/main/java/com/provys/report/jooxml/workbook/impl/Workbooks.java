@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 public class Workbooks {
 
     public static CellCoordinates getCellCoordinates(int row, int col) {
-        return new CellCoordinatesImpl(row, col);
+        return CellCoordinatesImpl.of(row, col);
     }
 
     public static CellCoordinates parseCellCoordinates(String address) {

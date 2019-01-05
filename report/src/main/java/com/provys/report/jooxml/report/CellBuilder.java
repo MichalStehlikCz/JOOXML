@@ -37,10 +37,10 @@ class CellBuilder {
         this.bindColumn = null;
     }
 
-    CellBuilder(FieldBind fieldBind, RowAreaBuilder region) {
-        this.coordinates = fieldBind.getCoordinates().shiftBy(-region.getFirstRow(), 0);
+    CellBuilder(CellBind cellBind, RowAreaBuilder region) {
+        this.coordinates = cellBind.getCoordinates().shiftBy(-region.getFirstRow(), 0);
         this.tplCell = null;
-        this.bindColumn = fieldBind.getSourceColumn();
+        this.bindColumn = cellBind.getSourceColumn();
     }
 
     Optional<Integer> getRowIndex() {

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ReportImpl implements Report {
 
     private final Map<String, ReportDataSource> dataSources;
-    private ReportStep rootRegion;
+    private ReportStep rootStep;
     private File template;
 
     /**
@@ -64,7 +64,7 @@ public class ReportImpl implements Report {
                       TplWorkbookFactory tplWorkbookFactory) {
         this.dataSources = initDataSources(dataSources);
         try (TplWorkbook workbook = tplWorkbookFactory.get(template)) {
-            this.rootRegion = rootRegionBuilder.build(workbook);
+            this.rootStep = rootRegionBuilder.build(workbook);
         } catch (IOException e) {
             throw new RuntimeException("IO error working with template file", e);
         }
@@ -92,7 +92,7 @@ public class ReportImpl implements Report {
      */
     @Override
     public ReportStep getRootStep() {
-        return rootRegion;
+        return rootStep;
     }
 
     /**

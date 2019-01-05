@@ -2,13 +2,13 @@ package com.provys.report.jooxml.report;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
-import java.util.ArrayList;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -97,11 +97,11 @@ public class StepReader implements Closeable {
      *
      * @return created step builder
      */
-    private StepBuilder parseStep() throws XMLStreamException {
+    private StepBuilder parseStep(@Nullable StepBuilder parent) throws XMLStreamException {
         StepBuilder step;
         switch (stepReader.getLocalName()) {
             case "ROWCELLAREA":
-                step = new RowCellAreaBuilder().parse(stepReader);
+                step = new RowCellAreaBuilder(parent).parse(stepReader);
                 break;
             default:
                 throw new RuntimeException("ReadSteps: Unsupported step type " + stepReader.getLocalName());
@@ -120,7 +120,7 @@ public class StepReader implements Closeable {
                 LOG.error("ReadSteps: Root start element expected, not {}", eventType);
                 throw new RuntimeException("ReadSteps: Root start element expected, not " + eventType);
             }
-            rootStep = parseStep();
+            rootStep = parseStep(null);
         } catch (XMLStreamException e) {
             LOG.error("ReadSteps: Exception reading XML report definition file {}", e);
             throw new RuntimeException("Exception reading XML report definition file", e);

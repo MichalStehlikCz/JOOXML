@@ -10,31 +10,31 @@ import java.util.Objects;
 /**
  * Represents rule for population of single field in sheet from source dataset.
  */
-public final class FieldBind {
+public final class CellBind {
 
-    private static final Logger LOG = LogManager.getLogger(FieldBind.class.getName());
+    private static final Logger LOG = LogManager.getLogger(CellBind.class.getName());
 
     private final String sourceColumn;
     private final CellCoordinates coordinates;
 
     /**
-     * Creates FieldBind from supplied data.
+     * Creates CellBind from supplied data.
      *
      * @param sourceColumn is name of column in dataset used to populate cell
      * @param coordinates is reference to cell as used in internal representation in POI spreadsheets
      */
-    public FieldBind(String sourceColumn, CellCoordinates coordinates) {
+    public CellBind(String sourceColumn, CellCoordinates coordinates) {
         this.sourceColumn = Objects.requireNonNull(sourceColumn);
         this.coordinates = Objects.requireNonNull(coordinates);
     }
 
     /**
-     * Creates FieldBind from supplied data.
+     * Creates CellBind from supplied data.
      *
      * @param sourceColumn is name of column in dataset used to populate cell
      * @param address is string reference to cell in Excel format
      */
-    public FieldBind(String sourceColumn, String address) {
+    public CellBind(String sourceColumn, String address) {
         this(sourceColumn, Workbooks.parseCellCoordinates(address));
     }
 

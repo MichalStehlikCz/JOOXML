@@ -2,6 +2,7 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -9,11 +10,29 @@ public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuil
 
     final private List<RowAreaBuilder> children = new ArrayList<>(5);
 
+    RowParentAreaBuilder(@Nullable StepBuilder parent) {
+        super(parent);
+    }
+
     /**
      * @return subregions as list
      */
     public Collection<RowAreaBuilder> getChildren() {
         return Collections.unmodifiableCollection(children);
+    }
+
+    @Override
+    public String getDefaultNameNmPrefix() {
+        return "PARENTAREA";
+    }
+
+    @Override
+    public String proposeChildName(StepBuilder child) {
+        int index = children.indexOf(child);
+        if (index == -1) {
+            throw new IllegalArgumentException("Can only propose internal name for child");
+        }
+        return child.getDefaultNameNmPrefix() + index;
     }
 
     /**
@@ -33,7 +52,7 @@ public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuil
      * Validate sub-regions. Calls validate on each region plus checks that regions are in ascending order of first row
      * and do not overlap.
      */
-    void validateChildren() {
+    private void validateChildren() {
         // first, we must sort children in order of their first covered row; it has to be set, otherwise validation
         // fails
         children.sort(Comparator.comparingInt(RowAreaBuilder::getFirstRow));
@@ -98,7 +117,7 @@ public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuil
     }
 
     @Override
-    public void validate() {
+    protected void validate() {
         super.validate();
         validateChildren();
     }
@@ -116,6 +135,7 @@ public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuil
 
     @Override
     protected ReportStep doBuild(TplWorkbook template) {
-        return new RowParentArea(getNameNm(), doBuildChildren(template));
+        return new RowParentArea(getNameNm().orElseThrow() /*empty should be caught during validation */,
+                doBuildChildren(template));
     }
 }

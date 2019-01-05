@@ -1,9 +1,10 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
-import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.workbook.CellAddress;
-import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -17,33 +18,24 @@ import java.util.*;
  *
  * Class is not thread-safe, it is expected to onl be used when building report definition within single thread
  */
-abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
+abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<T> {
 
-    private String nameNm;
+    private static final Logger LOG = LogManager.getLogger(RowAreaBuilder.class.getName());
+
     private boolean topLevel = false;
     private int firstRow = -1;
     private int lastRow = -1;
-    private Optional<ReportDataSource> reportDataSource;
+    @Nullable
+    private ReportDataSource reportDataSource;
 
-    /**
-     * @return internal name of row area; might be null if it was not initialized yet
-     */
-    public String getNameNm() {
-        return nameNm;
-    }
-
-    /**
-     * Set internal name of report region
-     *
-     * @param nameNm is new internal name
-     * @return self to allow fluent build
-     */
-    public T setNameNm(String nameNm) {
-        if (nameNm.isEmpty()) {
-            throw new IllegalArgumentException("Internal name cannot be empty string");
+    RowAreaBuilder(@Nullable StepBuilder parent) {
+        super(parent);
+        if (parent == null) {
+            // root region has some defaults...
+            topLevel = true;
+            firstRow = 0;
+            lastRow = Integer.MAX_VALUE;
         }
-        this.nameNm = nameNm;
-        return self();
     }
 
     /**
@@ -124,7 +116,7 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
      * @return data source used to populate this region
      */
     public Optional<ReportDataSource> getReportDataSource() {
-        return reportDataSource;
+        return Optional.ofNullable(reportDataSource);
     }
 
     /**
@@ -134,19 +126,18 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
      * @return self to allow fluent build
      */
     public T setReportDataSource(ReportDataSource reportDataSource) {
-        this.reportDataSource = Optional.of(reportDataSource);
+        this.reportDataSource = reportDataSource;
         return self();
     }
 
     /**
-     * Validates all properites of this region.
+     * Validates all properties of this region.
      * Base implementation validates all field binds and subregions. Subclasses might add additional rules on what is
      * actually considered valid region definition
      */
+    @Override
     protected void validate() {
-        if (getNameNm() == null) {
-            throw new IllegalStateException("Internal name not initialized");
-        }
+        super.validate();
         if (getFirstRow() < 0) {
             throw new IllegalStateException("First row of covered area has not been initialized");
         }
@@ -156,25 +147,5 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> implements StepBuilder {
         if (getFirstRow() > getLastRow()) {
             throw new IllegalStateException("First row of region has to be above last row");
         }
-    }
-
-    /**
-     * Builds region from this builder. Called from build after validation.
-     */
-    abstract protected ReportStep doBuild(TplWorkbook template);
-
-    /**
-     * Method allows fluent build for children of this type
-     *
-     * @return properly typed self
-     */
-    abstract protected T self();
-
-    /**
-     * Validates and builds step from builder.
-     */
-    public ReportStep build(TplWorkbook template) {
-        validate();
-        return doBuild(template);
     }
 }

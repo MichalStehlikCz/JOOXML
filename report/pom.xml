@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jooxmlapp</artifactId>
+    <artifactId>report</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.provys.report.jooxml</groupId>
@@ -17,34 +17,42 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.provys.report.jooxml</groupId>
-            <artifactId>report</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.provys.report.jooxml</groupId>
-            <artifactId>workbook</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli</artifactId>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-shaded</artifactId>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jandex</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
     </dependencies>
-    <build>
-        <finalName>jooxml</finalName>
-    </build>
+
 
 </project>

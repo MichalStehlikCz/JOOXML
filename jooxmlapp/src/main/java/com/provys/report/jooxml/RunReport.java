@@ -4,17 +4,12 @@ import com.provys.report.jooxml.datasource.DataSourceFactory;
 import com.provys.report.jooxml.repexecutor.RepExecutor;
 import com.provys.report.jooxml.repexecutor.Report;
 import com.provys.report.jooxml.datasource.ReportDataSource;
-import com.provys.report.jooxml.report.FieldBind;
 import com.provys.report.jooxml.report.ReportFactory;
-import com.provys.report.jooxml.report.RowCellAreaBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.jboss.weld.environment.se.events.ContainerInitialized;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
@@ -70,9 +65,6 @@ class RunReport implements Runnable {
         addLoggerShutdownHook();
         List<ReportDataSource> dataSources = new ArrayList<>(1);
         dataSources.add(DataSourceFactory.getRootDataSource());
-/*        RowCellAreaBuilder rootStepBuilder = new RowCellAreaBuilder().setNameNm("ROOT").setFirstRow(0)
-                .setLastRow(Integer.MAX_VALUE).setTopLevel(true)
-                .addFieldBind(new FieldBind("REPORTNAME", "A1"));*/
         Report report = reportFactory.build(dataSources, bodyFile, template);
         executor.setReport(report).
                 setParamFile(paramFile).

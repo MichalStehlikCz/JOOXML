@@ -12,6 +12,7 @@
         <module>jooxmlapp</module>
         <module>repexecutor</module>
         <module>workbook</module>
+        <module>report</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
