@@ -22,7 +22,7 @@ public class Workbooks {
     }
 
     public static CellAddress getCellAddress(@Nullable String sheetName, CellCoordinates coordinates) {
-        return new CellAddressImpl(sheetName, coordinates);
+        return CellAddressImpl.of(sheetName, coordinates);
     }
 
     public static CellAddress getCellAddress(CellCoordinates coordinates) {

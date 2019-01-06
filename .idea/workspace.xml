@@ -5,50 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb767349-52e0-45d4-9f4e-8156c764d22c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/report/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBindBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/ColumnFormatter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/ColumnFormatterTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatterTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jooxmlapp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/jooxmlapp/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jooxmlapp/src/main/java/com/provys/report/jooxml/RunReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/jooxmlapp/src/main/java/com/provys/report/jooxml/RunReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/RepExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/RepExecutor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/AreaCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/AreaCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/CellBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/ChildProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ChildProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/EmptyCellWithBind.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/EmptyCellWithBind.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/FieldBind.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBind.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/ReportFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/ReportImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/Row.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/Row.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowCellArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellArea.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowCellAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowCellAreaProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowParentArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentArea.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/Step.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/Step.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/StepBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/StepProcessorAncestor.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepProcessorAncestor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/StepReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/StepWithChildren.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepWithChildren.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/report/TemplateCellWithBind.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/TemplateCellWithBind.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/tplworkbook/TplCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/tplworkbook/TplCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/tplworkbook/TplRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/tplworkbook/TplRow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/tplworkbook/TplSheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/tplworkbook/TplSheet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/tplworkbook/TplWorkbook.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/tplworkbook/TplWorkbook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/tplworkbook/TplWorkbookFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/tplworkbook/TplWorkbookFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinates.java" beforeDir="false" afterPath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinates.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellAddress.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TestSheet.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TestSheet.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workbook/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellAddressImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellAddressImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/Workbooks.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/Workbooks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -71,11 +38,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="19" column="64" selection-start-line="19" selection-start-column="64" selection-end-line="19" selection-end-column="64" />
+            <state relative-caret-position="187">
+              <caret line="11" column="21" selection-start-line="11" selection-start-column="21" selection-end-line="11" selection-end-column="21" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3973#3974#0" expanded="true" />
+                <element signature="e#4020#4021#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatterTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="18" column="50" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/ColumnFormatterTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="37" lean-forward="true" selection-start-line="30" selection-end-line="37" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -121,16 +114,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellPropertiesImpl.java" />
-        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellValueBoolean.java" />
-        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellValueError.java" />
-        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellValueNumeric.java" />
-        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellValueString.java" />
         <option value="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellType.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellValueBlank.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/WorkbookFactoryImpl.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellReferenceImpl.java" />
-        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellAddressImpl.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/repworkbook/impl/RXSSFRow.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/repworkbook/impl/RXSSWorkbookFactory.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/tplworkbook/impl/TXSSFSheet.java" />
@@ -169,9 +156,15 @@
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaBuilder.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBindBuilder.java" />
         <option value="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinates.java" />
+        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/ColumnFormatter.java" />
+        <option value="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java" />
+        <option value="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/ColumnFormatterTest.java" />
+        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatter.java" />
+        <option value="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellAddress.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImpl.java" />
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/Workbooks.java" />
-        <option value="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java" />
+        <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellAddressImpl.java" />
+        <option value="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatterTest.java" />
       </list>
     </option>
   </component>
@@ -358,33 +351,6 @@
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
               <item name="repexecutor" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
-              <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="repexecutor" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="jooxml" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
-              <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="repexecutor" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="jooxml" type="462c0819:PsiDirectoryNode" />
-              <item name="workbook" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
-              <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="repexecutor" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -407,25 +373,25 @@
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="workbook" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="workbook" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="workbook" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="workbook" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
@@ -433,7 +399,7 @@
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="workbook" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
@@ -442,23 +408,12 @@
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
               <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="workbook" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="jooxml" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
-              <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="workbook" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
-              <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
-              <item name="workbook" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="impl" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
@@ -579,6 +534,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ColumnFormatterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workbook" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.provys.report.jooxml.workbook.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.provys.report.jooxml.workbook.impl" />
+      <option name="MAIN_CLASS_NAME" value="com.provys.report.jooxml.workbook.impl.ColumnFormatterTest" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="JOOXML [clean]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
       <MavenSettings>
         <option name="myGeneralSettings" />
@@ -608,10 +577,12 @@
       <item itemvalue="Application.JooxmlApplication" />
       <item itemvalue="JUnit.All tests in JOOXML" />
       <item itemvalue="Maven.JOOXML [clean]" />
+      <item itemvalue="JUnit.ColumnFormatterTest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.All tests in JOOXML" />
+        <item itemvalue="JUnit.ColumnFormatterTest" />
         <item itemvalue="Maven.JOOXML [clean]" />
       </list>
     </recent_temporary>
@@ -643,44 +614,44 @@
       <workItem from="1546579953354" duration="6248000" />
       <workItem from="1546587765885" duration="3865000" />
       <workItem from="1546617601971" duration="13423000" />
-      <workItem from="1546672452181" duration="14872000" />
+      <workItem from="1546672452181" duration="26437000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="All_tests_in_JOOXML - 2019.01.01 at 11h 46m 15s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 09h 43m 07s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.01 at 11h 54m 15s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 09h 45m 19s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.01 at 11h 56m 25s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 09h 49m 03s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.01 at 11h 58m 37s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 09h 50m 54s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.01 at 17h 48m 50s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 10h 10m 13s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.04 at 17h 28m 21s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 10h 11m 51s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.04 at 17h 30m 21s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 10h 15m 08s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.05 at 12h 07m 03s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 10h 17m 44s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.05 at 12h 16m 50s.xml">
-      <configuration name="All tests in JOOXML" configurationId="JUnit" />
+    <history-entry file="ColumnFormatterTest - 2019.01.06 at 12h 11m 38s.xml">
+      <configuration name="ColumnFormatterTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="All_tests_in_JOOXML - 2019.01.05 at 12h 22m 00s.xml">
+    <history-entry file="All_tests_in_JOOXML - 2019.01.06 at 12h 11m 51s.xml">
       <configuration name="All tests in JOOXML" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="297479000" />
+    <option name="totallyTimeSpent" value="309044000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -695,8 +666,8 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6064" visible="true" weight="0.3011727" />
-      <window_info id="Structure" order="1" sideWeight="0.3936" side_tool="true" visible="true" weight="0.3011727" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.60681117" visible="true" weight="0.3011727" />
+      <window_info id="Structure" order="1" sideWeight="0.39318886" side_tool="true" visible="true" weight="0.3011727" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" sideWeight="0.37318256" side_tool="true" weight="0.26066098" />
       <window_info id="UI Designer" order="4" />
@@ -704,7 +675,7 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32827735" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32286024" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.30010834" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39909297" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -762,78 +733,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/util/collections/AbstractImmutableSet.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/util/Preconditions.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="529">
-          <caret line="36" selection-start-line="36" selection-end-line="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/util/collections/ImmutableTinySet.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="31" selection-start-line="31" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/util/collections/ImmutableSet.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="e#1692#1693#0" expanded="true" />
-            <element signature="e#1745#1746#0" expanded="true" />
-            <element signature="e#3475#3476#0" expanded="true" />
-            <element signature="e#3529#3530#0" expanded="true" />
-            <element signature="e#4607#4608#0" expanded="true" />
-            <element signature="e#4665#4666#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/event/GlobalObserverNotifierService.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="39" selection-start-line="39" selection-end-line="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/annotated/enhanced/TypeClosureLazyValueHolder.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="e#462#463#0" expanded="true" />
-            <element signature="e#494#495#0" expanded="true" />
-            <element signature="e#611#612#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/util/reflection/HierarchyDiscovery.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-          <folding>
-            <element signature="e#909#910#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/environment/se/WeldContainer.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="146" selection-start-line="146" selection-end-line="146" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/jboss/weld/se/weld-se-shaded/3.0.5.Final/weld-se-shaded-3.0.5.Final.jar!/org/jboss/weld/environment/se/events/ContainerInitialized.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -1074,54 +973,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk-11/lib/src.zip!/java.base/java/lang/String.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="505">
-          <caret line="3056" column="25" selection-start-line="3056" selection-start-column="25" selection-end-line="3056" selection-end-column="25" />
-          <folding>
-            <element signature="e#122996#122997#0" expanded="true" />
-            <element signature="e#123038#123039#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi/4.0.0/poi-4.0.0.jar!/org/apache/poi/ss/util/CellReference.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
           <caret line="117" column="22" selection-start-line="117" selection-start-column="22" selection-end-line="117" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-402">
-          <caret line="106" column="35" selection-start-line="106" selection-start-column="32" selection-end-line="106" selection-end-column="35" />
-          <folding>
-            <element signature="e#3800#3801#0" expanded="true" />
-            <element signature="e#3867#3868#0" expanded="true" />
-            <element signature="e#4953#4954#0" expanded="true" />
-            <element signature="e#5360#5361#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/Workbooks.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
-          <folding>
-            <element signature="e#234#235#0" expanded="true" />
-            <element signature="e#290#291#0" expanded="true" />
-            <element signature="e#364#365#0" expanded="true" />
-            <element signature="e#421#422#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinates.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="413">
-          <caret line="36" column="10" lean-forward="true" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -1177,10 +1032,135 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-11/lib/src.zip!/java.base/java/lang/StringLatin1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="71" column="25" selection-start-line="71" selection-start-column="25" selection-end-line="71" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-11/lib/src.zip!/java.base/java/lang/String.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="2854" column="47" selection-start-line="2854" selection-start-column="47" selection-end-line="2854" selection-end-column="47" />
+          <folding>
+            <element signature="e#122996#122997#0" expanded="true" />
+            <element signature="e#123038#123039#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinates.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="38" lean-forward="true" selection-start-line="16" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellAddress.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="50" column="24" selection-start-line="50" selection-start-column="24" selection-end-line="50" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="110" lean-forward="true" selection-start-line="102" selection-end-line="110" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4946#4947#0" expanded="true" />
+            <element signature="e#4972#4973#0" expanded="true" />
+            <element signature="e#5013#5014#0" expanded="true" />
+            <element signature="e#5039#5040#0" expanded="true" />
+            <element signature="e#6063#6064#0" expanded="true" />
+            <element signature="e#6125#6126#0" expanded="true" />
+            <element signature="e#6477#6478#0" expanded="true" />
+            <element signature="e#6532#6533#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellReferenceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="33" column="11" lean-forward="true" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellAddressImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="60" selection-start-line="60" selection-end-line="60" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3481#3482#0" expanded="true" />
+            <element signature="e#3576#3577#0" expanded="true" />
+            <element signature="e#3660#3661#0" expanded="true" />
+            <element signature="e#3744#3745#0" expanded="true" />
+            <element signature="e#4878#4879#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesImplTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="19" column="64" selection-start-line="19" selection-start-column="64" selection-end-line="19" selection-end-column="64" />
+        <state relative-caret-position="17">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
+          <folding>
+            <element signature="e#5260#5261#0" expanded="true" />
+            <element signature="e#5338#5339#0" expanded="true" />
+            <element signature="e#5380#5381#0" expanded="true" />
+            <element signature="e#5458#5459#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/Workbooks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+          <folding>
+            <element signature="e#234#235#0" expanded="true" />
+            <element signature="e#289#290#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/ColumnFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="21" lean-forward="true" selection-start-line="9" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="21" selection-start-line="11" selection-start-column="21" selection-end-line="11" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3973#3974#0" expanded="true" />
+            <element signature="e#4020#4021#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/ColumnFormatterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="37" lean-forward="true" selection-start-line="30" selection-end-line="37" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/SheetNameFormatterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="18" column="50" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
         </state>
       </provider>
     </entry>

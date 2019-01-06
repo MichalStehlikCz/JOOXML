@@ -3,15 +3,27 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.util.CellReference;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CellCoordinatesImpl implements CellCoordinates {
 
     private static final Logger LOG = LogManager.getLogger(CellCoordinatesImpl.class.getName());
+    /**
+     * Matches a run of one or more letters followed by a run of one or more digits.
+     * The run of letters is group 1 and the run of digits is group 2.
+     */
+    private static final Pattern CELL_COORDINATES_PATTERN = Pattern.compile(ColumnFormatter.getRegExp()
+                    + "([0-9]+)");
+
+    /**
+     * Coordinates 0, 0 are often referenced, thus it makes sense to cache them
+     */
     private static CellCoordinatesImpl A1 = new CellCoordinatesImpl(0, 0);
+
     private final int row;
     private final int col;
 
@@ -19,26 +31,22 @@ public class CellCoordinatesImpl implements CellCoordinates {
      * Parse supplied address and convert it to cell coordinates
      *
      * @param address is cell address (as in Excel - e.g. A1)
-     * @return cell coordinates cooresponding to supplied address
-     * @throws IllegalArgumentException if supplied address is not valid Excel cell reference, it contains sheet
-     * reference or it is has absolute reference to row or column
+     * @return cell coordinates corresponding to supplied address
+     * @throws IllegalArgumentException if supplied address is not valid Excel cell reference, without sheet and with
+     * no absolute position
      */
     static CellCoordinatesImpl parse(String address) {
         Objects.requireNonNull(address);
-        CellReference cellReference = new CellReference(address);
-        if (cellReference.getSheetName() != null) {
-            LOG.error("Sheet is not supportd in CellCoordinates - parse of {} failed", address);
-            throw new IllegalArgumentException("Sheet is not supportd in CellCoordinates - parse failed " + address);
+        Matcher matcher = CELL_COORDINATES_PATTERN.matcher(address);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid cell coordinates \"" + address + "\"");
         }
-        if (cellReference.isRowAbsolute()) {
-            LOG.error("Absolute row reference not supported in CellAddress {}", address);
-            throw new IllegalArgumentException("Absolute row reference not supported in CellAddress - " + address);
+        try {
+            return of(Integer.parseInt(matcher.group(2)) - 1, ColumnFormatter.parse(matcher.group(1)));
+        } catch (IllegalArgumentException ex) {
+            // we want to see supplied string in error message
+            throw new IllegalArgumentException(ex.getMessage() + "(coordinates \"" + address + "\")", ex);
         }
-        if (cellReference.isColAbsolute()) {
-            LOG.error("Absolute column reference not supported in CellAddress {}", address);
-            throw new IllegalArgumentException("Absolute column reference not supported in CellAddress - " + address);
-        }
-        return of(cellReference.getRow(), cellReference.getCol());
     }
 
     /**
@@ -54,23 +62,6 @@ public class CellCoordinatesImpl implements CellCoordinates {
             return A1;
         }
         return new CellCoordinatesImpl(row, col);
-    }
-
-    /**
-     * Convert column index (zero based) to excel string representing the column (e.g. A, B, ...)
-     *
-     * @param builder is string builder result should be appended to
-     * @param col is column index (zero based)
-     * @throws IllegalArgumentException if supplied column index is negative
-     */
-    static void appendColAsString(StringBuilder builder, int col) {
-        if (col < 0) {
-            throw new IllegalArgumentException("Cannot convert negative number to column string");
-        }
-        if (col > 25) {
-            appendColAsString(builder, (col / 26) - 1);
-        }
-        builder.append((char) ((col % 26) + 65)); // 64 is 1 for zero > one based + 64 code of A
     }
 
     private CellCoordinatesImpl(int row, int col) {
@@ -98,7 +89,7 @@ public class CellCoordinatesImpl implements CellCoordinates {
 
     @Override
     public void appendAddress(StringBuilder builder) {
-        appendColAsString(builder, getCol());
+        ColumnFormatter.append(builder, getCol());
         builder.append(getRow() + 1);
     }
 
@@ -111,12 +102,10 @@ public class CellCoordinatesImpl implements CellCoordinates {
 
     @Override
     public Optional<CellCoordinates> shiftByOrEmpty(int rowShift, int colShift) {
-        if ((rowShift == 0) && (colShift == 0)) {
-            return Optional.of(this);
-        } else if ((getRow() < -rowShift) || (getCol() < -colShift)) {
+        if ((getRow() < -rowShift) || (getCol() < -colShift)) {
             return Optional.empty();
         }
-        return Optional.of(of(getRow() + rowShift, getCol() + colShift));
+        return Optional.of(shiftBy(rowShift, colShift));
     }
 
     @Override

@@ -15,27 +15,30 @@ class CellCoordinatesImplTest {
 
     public static Stream<Object[]> parseTest() {
         return Stream.of(
-                new Object[]{"A1", CellCoordinatesImpl.of(0, 0), null}
-                , new Object[]{"AA7", CellCoordinatesImpl.of(6, 26), null}
-                , new Object[]{"AB30", CellCoordinatesImpl.of(29, 27), null}
-                , new Object[]{"A0", null, IllegalArgumentException.class}
-                , new Object[]{"0", null, IllegalArgumentException.class}
-                , new Object[]{"A", null, IllegalArgumentException.class}
-                , new Object[]{"01", null, IllegalArgumentException.class}
-                , new Object[]{"$A1", null, IllegalArgumentException.class}
-                , new Object[]{"A$1", null, IllegalArgumentException.class}
-                , new Object[]{"Sheet!A1", null, IllegalArgumentException.class}
-                , new Object[]{null, null, NullPointerException.class}
-                );
+                new Object[]{"A1", CellCoordinatesImpl.of(0, 0), null, null}
+                , new Object[]{"AA7", CellCoordinatesImpl.of(6, 26), null, null}
+                , new Object[]{"AB30", CellCoordinatesImpl.of(29, 27), null, null}
+                , new Object[]{"A0", null, IllegalArgumentException.class, "\"A0\""}
+                , new Object[]{"0", null, IllegalArgumentException.class, "\"0\""}
+                , new Object[]{"A", null, IllegalArgumentException.class, "\"A\""}
+                , new Object[]{"11", null, IllegalArgumentException.class, "\"11\""}
+                , new Object[]{"$A1", null, IllegalArgumentException.class, "\"$A1\""}
+                , new Object[]{"A$1", null, IllegalArgumentException.class, "\"A$1\""}
+                , new Object[]{"Sheet!A1", null, IllegalArgumentException.class, "\"Sheet!A1\""}
+                , new Object[]{null, null, NullPointerException.class, null}
+        );
     }
 
     @ParameterizedTest
     @MethodSource
-    public void parseTest(String address, CellCoordinates coordinates, Class<Throwable> exception) {
+    public void parseTest(String address, CellCoordinates coordinates, Class<Throwable> exception, String message) {
         if (exception == null) {
             assertThat(CellCoordinatesImpl.parse(address)).isEqualTo(coordinates);
         } else {
-            assertThatThrownBy(() -> CellCoordinatesImpl.parse(address)).isInstanceOf(exception);
+            var ex = assertThatThrownBy(() -> CellCoordinatesImpl.parse(address)).isInstanceOf(exception);
+            if (message != null) {
+                ex.hasMessageContaining(message);
+            }
         }
     }
 
@@ -56,28 +59,6 @@ class CellCoordinatesImplTest {
             assertThatCode(() -> CellCoordinatesImpl.of(row, col)).doesNotThrowAnyException();
         } else {
             assertThatThrownBy(() -> CellCoordinatesImpl.of(row, col)).isInstanceOf(exception);
-        }
-    }
-
-    public static Stream<Object[]> appendColAsStringTest() {
-        return Stream.of(
-                new Object[]{0, "A", null}
-                , new Object[]{10, "K", null}
-                , new Object[]{26, "AA", null}
-                , new Object[]{30, "AE", null}
-                , new Object[]{-1, null, IllegalArgumentException.class}
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void appendColAsStringTest(int col, String result, Class<Throwable> exception) {
-        StringBuilder builder = new StringBuilder("Prefix");
-        if (exception == null) {
-            CellCoordinatesImpl.appendColAsString(builder, col);
-            assertThat(builder.toString()).isEqualTo("Prefix" + result);
-        } else {
-            assertThatThrownBy(() -> CellCoordinatesImpl.appendColAsString(builder, col)).isInstanceOf(exception);
         }
     }
 
