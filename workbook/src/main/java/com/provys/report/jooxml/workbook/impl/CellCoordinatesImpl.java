@@ -12,12 +12,24 @@ import java.util.regex.Pattern;
 public class CellCoordinatesImpl implements CellCoordinates {
 
     private static final Logger LOG = LogManager.getLogger(CellCoordinatesImpl.class.getName());
+
+    /**
+     * Regular expression for matching coordinates - one or more letters representing column coordinate
+     * plus one or more numbers representing row coordinate
+     */
+    public static final String REGEXP = ColumnFormatter.REGEXP + RowFormatter.REGEXP;
+
+    /**
+     * Regular expression for matching coordinates - one or more letters representing column coordinate
+     * plus one or more numbers representing row coordinate
+     */
+    private static final String PARSE_REGEXP = "(" + ColumnFormatter.REGEXP + ")(" + RowFormatter.REGEXP + ")";
+
     /**
      * Matches a run of one or more letters followed by a run of one or more digits.
      * The run of letters is group 1 and the run of digits is group 2.
      */
-    private static final Pattern CELL_COORDINATES_PATTERN = Pattern.compile(ColumnFormatter.getRegExp()
-                    + "([0-9]+)");
+    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
 
     /**
      * Coordinates 0, 0 are often referenced, thus it makes sense to cache them
@@ -37,12 +49,12 @@ public class CellCoordinatesImpl implements CellCoordinates {
      */
     static CellCoordinatesImpl parse(String address) {
         Objects.requireNonNull(address);
-        Matcher matcher = CELL_COORDINATES_PATTERN.matcher(address);
+        Matcher matcher = PARSE_PATTERN.matcher(address);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid cell coordinates \"" + address + "\"");
         }
         try {
-            return of(Integer.parseInt(matcher.group(2)) - 1, ColumnFormatter.parse(matcher.group(1)));
+            return of(RowFormatter.parse(matcher.group(2)), ColumnFormatter.parse(matcher.group(1)));
         } catch (IllegalArgumentException ex) {
             // we want to see supplied string in error message
             throw new IllegalArgumentException(ex.getMessage() + "(coordinates \"" + address + "\")", ex);
@@ -90,7 +102,7 @@ public class CellCoordinatesImpl implements CellCoordinates {
     @Override
     public void appendAddress(StringBuilder builder) {
         ColumnFormatter.append(builder, getCol());
-        builder.append(getRow() + 1);
+        RowFormatter.append(builder, getRow());
     }
 
     @Override

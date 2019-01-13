@@ -3,7 +3,7 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.*;
 import org.jetbrains.annotations.Nullable;
 
-public class WorkbookFactoryImpl implements WorkbookFactoryInt {
+public class WorkbookFactoryImpl implements WorkbookProvider {
 
     @Override
     public CellCoordinates getCellCoordinates(int row, int col) {

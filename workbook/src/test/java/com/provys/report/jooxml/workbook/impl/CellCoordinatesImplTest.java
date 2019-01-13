@@ -7,11 +7,37 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 
 class CellCoordinatesImplTest {
+
+    public static Stream<Object[]> getRegExpTest() {
+        return Stream.of(
+                new Object[]{"A1", true, "A", "1"}
+                , new Object[]{"AA7", true, "AA", "7"}
+                , new Object[]{"AB30", true, "AB", "30"}
+                , new Object[]{"A0", false, null, null}
+                , new Object[]{"0", false, null, null}
+                , new Object[]{"A", false, null, null}
+                , new Object[]{"11", false, null, null}
+                , new Object[]{"$A1", false, null, null}
+                , new Object[]{"A$1", false, null, null}
+                , new Object[]{"Sheet!A1", false, null, null}
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void getRegExpTest(String address, boolean match, String group1, String group2) {
+        var matcher = Pattern.compile(CellCoordinatesImpl.REGEXP).matcher(address);
+        assertThat(matcher.matches()).isEqualTo(match);
+        if (match) {
+            assertThat(matcher.groupCount()).isEqualTo(0);
+        }
+    }
 
     public static Stream<Object[]> parseTest() {
         return Stream.of(

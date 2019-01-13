@@ -11,14 +11,7 @@ public class ColumnFormatter {
     /**
      * String that corresponds to column definition pattern
      */
-    private static final String REGEXP = "([a-zA-Z]+)";
-
-    /**
-     * Get String that will match valid column specification
-     */
-    public static String getRegExp() {
-        return REGEXP;
-    }
+    public static final String REGEXP = "[a-zA-Z]{1,3}";
 
     /**
      * Takes in a column reference and converts it from ALPHA-26 number format to 0-based column index.
@@ -61,7 +54,7 @@ public class ColumnFormatter {
         if (col > 25) {
             append(builder, (col / 26) - 1);
         }
-        builder.append((char) ((col % 26) + 65)); // 64 is 1 for zero > one based + 64 code of A
+        builder.append((char) ((col % 26) + 'A'));
     }
 
     /**

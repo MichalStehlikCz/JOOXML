@@ -43,11 +43,11 @@ public class Workbooks {
     }
 
     public static CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
-        return new CellReferenceImpl(sheetName, coordinates, rowAbsolute, colAbsolute);
+        return CellReferenceImpl.of(sheetName, coordinates, rowAbsolute, colAbsolute);
     }
 
     public static CellReference getCellReference(CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
-        return getCellReference(null, coordinates, rowAbsolute, colAbsolute);
+        return CellReferenceImpl.of(coordinates, rowAbsolute, colAbsolute);
     }
 
     public static CellReference getCellReference(@Nullable String sheetName, int row, int col) {
@@ -59,11 +59,11 @@ public class Workbooks {
     }
 
     public static CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates) {
-        return getCellReference(sheetName, coordinates, false, false);
+        return CellReferenceImpl.of(sheetName, coordinates);
     }
 
     public static CellReference getCellReference(CellCoordinates coordinates) {
-        return getCellReference(null, coordinates);
+        return CellReferenceImpl.of(coordinates);
     }
 
     public static CellReference parseCellReference(String address) {

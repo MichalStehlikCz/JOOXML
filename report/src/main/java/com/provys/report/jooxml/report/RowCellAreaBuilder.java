@@ -3,7 +3,6 @@ package com.provys.report.jooxml.report;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.Workbooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,7 +64,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @return reference to field bind if one exists, empty optional if no bind exists for given field
      */
     public Optional<CellBind> getFieldBindAt(int row, int col) {
-        return Optional.ofNullable(fieldBinds.get(Workbooks.getCellCoordinates(row, col)));
+        return Optional.ofNullable(fieldBinds.get(CellCoordinates.of(row, col)));
     }
 
     @Override

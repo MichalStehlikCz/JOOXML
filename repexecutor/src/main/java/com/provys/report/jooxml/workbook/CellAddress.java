@@ -48,7 +48,7 @@ public interface CellAddress {
      * @return CellAddress shifted by specified offset; returns empty optional if resulting coordinates are not valid
      * (e.g. would have negative row or column index)
      */
-    Optional<CellAddress> shiftByOrEmpty(int rowShift, int colShift);
+    Optional<? extends CellAddress> shiftByOrEmpty(int rowShift, int colShift);
 
     /**
      * Get cell reference shifted by specified offset

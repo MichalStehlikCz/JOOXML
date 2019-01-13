@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.workbook;
 
+import java.util.Optional;
+
 /**
  * Represents reference to cell in formula, named area etc.
  */
@@ -14,6 +16,16 @@ public interface CellReference extends CellAddress {
      * @return if column position is absolute (prefixed with $)
      */
     boolean isColAbsolute();
+
+    /**
+     * Get cell reference shifted by specified offset
+     *
+     * @param rowShift is row offset
+     * @param colShift is column offset
+     * @return CellReference shifted by specified offset; returns empty optional if resulting coordinates are not valid
+     * (e.g. would have negative row or column index)
+     */
+    Optional<? extends CellReference> shiftByOrEmpty(int rowShift, int colShift);
 
     /**
      * Get cell reference shifted by specified offset

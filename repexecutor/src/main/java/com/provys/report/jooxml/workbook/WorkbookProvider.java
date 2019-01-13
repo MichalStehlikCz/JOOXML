@@ -2,7 +2,10 @@ package com.provys.report.jooxml.workbook;
 
 import org.jetbrains.annotations.Nullable;
 
-public interface WorkbookFactoryInt {
+/**
+ * Interface allows to inject workbook provider to report executor
+ */
+public interface WorkbookProvider {
     CellCoordinates getCellCoordinates(int row, int col);
     CellCoordinates parseCellCoordinates(String formula);
     CellAddress getCellAddress(@Nullable String sheetName, int row, int col);

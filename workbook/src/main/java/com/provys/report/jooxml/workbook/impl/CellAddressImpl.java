@@ -15,12 +15,18 @@ public class CellAddressImpl implements CellAddress {
      * Matches optional sheet reference (anything followed by !), followed by a run of one or more letters followed by
      * a run of one or more digits.
      * Sheet reference is optional, column and row references are mandatory.
+     */
+    public static final String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
+            + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + ColumnFormatter.REGEXP + RowFormatter.REGEXP;
+    /**
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
-    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile(SheetNameFormatter.getRegExp() +
-                    ColumnFormatter.getRegExp() + "([0-9]+)",
-            Pattern.CASE_INSENSITIVE);
+    private static final String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
+            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?(" + ColumnFormatter.REGEXP + ")(" + RowFormatter.REGEXP + ')';
+    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
 
+    private static final CellAddressImpl A1 = new CellAddressImpl(null,
+            CellCoordinatesImpl.of(0, 0));
     private final String sheetName;
     private final CellCoordinates coordinates;
 
@@ -35,13 +41,13 @@ public class CellAddressImpl implements CellAddress {
      */
     static CellAddressImpl parse(String address) {
         Objects.requireNonNull(address);
-        Matcher matcher = CELL_ADDRESS_PATTERN.matcher(address);
+        Matcher matcher = PARSE_PATTERN.matcher(address);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid cell address \"" + address + "\"");
         }
         try {
             return of(SheetNameFormatter.parse(matcher.group(1), false).orElse(null),
-                    Workbooks.getCellCoordinates(Integer.parseInt(matcher.group(3)) - 1,
+                    Workbooks.getCellCoordinates(RowFormatter.parse(matcher.group(3)),
                     ColumnFormatter.parse(matcher.group(2))));
         } catch (IllegalArgumentException ex) {
             // we want to see supplied string in error message
@@ -59,7 +65,49 @@ public class CellAddressImpl implements CellAddress {
      * @throws IllegalArgumentException if sheet name is supplied, but empty
      */
     static CellAddressImpl of(@Nullable String sheetName, CellCoordinates coordinates) {
+        if ((sheetName == null) && (coordinates.getRow() == 0) && (coordinates.getCol() == 0)) {
+            return A1;
+        }
         return new CellAddressImpl(sheetName, coordinates);
+    }
+
+    /**
+     * Create cell address - variant without sheet reference. Might cache instances, thus is used instead of constructor
+     *
+     * @param coordinates are coordinates of cell on sheet
+     * @return instance of CellAddress with given coordinates
+     * @throws IllegalArgumentException if sheet name is supplied, but empty
+     */
+    static CellAddressImpl of(CellCoordinates coordinates) {
+        return of(null, coordinates);
+    }
+
+    /**
+     * Create cell address with optional sheet reference. Might cache instances, thus is used instead of constructor
+     *
+     * @param sheetName is name of sheet this object addresses. Can be empty, in that case cell address is considered
+     *                  relative within sheet
+     * @param row is row index of cell (zero based)
+     * @param col is column index of cell (zero based)
+     * @return instance of CellAddress with given coordinates
+     * @throws IllegalArgumentException if sheet name is supplied, but empty or creation of cell coordinates fails (e.g.
+     * row or column are negative)
+     */
+    static CellAddressImpl of(@Nullable String sheetName, int row, int col) {
+        return of(sheetName, Workbooks.getCellCoordinates(row, col));
+    }
+
+    /**
+     * Create cell address without sheet reference. Might cache instances, thus is used instead of constructor
+     *
+     * @param row is row index of cell (zero based)
+     * @param col is column index of cell (zero based)
+     * @return instance of CellAddress with given coordinates
+     * @throws IllegalArgumentException if sheet name is supplied, but empty or creation of cell coordinates fails (e.g.
+     * row or column are negative)
+     */
+    static CellAddressImpl of(int row, int col) {
+        return of(null, Workbooks.getCellCoordinates(row, col));
     }
 
     /**
@@ -97,9 +145,9 @@ public class CellAddressImpl implements CellAddress {
 
     @Override
     public void appendAddress(StringBuilder builder) {
-        getSheetName().ifPresent(sheetName -> SheetNameFormatter.append(builder, sheetName));
+        getSheetName().ifPresent(sheetName -> SheetNameFormatter.appendAddressPart(builder, sheetName));
         ColumnFormatter.append(builder, getCol());
-        builder.append(getRow() + 1);
+        RowFormatter.append(builder, getRow());
     }
 
     @Override
@@ -110,7 +158,7 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public Optional<CellAddress> shiftByOrEmpty(int rowShift, int colShift) {
+    public Optional<? extends CellAddressImpl> shiftByOrEmpty(int rowShift, int colShift) {
         if ((getRow() < -rowShift) || (getCol() < -colShift)) {
             return Optional.empty();
         }
@@ -118,7 +166,7 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public CellAddress shiftBy(int rowShift, int colShift) {
+    public CellAddressImpl shiftBy(int rowShift, int colShift) {
         if ((rowShift == 0) && (colShift == 0)) {
             return this;
         }
@@ -127,7 +175,30 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public CellAddress shiftBy(CellCoordinates shift) {
+    public CellAddressImpl shiftBy(CellCoordinates shift) {
         return shiftBy(shift.getRow(), shift.getCol());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CellAddressImpl that = (CellAddressImpl) o;
+        return Objects.equals(getSheetName(), that.getSheetName()) &&
+                Objects.equals(getCoordinates(), that.getCoordinates());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSheetName(), getCoordinates());
+    }
+
+    @Override
+    public String toString() {
+        return "CellAddressImpl{" +
+                "sheetName=" + getSheetName().map(value -> '"' + value + '"').orElse("null") +
+                ", row=" + getRow() +
+                ", col=" + getCol() +
+                '}';
     }
 }

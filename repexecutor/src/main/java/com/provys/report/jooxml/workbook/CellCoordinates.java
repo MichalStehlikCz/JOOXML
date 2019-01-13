@@ -5,6 +5,29 @@ import java.util.Optional;
 public interface CellCoordinates {
 
     /**
+     * Create cell coordinates for specified row and column.
+     *
+     * @param row is row index (zero based)
+     * @param col is column index (zero based)
+     * @return coordinates based on specified indices
+     */
+    public static CellCoordinates of(int row, int col) {
+        return Workbooks.getCellCoordinates(row, col);
+    }
+
+    /**
+     * Parse supplied address and convert it to cell coordinates
+     *
+     * @param address is cell address (as in Excel - e.g. A1)
+     * @return cell coordinates corresponding to supplied address
+     * @throws IllegalArgumentException if supplied address is not valid Excel cell reference, without sheet and with
+     * no absolute position
+     */
+    public static CellCoordinates parse(String address) {
+        return Workbooks.parseCellCoordinates(address);
+    }
+
+    /**
      * @return row index of cell; indices are zero-based (e.g. one lower than row number displayed in excel sheet)
      */
     int getRow();
@@ -53,5 +76,4 @@ public interface CellCoordinates {
      * @return cell address shifted by specified offset
      */
     CellCoordinates shiftBy(CellCoordinates shift);
-
 }

@@ -1,7 +1,6 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.Workbooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +40,7 @@ public class CellBindBuilder {
     }
 
     public CellBindBuilder setAddress(String address) {
-        setCoordinates(Workbooks.parseCellCoordinates(address));
+        setCoordinates(CellCoordinates.parse(address));
         return this;
     }
 }

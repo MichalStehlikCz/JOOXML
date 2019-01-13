@@ -4,6 +4,7 @@ import com.provys.report.jooxml.workbook.impl.ColumnFormatter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class ColumnFormatterTest {
 
-    public static Stream<Object[]> getRegExpTest() {
+    public static Stream<Object[]> getREGEXPTest() {
         return Stream.of(
                 new Object[]{"A", true}
                 , new Object[]{"K", true}
@@ -21,6 +22,7 @@ class ColumnFormatterTest {
                 , new Object[]{"ZZ", true}
                 , new Object[]{"AAA", true}
                 , new Object[]{"ZZZ", true}
+                , new Object[]{"AAAA", false}
                 , new Object[]{"", false}
                 , new Object[]{"$A", false}
                 , new Object[]{"A$", false}
@@ -30,9 +32,12 @@ class ColumnFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getRegExpTest(String colString, boolean match) {
-        Pattern pattern = Pattern.compile(ColumnFormatter.getRegExp());
-        assertThat(pattern.matcher(colString).matches()).isEqualTo(match);
+    public void getREGEXPTest(String colString, boolean match) {
+        Matcher matcher = Pattern.compile(ColumnFormatter.REGEXP).matcher(colString);
+        assertThat(matcher.matches()).isEqualTo(match);
+        if (match) {
+            assertThat(matcher.groupCount()).isEqualTo(0);
+        }
     }
 
     public static Stream<Object[]> parseTest() {

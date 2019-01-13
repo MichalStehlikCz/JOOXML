@@ -1,7 +1,6 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.Workbooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +34,7 @@ public final class CellBind {
      * @param address is string reference to cell in Excel format
      */
     public CellBind(String sourceColumn, String address) {
-        this(sourceColumn, Workbooks.parseCellCoordinates(address));
+        this(sourceColumn, CellCoordinates.parse(address));
     }
 
     public String getSourceColumn() {

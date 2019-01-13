@@ -2,69 +2,54 @@ package com.provys.report.jooxml.workbook;
 
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.Objects;
 
-@Singleton
-public class Workbooks {
+class Workbooks {
 
-    private static Workbooks instance;
+    private static WorkbookProvider provider;
+
+    static CellCoordinates getCellCoordinates(int row, int col) {
+        return provider.getCellCoordinates(row, col);
+    }
+
+    static CellCoordinates parseCellCoordinates(String address) {
+        return provider.parseCellCoordinates(address);
+    }
+
+    static CellValue getFormulaValue(String formula) {
+        return provider.getFormulaValue(formula);
+    }
+
+    static CellValue getStringValue(@Nullable String value) {
+        return provider.getStringValue(value);
+    }
+
+    static CellValue getNumericValue(@Nullable Double value) {
+        return provider.getNumericValue(value);
+    }
+
+    static CellValue getBooleanValue(@Nullable Boolean value) {
+        return provider.getBooleanValue(value);
+    }
+
+    static CellValue getErrorValue(@Nullable Byte value) {
+        return provider.getErrorValue(value);
+    }
+
+    static CellValue getBlankValue() {
+        return provider.getBlankValue();
+    }
+
+    static CellProperties getProperties(@Nullable Integer styleIndex) {
+        return provider.getProperties(styleIndex);
+    }
+
+    static void setWorkbookProvider(WorkbookProvider provider) {
+        Workbooks.provider = Objects.requireNonNull(provider);
+    }
 
     /**
-     * Create cell coordinates for specified row and column.
-     *
-     * @param row is row index (zero based)
-     * @param col is column index (zero based)
-     * @return coordinates based on specified indices
+     * Not instantiable class, it acts as holder for granting access to workbook provider
      */
-    public static CellCoordinates getCellCoordinates(int row, int col) {
-        return instance.getWorkbookFactory().getCellCoordinates(row, col);
-    }
-
-    public static CellCoordinates parseCellCoordinates(String address) {
-        return instance.getWorkbookFactory().parseCellCoordinates(address);
-    }
-
-    public static CellValue getFormulaValue(String formula) {
-        return instance.getWorkbookFactory().getFormulaValue(formula);
-    }
-
-    public static CellValue getStringValue(@Nullable String value) {
-        return instance.getWorkbookFactory().getStringValue(value);
-    }
-
-    public static CellValue getNumericValue(@Nullable Double value) {
-        return instance.getWorkbookFactory().getNumericValue(value);
-    }
-
-    public static CellValue getBooleanValue(@Nullable Boolean value) {
-        return instance.getWorkbookFactory().getBooleanValue(value);
-    }
-
-    public static CellValue getErrorValue(@Nullable Byte value) {
-        return instance.getWorkbookFactory().getErrorValue(value);
-    }
-
-    public static CellValue getBlankValue() {
-        return instance.getWorkbookFactory().getBlankValue();
-    }
-
-    public static CellProperties getProperties(@Nullable Integer styleIndex) {
-        return instance.getWorkbookFactory().getProperties(styleIndex);
-    }
-
-    @SuppressWarnings("CdiInjectionPointsInspection")
-    @Inject
-    private WorkbookFactoryInt workbookFactory;
-
-    /**
-     * Initializes static pointer to Workbooks instance. Invoked from WorkbooksSEInitializer or WorkbooksEEInitializer.
-     */
-    void init() {
-        instance = this;
-    }
-
-    private WorkbookFactoryInt getWorkbookFactory() {
-        return workbookFactory;
-    }
+    private Workbooks() {};
 }

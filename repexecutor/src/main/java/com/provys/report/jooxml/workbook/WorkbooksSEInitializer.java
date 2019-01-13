@@ -14,14 +14,15 @@ import javax.inject.Singleton;
 @Singleton
 class WorkbooksSEInitializer {
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    Workbooks workbooks;
+    private WorkbookProvider workbookProvider;
 
     /**
      * Ensures initialisation in Java SE environment with Weld
      */
     public void initSE(@Observes ContainerInitialized event) {
-        workbooks.init();
+        Workbooks.setWorkbookProvider(workbookProvider);
     }
 
 }

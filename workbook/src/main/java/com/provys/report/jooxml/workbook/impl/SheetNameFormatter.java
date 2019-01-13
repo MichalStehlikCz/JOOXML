@@ -12,29 +12,24 @@ import java.util.regex.Pattern;
 public class SheetNameFormatter {
 
     /** The character (!) that separates sheet names from cell references */
-    private static final char SHEET_NAME_DELIMITER = '!';
+    public static final char SHEET_NAME_DELIMITER = '!';
     /** The character (') used to quote sheet names when they contain special characters */
     private static final char SPECIAL_NAME_DELIMITER = '\'';
     /** Regexp for sheet name without escaping */
-    private static final String NOESCAPE_REGEXP = "[a-zA-Z][0-9a-zA-Z\\._]+";
+    private static final String NOESCAPE_REGEXP = "[a-zA-Z][0-9a-zA-Z_\\.]*";
     /** Pattern for matching of sheet name without escaping */
     private static final Pattern NOESCAPE_PATTERN = Pattern.compile(NOESCAPE_REGEXP);
     /** Pattern for matching cell address - used to decide if escaping is to be used */
-    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("\\$?" + ColumnFormatter.getRegExp() + "\\$?" +
-            "([0-9]+)");
+    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("\\$?" + ColumnFormatter.REGEXP + "\\$?" +
+            RowFormatter.REGEXP);
     /**
-     * String that corresponds to sheet specification pattern; allows matching of missing sheet name specification
+     * String that corresponds to sheet specification pattern; it is either valid unescaped sheet name or escaped sheet
+     * string
      */
-    private static final String REGEXP = "[([" + NOESCAPE_REGEXP + "]" +
-            "|[" + SPECIAL_NAME_DELIMITER + "." + SPECIAL_NAME_DELIMITER + "])" +
-            SHEET_NAME_DELIMITER + "]|()";
-
-    /**
-     * Get String that will match valid sheet specification
-     */
-    public static String getRegExp() {
-        return REGEXP;
-    }
+    public static final String REGEXP = "(?:" + NOESCAPE_REGEXP + ")" +
+            "|(?:" + SPECIAL_NAME_DELIMITER +
+            "(?:[^" + SPECIAL_NAME_DELIMITER + "]|" + SPECIAL_NAME_DELIMITER + SPECIAL_NAME_DELIMITER + ")+" +
+            SPECIAL_NAME_DELIMITER + ")";
 
     /**
      * Takes in a sheet reference and converts it from potentially escaped string format (excluding final !) to sheet
@@ -46,9 +41,12 @@ public class SheetNameFormatter {
      * @return non-escaped sheet name
      * @throws IllegalArgumentException if supplied string is empty or does not contain valid sheet representation
      */
-    static Optional<String> parse(String sheetString, boolean validate) {
-        if (sheetString.isEmpty()) {
+    static Optional<String> parse(@Nullable String sheetString, boolean validate) {
+        if (sheetString == null) {
             return Optional.empty();
+        }
+        if (sheetString.isEmpty()) {
+            throw new IllegalArgumentException("Sheet name cannot be empty");
         }
         if (sheetString.charAt(0) != SPECIAL_NAME_DELIMITER) {
             // unquoted sheet name - return as it is
@@ -109,17 +107,14 @@ public class SheetNameFormatter {
     }
 
     /**
-     * Convert column index (zero based) to excel string representing the column (e.g. A, B, ...)
+     * Convert sheet name to valid sheet name string - escape with ' if sheet name does not fulfill conditions for
+     * simple sheet name
      *
      * @param builder is string builder result should be appended to
      * @param sheetName is sheet name to be appended; might be null but cannot be empty
      * @throws IllegalArgumentException if supplied sheet name is empty string
      */
-    static void append(StringBuilder builder, @Nullable String sheetName) {
-        if (sheetName == null) {
-            // sheet name not specified - nothing to append
-            return;
-        }
+    static void append(StringBuilder builder, String sheetName) {
         if (sheetName.isEmpty()) {
             throw new IllegalArgumentException("Sheet name cannot be empty");
         }
@@ -137,7 +132,20 @@ public class SheetNameFormatter {
         } else {
             builder.append(sheetName);
         }
-        builder.append(SHEET_NAME_DELIMITER);
+    }
+
+    /**
+     * Append part of address representing sheet name. Similar to append, but adds ! after the end of sheet name and
+     * supports null sheetName parameter, in that case, appends nothing
+     *
+     * @param builder is string builder sheet name should be appended to
+     * @param sheetName is sheet name, potentially null
+     */
+    static void appendAddressPart(StringBuilder builder, @Nullable String sheetName) {
+        if (sheetName != null) {
+            append(builder, sheetName);
+            builder.append(SHEET_NAME_DELIMITER);
+        }
     }
 
     /**

@@ -15,15 +15,16 @@ import javax.servlet.ServletContext;
 @Singleton
 class WorkbooksEEInitializer {
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    Workbooks workbooks;
+    private WorkbookProvider workbookProvider;
 
     /**
      * Ensures initialisation in Java EE / Servlet container
      * @param payload is ignored
      */
     public void initEE(@Observes @Initialized(ApplicationScoped.class) ServletContext payload) {
-        workbooks.init();
+        Workbooks.setWorkbookProvider(workbookProvider);
     }
 
 }

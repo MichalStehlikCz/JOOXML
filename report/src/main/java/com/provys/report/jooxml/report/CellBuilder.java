@@ -2,7 +2,6 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.Workbooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -31,7 +30,7 @@ class CellBuilder {
     }
 
     CellBuilder(TplCell tplCell, RowAreaBuilder region) {
-        this.coordinates = Workbooks.getCellCoordinates(tplCell.getRowIndex() - region.getFirstRow()
+        this.coordinates = CellCoordinates.of(tplCell.getRowIndex() - region.getFirstRow()
                 , tplCell.getColIndex());
         this.tplCell = tplCell;
         this.bindColumn = null;
