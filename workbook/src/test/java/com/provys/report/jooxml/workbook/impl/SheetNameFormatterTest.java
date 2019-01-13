@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class SheetNameFormatterTest {
 
-    public static Stream<Object[]> getREGEXPTest() {
+    static Stream<Object[]> getREGEXPTest() {
         return Stream.of(
                 new Object[]{"", false}
                 , new Object[]{"x", true}
@@ -37,12 +37,12 @@ class SheetNameFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getREGEXPTest(String sheetString, boolean match) {
+    void getREGEXPTest(String sheetString, boolean match) {
         Matcher matcher = Pattern.compile(SheetNameFormatter.REGEXP).matcher(sheetString);
         assertThat(matcher.matches()).isEqualTo(match);
     }
 
-    public static Stream<Object[]> parseTest() {
+    static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{null, null, null, null}
                 , new Object[]{"x", "x", null, null}
@@ -65,7 +65,7 @@ class SheetNameFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void parseTest(String sheetString, String sheetName, Class<Throwable> exception, String message) {
+    void parseTest(String sheetString, String sheetName, Class<Throwable> exception, String message) {
         if (exception == null) {
             assertThat(SheetNameFormatter.parse(sheetString)).isEqualTo(Optional.ofNullable(sheetName));
         } else {
@@ -76,7 +76,7 @@ class SheetNameFormatterTest {
         }
     }
 
-    public static Stream<Object[]> appendTest() {
+    static Stream<Object[]> appendTest() {
         return Stream.of(
                 new Object[]{"Sheet", "Sheet"}
                 , new Object[]{"0123456", "'0123456'"}
@@ -90,13 +90,13 @@ class SheetNameFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void appendTest(String sheetName, String result) {
+    void appendTest(String sheetName, String result) {
         StringBuilder builder = new StringBuilder("Prefix");
         SheetNameFormatter.append(builder, sheetName);
         assertThat(builder.toString()).isEqualTo("Prefix" + result);
     }
 
-    public static Stream<Object[]> appendAddressPartTest() {
+    static Stream<Object[]> appendAddressPartTest() {
         return Stream.of(
                 new Object[]{null, ""}
                 , new Object[]{"Sheet", "Sheet!"}
@@ -111,7 +111,7 @@ class SheetNameFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void appendAddressPartTest(String sheetName, @Nullable String result) {
+    void appendAddressPartTest(String sheetName, @Nullable String result) {
         StringBuilder builder = new StringBuilder("Prefix");
         SheetNameFormatter.appendAddressPart(builder, sheetName);
         assertThat(builder.toString()).isEqualTo("Prefix" + result);

@@ -497,7 +497,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
                     LOG.warn("Unexpected cell type {}; value ignored", value.getCellType());
                     cell = createCell(colIndex);
         }
-        properties.getStyleIndex().ifPresent(styleIndex -> cell.setCellStyle(styleIndex));
+        properties.getStyleIndex().ifPresent(cell::setCellStyle);
     }
 
     /**

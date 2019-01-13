@@ -795,7 +795,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
                 // to cells in CalculationChain...
                 for (Sheet sheet : _wb) {
                     for (Row row : sheet) {
-                        List<Cell> cells = new ArrayList();
+                        List<Cell> cells = new ArrayList<>();
                         for (Cell cell : row){
                             cells.add(cell);
                         }

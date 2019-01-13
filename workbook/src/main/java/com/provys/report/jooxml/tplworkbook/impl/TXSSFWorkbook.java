@@ -22,7 +22,7 @@ import java.util.List;
  * It is not intended to be generic library for work with Excel file like POI and it is intentionally read-only, as
  * JOOXML report should read template, but it should not modify it
  */
-public class TXSSFWorkbook implements TplWorkbook {
+class TXSSFWorkbook implements TplWorkbook {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
 

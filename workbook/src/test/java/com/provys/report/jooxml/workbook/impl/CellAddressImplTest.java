@@ -3,7 +3,6 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.jetbrains.annotations.Nullable;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CellAddressImplTest {
 
-    public static Stream<Object[]> getREGEXPTest() {
+    static Stream<Object[]> getREGEXPTest() {
         return Stream.of(
                 new Object[]{"A1", true}
                 , new Object[]{"AA7", true}
@@ -37,7 +36,7 @@ class CellAddressImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getREGEXPTest(String address, boolean match) {
+    void getREGEXPTest(String address, boolean match) {
         var matcher = Pattern.compile(CellAddressImpl.REGEXP).matcher(address);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
@@ -45,7 +44,7 @@ class CellAddressImplTest {
         }
     }
 
-    public static Stream<Object[]> parseTest() {
+    static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{"A1", Workbooks.getCellAddress(0, 0), null, null}
                 , new Object[]{"AA7", Workbooks.getCellAddress(6, 26), null, null}
@@ -64,7 +63,7 @@ class CellAddressImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void parseTest(String addressString, CellAddress address, Class<Throwable> exception, String message) {
+    void parseTest(String addressString, CellAddress address, Class<Throwable> exception, String message) {
         if (exception == null) {
             assertThat(CellAddressImpl.parse(addressString)).isEqualTo(address);
         } else {
@@ -75,7 +74,7 @@ class CellAddressImplTest {
         }
     }
 
-    public static Stream<Object[]> ofTest() {
+    static Stream<Object[]> ofTest() {
         return Stream.of(
                 new Object[]{null, Workbooks.getCellCoordinates(0, 0), null}
                 , new Object[]{"Sheet1", Workbooks.getCellCoordinates(5, 15), null}
@@ -87,15 +86,17 @@ class CellAddressImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void ofTest(String sheetName, CellCoordinates coordinates, Class<Throwable> exception) {
+    void ofTest(String sheetName, CellCoordinates coordinates, Class<Throwable> exception) {
         if (exception == null) {
+            //noinspection DuplicateExpressions
             assertThatCode(() -> CellAddressImpl.of(sheetName, coordinates)).doesNotThrowAnyException();
         } else {
+            //noinspection DuplicateExpressions
             assertThatThrownBy(() -> CellAddressImpl.of(sheetName, coordinates)).isInstanceOf(exception);
         }
     }
 
-    public static Stream<Object[]> getSheetNameTest() {
+    static Stream<Object[]> getSheetNameTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(null, Workbooks.getCellCoordinates(0, 0)), null}
                 , new Object[]{CellAddressImpl.of("Sheet1", Workbooks.getCellCoordinates(5, 15)),
@@ -111,7 +112,7 @@ class CellAddressImplTest {
         assertThat(address.getSheetName()).isEqualTo(Optional.ofNullable(sheetName));
     }
 
-    public static Stream<Object[]> getCoordinatesTest() {
+    static Stream<Object[]> getCoordinatesTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(null, Workbooks.getCellCoordinates(0, 0)),
                         Workbooks.getCellCoordinates(0, 0)}
@@ -128,7 +129,7 @@ class CellAddressImplTest {
         assertThat(address.getCoordinates()).isEqualTo(coordinates);
     }
 
-    public static Stream<Object[]> getRowTest() {
+    static Stream<Object[]> getRowTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(null, Workbooks.getCellCoordinates(0, 0)), 0}
                 , new Object[]{CellAddressImpl.of("Sheet1", Workbooks.getCellCoordinates(5, 15)),5}
@@ -142,7 +143,7 @@ class CellAddressImplTest {
         assertThat(address.getRow()).isEqualTo(row);
     }
 
-    public static Stream<Object[]> getColTest() {
+    static Stream<Object[]> getColTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(null, Workbooks.getCellCoordinates(0, 0)), 0}
                 , new Object[]{CellAddressImpl.of("Sheet1", Workbooks.getCellCoordinates(5, 15)), 15}
@@ -156,7 +157,7 @@ class CellAddressImplTest {
         assertThat(address.getCol()).isEqualTo(col);
     }
 
-    public static Stream<Object[]> appendAddressTest() {
+    static Stream<Object[]> appendAddressTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(0, 0), "A1"}
                 , new Object[]{CellAddressImpl.of(6, 26), "AA7"}
@@ -174,7 +175,7 @@ class CellAddressImplTest {
         assertThat(builder.toString()).isEqualTo("Prefix" + result);
     }
 
-    public static Stream<Object[]> getAddressTest() {
+    static Stream<Object[]> getAddressTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(0, 0), "A1"}
                 , new Object[]{CellAddressImpl.of(6, 26), "AA7"}
@@ -190,7 +191,7 @@ class CellAddressImplTest {
         assertThat(address.getAddress()).isEqualTo(result);
     }
 
-    public static Stream<Object[]> shiftByOrEmptyTest() {
+    static Stream<Object[]> shiftByOrEmptyTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(0, 0), 0, 0, CellAddressImpl.of(0, 0)}
                 , new Object[]{CellAddressImpl.of("My_Sheet", 5, 10), 0, 0,
@@ -214,7 +215,7 @@ class CellAddressImplTest {
         assertThat(address.shiftByOrEmpty(rowShift, colShift)).isEqualTo(Optional.ofNullable(result));
     }
 
-    public static Stream<Object[]> shiftByTest() {
+    static Stream<Object[]> shiftByTest() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(0, 0), 0, 0, CellAddressImpl.of(0, 0)}
                 , new Object[]{CellAddressImpl.of("My_Sheet", 5, 10), 0, 0,
@@ -242,7 +243,7 @@ class CellAddressImplTest {
         }
     }
 
-    public static Stream<Object[]> shiftBy1Test() {
+    static Stream<Object[]> shiftBy1Test() {
         return Stream.of(
                 new Object[]{CellAddressImpl.of(0, 0), Workbooks.getCellCoordinates(0, 0),
                         CellAddressImpl.of(0, 0)}

@@ -34,7 +34,7 @@ public class CellCoordinatesImpl implements CellCoordinates {
     /**
      * Coordinates 0, 0 are often referenced, thus it makes sense to cache them
      */
-    private static CellCoordinatesImpl A1 = new CellCoordinatesImpl(0, 0);
+    private static final CellCoordinatesImpl A1 = new CellCoordinatesImpl(0, 0);
 
     private final int row;
     private final int col;
@@ -48,7 +48,9 @@ public class CellCoordinatesImpl implements CellCoordinates {
      * no absolute position
      */
     static CellCoordinatesImpl parse(String address) {
-        Objects.requireNonNull(address);
+        if (address.isEmpty()) {
+            throw new IllegalArgumentException("Empty string passed to cell reference parsing");
+        }
         Matcher matcher = PARSE_PATTERN.matcher(address);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid cell coordinates \"" + address + "\"");

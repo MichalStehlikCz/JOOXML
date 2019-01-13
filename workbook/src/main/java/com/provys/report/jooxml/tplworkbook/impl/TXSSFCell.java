@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.Optional;
 
-public class TXSSFCell implements TplCell {
+class TXSSFCell implements TplCell {
 
     private static final Logger LOG = LogManager.getLogger(TXSSFCell.class.getName());
     private final TplRow row;

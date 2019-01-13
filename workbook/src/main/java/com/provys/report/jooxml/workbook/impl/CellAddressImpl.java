@@ -36,11 +36,13 @@ public class CellAddressImpl implements CellAddress {
      * @param address is cell address compatible with Excel, with no absolute row nor cell coordinate. Sheet part is
      *               optional
      * @return CellAddress corresponding to supplied address
-     * @throws IllegalArgumentException if supplied string is not valid Excell cell address or if it contains absolute
+     * @throws IllegalArgumentException if supplied string is not valid Excel cell address or if it contains absolute
      * row or column reference ($ prefix)
      */
     static CellAddressImpl parse(String address) {
-        Objects.requireNonNull(address);
+        if (address.isEmpty()) {
+            throw new IllegalArgumentException("Empty string passed to cell reference parsing");
+        }
         Matcher matcher = PARSE_PATTERN.matcher(address);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid cell address \"" + address + "\"");

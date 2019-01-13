@@ -48,5 +48,5 @@ public class RowFormatter {
     /**
      * Utility class with only static methods
      */
-    private RowFormatter() {};
+    private RowFormatter() {}
 }

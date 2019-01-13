@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 
+@SuppressWarnings("WeakerAccess")
 @Singleton
 public class TXSSFWorkbookFactory implements TplWorkbookFactory {
     @Override

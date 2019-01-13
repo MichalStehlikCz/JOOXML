@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class ColumnFormatterTest {
 
-    public static Stream<Object[]> getREGEXPTest() {
+    static Stream<Object[]> getREGEXPTest() {
         return Stream.of(
                 new Object[]{"A", true}
                 , new Object[]{"K", true}
@@ -32,7 +32,7 @@ class ColumnFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getREGEXPTest(String colString, boolean match) {
+    void getREGEXPTest(String colString, boolean match) {
         Matcher matcher = Pattern.compile(ColumnFormatter.REGEXP).matcher(colString);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
@@ -40,7 +40,7 @@ class ColumnFormatterTest {
         }
     }
 
-    public static Stream<Object[]> parseTest() {
+    static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{"A", 0, null, null}
                 , new Object[]{"K", 10, null, null}
@@ -60,7 +60,7 @@ class ColumnFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void parseTest(String colRef, int result, Class<Throwable> exception, String message) {
+    void parseTest(String colRef, int result, Class<Throwable> exception, String message) {
         if (exception == null) {
             assertThat(ColumnFormatter.parse(colRef)).isEqualTo(result);
         } else {
@@ -71,7 +71,7 @@ class ColumnFormatterTest {
         }
     }
 
-    public static Stream<Object[]> appendTest() {
+    static Stream<Object[]> appendTest() {
         return Stream.of(
                 new Object[]{0, "A", null}
                 , new Object[]{10, "K", null}
@@ -87,7 +87,7 @@ class ColumnFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void appendTest(int col, String result, Class<Throwable> exception) {
+    void appendTest(int col, String result, Class<Throwable> exception) {
         StringBuilder builder = new StringBuilder("Prefix");
         if (exception == null) {
             ColumnFormatter.append(builder, col);

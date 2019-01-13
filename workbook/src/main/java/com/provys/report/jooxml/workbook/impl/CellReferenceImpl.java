@@ -27,7 +27,7 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
     private static final String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
-            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?([$]?)(" + ColumnFormatter.REGEXP + ")([$]?)(" +
+            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?([$])?(" + ColumnFormatter.REGEXP + ")([$])?(" +
             RowFormatter.REGEXP + ')';
     private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
 
@@ -43,7 +43,9 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
      * @throws IllegalArgumentException if supplied string is not valid Excel cell reference
      */
     static CellReferenceImpl parse(String reference) {
-        Objects.requireNonNull(reference);
+        if (reference.isEmpty()) {
+            throw new IllegalArgumentException("Empty string passed to cell reference parsing");
+        }
         Matcher matcher = PARSE_PATTERN.matcher(reference);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid cell reference \"" + reference + "\"");
@@ -107,6 +109,19 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
     @Override
     public boolean isColAbsolute() {
         return colAbsolute;
+    }
+
+    @Override
+    public void appendAddress(StringBuilder builder) {
+        getSheetName().ifPresent(sheetName -> SheetNameFormatter.appendAddressPart(builder, sheetName));
+        if (isColAbsolute()) {
+            builder.append('$');
+        }
+        ColumnFormatter.append(builder, getCol());
+        if (isRowAbsolute()) {
+            builder.append('$');
+        }
+        RowFormatter.append(builder, getRow());
     }
 
     @Override

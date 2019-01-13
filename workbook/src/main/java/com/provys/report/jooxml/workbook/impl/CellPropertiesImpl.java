@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CellPropertiesImpl implements CellProperties {
+class CellPropertiesImpl implements CellProperties {
 
     private final Integer styleIndex;
 

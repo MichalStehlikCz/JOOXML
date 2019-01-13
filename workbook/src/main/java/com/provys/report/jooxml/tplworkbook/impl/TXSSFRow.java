@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class TXSSFRow implements TplRow {
+class TXSSFRow implements TplRow {
 
     private final int rowIndex;
     private final RowProperties properties;

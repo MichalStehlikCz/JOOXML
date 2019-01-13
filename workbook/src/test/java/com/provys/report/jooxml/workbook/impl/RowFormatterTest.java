@@ -1,6 +1,5 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -10,10 +9,9 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RowFormatterTest {
-    public static Stream<Object[]> getREGEXPTest() {
+    static Stream<Object[]> getREGEXPTest() {
         return Stream.of(
                 new Object[]{"1", true}
                 , new Object[]{"15", true}
@@ -28,7 +26,7 @@ class RowFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getREGEXPTest(String rowString, boolean match) {
+    void getREGEXPTest(String rowString, boolean match) {
         Matcher matcher = Pattern.compile(RowFormatter.REGEXP).matcher(rowString);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
@@ -36,7 +34,7 @@ class RowFormatterTest {
         }
     }
 
-    public static Stream<Object[]> parseTest() {
+    static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{"1", 0, null, null}
                 , new Object[]{"11", 10, null, null}
@@ -51,7 +49,7 @@ class RowFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void parseTest(String colRef, int result, Class<Throwable> exception, String message) {
+    void parseTest(String colRef, int result, Class<Throwable> exception, String message) {
         if (exception == null) {
             assertThat(RowFormatter.parse(colRef)).isEqualTo(result);
         } else {
@@ -62,7 +60,7 @@ class RowFormatterTest {
         }
     }
 
-    public static Stream<Object[]> appendTest() {
+    static Stream<Object[]> appendTest() {
         return Stream.of(
                 new Object[]{0, "1", null}
                 , new Object[]{10, "11", null}
@@ -73,7 +71,7 @@ class RowFormatterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void appendTest(int col, String result, Class<Throwable> exception) {
+    void appendTest(int col, String result, Class<Throwable> exception) {
         StringBuilder builder = new StringBuilder("Prefix");
         if (exception == null) {
             RowFormatter.append(builder, col);

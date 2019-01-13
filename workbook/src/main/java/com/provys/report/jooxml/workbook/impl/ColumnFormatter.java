@@ -60,5 +60,5 @@ public class ColumnFormatter {
     /**
      * Utility class with only static methods
      */
-    private ColumnFormatter() {};
+    private ColumnFormatter() {}
 }

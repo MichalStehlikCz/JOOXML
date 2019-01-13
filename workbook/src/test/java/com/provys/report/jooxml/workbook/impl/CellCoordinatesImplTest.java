@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class CellCoordinatesImplTest {
 
-    public static Stream<Object[]> getRegExpTest() {
+    static Stream<Object[]> getRegExpTest() {
         return Stream.of(
                 new Object[]{"A1", true, "A", "1"}
                 , new Object[]{"AA7", true, "AA", "7"}
@@ -31,7 +31,7 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getRegExpTest(String address, boolean match, String group1, String group2) {
+    void getRegExpTest(String address, boolean match, String group1, String group2) {
         var matcher = Pattern.compile(CellCoordinatesImpl.REGEXP).matcher(address);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
@@ -39,7 +39,7 @@ class CellCoordinatesImplTest {
         }
     }
 
-    public static Stream<Object[]> parseTest() {
+    static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{"A1", CellCoordinatesImpl.of(0, 0), null, null}
                 , new Object[]{"AA7", CellCoordinatesImpl.of(6, 26), null, null}
@@ -57,7 +57,7 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void parseTest(String address, CellCoordinates coordinates, Class<Throwable> exception, String message) {
+    void parseTest(String address, CellCoordinates coordinates, Class<Throwable> exception, String message) {
         if (exception == null) {
             assertThat(CellCoordinatesImpl.parse(address)).isEqualTo(coordinates);
         } else {
@@ -68,7 +68,7 @@ class CellCoordinatesImplTest {
         }
     }
 
-    public static Stream<Object[]> ofTest() {
+    static Stream<Object[]> ofTest() {
         return Stream.of(
                 new Object[]{0, 0, null}
                 , new Object[]{26, 8, null}
@@ -80,25 +80,27 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void ofTest(int row, int col, Class<Throwable> exception) {
+    void ofTest(int row, int col, Class<Throwable> exception) {
         if (exception == null) {
+            //noinspection DuplicateExpressions
             assertThatCode(() -> CellCoordinatesImpl.of(row, col)).doesNotThrowAnyException();
         } else {
+            //noinspection DuplicateExpressions
             assertThatThrownBy(() -> CellCoordinatesImpl.of(row, col)).isInstanceOf(exception);
         }
     }
 
     @Test
-    public void getRowTest() {
+    void getRowTest() {
         assertThat(CellCoordinatesImpl.of(5, 3).getRow()).isEqualTo(5);
     }
 
     @Test
-    public void getColTest() {
+    void getColTest() {
         assertThat(CellCoordinatesImpl.of(5, 3).getCol()).isEqualTo(3);
     }
 
-    public static Stream<Object[]> appendAddressTest() {
+    static Stream<Object[]> appendAddressTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), "A1"}
                 , new Object[]{CellCoordinatesImpl.of(15234, 32), "AG15235"}
@@ -107,13 +109,13 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void appendAddressTest(CellCoordinatesImpl coordinates, String result) {
+    void appendAddressTest(CellCoordinatesImpl coordinates, String result) {
         StringBuilder builder = new StringBuilder("Prefix");
         coordinates.appendAddress(builder);
         assertThat(builder.toString()).isEqualTo("Prefix" + result);
     }
 
-    public static Stream<Object[]> getAddressTest() {
+    static Stream<Object[]> getAddressTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), "A1"}
                 , new Object[]{CellCoordinatesImpl.of(15234, 32), "AG15235"}
@@ -122,11 +124,11 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void getAddressTest(CellCoordinatesImpl coordinates, String result) {
+    void getAddressTest(CellCoordinatesImpl coordinates, String result) {
         assertThat(coordinates.getAddress()).isEqualTo(result);
     }
 
-    public static Stream<Object[]> shiftByOrEmptyTest() {
+    static Stream<Object[]> shiftByOrEmptyTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), 0, 0, CellCoordinatesImpl.of(0, 0)}
                 , new Object[]{CellCoordinatesImpl.of(15234, 32), 3, 5,
@@ -142,12 +144,12 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void shiftByOrEmptyTest(CellCoordinatesImpl coordinates, int rowShift, int colShift,
-                                   @Nullable CellCoordinates result) {
+    void shiftByOrEmptyTest(CellCoordinatesImpl coordinates, int rowShift, int colShift,
+                            @Nullable CellCoordinates result) {
         assertThat(coordinates.shiftByOrEmpty(rowShift, colShift)).isEqualTo(Optional.ofNullable(result));
     }
 
-    public static Stream<Object[]> shiftByTest() {
+    static Stream<Object[]> shiftByTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), 0, 0,
                         CellCoordinatesImpl.of(0, 0), null}
@@ -166,8 +168,8 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void shiftByTest(CellCoordinatesImpl coordinates, int rowShift, int colShift, CellCoordinates result,
-                            Class<Throwable> exception) {
+    void shiftByTest(CellCoordinatesImpl coordinates, int rowShift, int colShift, CellCoordinates result,
+                     Class<Throwable> exception) {
         if (exception == null) {
             assertThat(coordinates.shiftBy(rowShift, colShift)).isEqualTo(result);
         } else {
@@ -175,7 +177,7 @@ class CellCoordinatesImplTest {
         }
     }
 
-    public static Stream<Object[]> shiftBy1Test() {
+    static Stream<Object[]> shiftBy1Test() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), CellCoordinatesImpl.of(0, 0),
                         CellCoordinatesImpl.of(0, 0)}
@@ -186,11 +188,11 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void shiftBy1Test(CellCoordinatesImpl coordinates, CellCoordinates shiftBy, CellCoordinates result) {
+    void shiftBy1Test(CellCoordinatesImpl coordinates, CellCoordinates shiftBy, CellCoordinates result) {
         assertThat(coordinates.shiftBy(shiftBy)).isEqualTo(result);
     }
 
-    public static Stream<Object[]> equalsTest() {
+    static Stream<Object[]> equalsTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), CellCoordinatesImpl.of(0, 0), true}
                 , new Object[]{CellCoordinatesImpl.of(15, 20), CellCoordinatesImpl.of(15, 20), true}
@@ -203,11 +205,11 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void equalsTest(CellCoordinatesImpl coordinates, Object others, Boolean result) {
-        assertThat(coordinates.equals(others)).isEqualTo(result);
+    void equalsTest(CellCoordinatesImpl coordinates, Object other, Boolean result) {
+        assertThat(coordinates.equals(other)).isEqualTo(result);
     }
 
-    public static Stream<Object[]> hashCodeTest() {
+    static Stream<Object[]> hashCodeTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), CellCoordinatesImpl.of(0, 0)}
                 , new Object[]{CellCoordinatesImpl.of(15, 20), CellCoordinatesImpl.of(15, 20)}
@@ -216,13 +218,13 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void hashCodeTest(CellCoordinatesImpl coordinates, CellCoordinatesImpl other) {
+    void hashCodeTest(CellCoordinatesImpl coordinates, CellCoordinatesImpl other) {
         if (coordinates.equals(other)) {
             assertThat(coordinates.hashCode()).isEqualTo(other.hashCode());
         }
     }
 
-    public static Stream<Object[]> toStringTest() {
+    static Stream<Object[]> toStringTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesImpl.of(0, 0), "CellCoordinatesImpl{row=0, col=0}"}
                 , new Object[]{CellCoordinatesImpl.of(15, 15875), "CellCoordinatesImpl{row=15, col=15875}"}
@@ -231,7 +233,7 @@ class CellCoordinatesImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void toStringTest(CellCoordinatesImpl coordinates, String result) {
+    void toStringTest(CellCoordinatesImpl coordinates, String result) {
         assertThat(coordinates.toString()).isEqualTo(result);
     }
 }

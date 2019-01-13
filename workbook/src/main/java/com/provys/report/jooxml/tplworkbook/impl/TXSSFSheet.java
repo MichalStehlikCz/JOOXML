@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.*;
 
-public class TXSSFSheet implements TplSheet {
+class TXSSFSheet implements TplSheet {
 
     private final SortedMap<Integer, TplRow> rows;
 

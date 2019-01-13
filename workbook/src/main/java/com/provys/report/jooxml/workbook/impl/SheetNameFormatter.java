@@ -16,17 +16,17 @@ public class SheetNameFormatter {
     /** The character (') used to quote sheet names when they contain special characters */
     private static final char SPECIAL_NAME_DELIMITER = '\'';
     /** Regexp for sheet name without escaping */
-    private static final String NOESCAPE_REGEXP = "[a-zA-Z][0-9a-zA-Z_\\.]*";
+    private static final String NO_ESCAPE_REGEXP = "[a-zA-Z][0-9a-zA-Z._]*";
     /** Pattern for matching of sheet name without escaping */
-    private static final Pattern NOESCAPE_PATTERN = Pattern.compile(NOESCAPE_REGEXP);
+    private static final Pattern NO_ESCAPE_PATTERN = Pattern.compile(NO_ESCAPE_REGEXP);
     /** Pattern for matching cell address - used to decide if escaping is to be used */
-    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("\\$?" + ColumnFormatter.REGEXP + "\\$?" +
+    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("[$]?" + ColumnFormatter.REGEXP + "[$]?" +
             RowFormatter.REGEXP);
     /**
      * String that corresponds to sheet specification pattern; it is either valid unescaped sheet name or escaped sheet
      * string
      */
-    public static final String REGEXP = "(?:" + NOESCAPE_REGEXP + ")" +
+    public static final String REGEXP = "(?:" + NO_ESCAPE_REGEXP + ")" +
             "|(?:" + SPECIAL_NAME_DELIMITER +
             "(?:[^" + SPECIAL_NAME_DELIMITER + "]|" + SPECIAL_NAME_DELIMITER + SPECIAL_NAME_DELIMITER + ")+" +
             SPECIAL_NAME_DELIMITER + ")";
@@ -51,7 +51,7 @@ public class SheetNameFormatter {
         if (sheetString.charAt(0) != SPECIAL_NAME_DELIMITER) {
             // unquoted sheet name - return as it is
             if (validate) {
-                if (!NOESCAPE_PATTERN.matcher(sheetString).matches()) {
+                if (!NO_ESCAPE_PATTERN.matcher(sheetString).matches()) {
                     throw new IllegalArgumentException("Sheet name without escaping does not match pattern: \"" +
                             sheetString + "\"");
                 }
@@ -97,13 +97,10 @@ public class SheetNameFormatter {
      */
     private static boolean needsEscaping(String sheetName) {
         // check if sheet name starts with letter and contains only letters, numbers, . and _
-        if (!NOESCAPE_PATTERN.matcher(sheetName).matches()) {
+        if (!NO_ESCAPE_PATTERN.matcher(sheetName).matches()) {
             return true;
         }
-        if (CELL_ADDRESS_PATTERN.matcher(sheetName).matches()) {
-            return true;
-        }
-        return false;
+        return CELL_ADDRESS_PATTERN.matcher(sheetName).matches();
     }
 
     /**
@@ -151,5 +148,5 @@ public class SheetNameFormatter {
     /**
      * Utility class with only static methods
      */
-    private SheetNameFormatter() {};
+    private SheetNameFormatter() {}
 }

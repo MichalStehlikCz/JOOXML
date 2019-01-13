@@ -3,6 +3,7 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.*;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("WeakerAccess")
 public class WorkbookFactoryImpl implements WorkbookProvider {
 
     @Override
