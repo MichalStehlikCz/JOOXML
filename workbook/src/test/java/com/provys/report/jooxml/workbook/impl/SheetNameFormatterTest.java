@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 

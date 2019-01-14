@@ -1,7 +1,6 @@
 package com.provys.report.jooxml.workbook;
 
-import org.jetbrains.annotations.Nullable;
-
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public interface CellProperties {

@@ -1,9 +1,10 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import com.provys.report.jooxml.workbook.CellAddress;
+import com.provys.report.jooxml.workbook.impl.CellAddress;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -12,34 +13,20 @@ import java.util.regex.Pattern;
 public class CellAddressImpl implements CellAddress {
 
     /**
-     * Matches optional sheet reference (anything followed by !), followed by a run of one or more letters followed by
-     * a run of one or more digits.
-     * Sheet reference is optional, column and row references are mandatory.
-     */
-    public static final String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
-            + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + ColumnFormatter.REGEXP + RowFormatter.REGEXP;
-    /**
+     * Matches cell address as used in Excel, but without absolute position modifiers ($).
+     *
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
-    private static final String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
+    private static final @Nonnull String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
             SheetNameFormatter.SHEET_NAME_DELIMITER + ")?(" + ColumnFormatter.REGEXP + ")(" + RowFormatter.REGEXP + ')';
-    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
+    private static final @Nonnull Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
 
-    private static final CellAddressImpl A1 = new CellAddressImpl(null,
+    private static final @Nonnull CellAddressImpl A1 = new CellAddressImpl(null,
             CellCoordinatesImpl.of(0, 0));
-    private final String sheetName;
-    private final CellCoordinates coordinates;
+    private final @Nullable String sheetName;
+    private final @Nonnull CellCoordinates coordinates;
 
-    /**
-     * Parse cell address and return corresponding CellAddress instance.
-     *
-     * @param address is cell address compatible with Excel, with no absolute row nor cell coordinate. Sheet part is
-     *               optional
-     * @return CellAddress corresponding to supplied address
-     * @throws IllegalArgumentException if supplied string is not valid Excel cell address or if it contains absolute
-     * row or column reference ($ prefix)
-     */
-    static CellAddressImpl parse(String address) {
+    static @Nonnull CellAddressImpl parse(String address) {
         if (address.isEmpty()) {
             throw new IllegalArgumentException("Empty string passed to cell reference parsing");
         }
@@ -66,7 +53,7 @@ public class CellAddressImpl implements CellAddress {
      * @return instance of CellAddress with given coordinates
      * @throws IllegalArgumentException if sheet name is supplied, but empty
      */
-    static CellAddressImpl of(@Nullable String sheetName, CellCoordinates coordinates) {
+    static @Nonnull CellAddressImpl of(@Nullable String sheetName, CellCoordinates coordinates) {
         if ((sheetName == null) && (coordinates.getRow() == 0) && (coordinates.getCol() == 0)) {
             return A1;
         }
@@ -80,7 +67,7 @@ public class CellAddressImpl implements CellAddress {
      * @return instance of CellAddress with given coordinates
      * @throws IllegalArgumentException if sheet name is supplied, but empty
      */
-    static CellAddressImpl of(CellCoordinates coordinates) {
+    static @Nonnull CellAddressImpl of(CellCoordinates coordinates) {
         return of(null, coordinates);
     }
 
@@ -95,7 +82,7 @@ public class CellAddressImpl implements CellAddress {
      * @throws IllegalArgumentException if sheet name is supplied, but empty or creation of cell coordinates fails (e.g.
      * row or column are negative)
      */
-    static CellAddressImpl of(@Nullable String sheetName, int row, int col) {
+    static @Nonnull CellAddressImpl of(@Nullable String sheetName, int row, int col) {
         return of(sheetName, Workbooks.getCellCoordinates(row, col));
     }
 
@@ -108,7 +95,7 @@ public class CellAddressImpl implements CellAddress {
      * @throws IllegalArgumentException if sheet name is supplied, but empty or creation of cell coordinates fails (e.g.
      * row or column are negative)
      */
-    static CellAddressImpl of(int row, int col) {
+    static @Nonnull CellAddressImpl of(int row, int col) {
         return of(null, Workbooks.getCellCoordinates(row, col));
     }
 
@@ -126,12 +113,12 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public Optional<String> getSheetName() {
+    public @Nonnull Optional<String> getSheetName() {
         return Optional.ofNullable(sheetName);
     }
 
     @Override
-    public CellCoordinates getCoordinates() {
+    public @Nonnull CellCoordinates getCoordinates() {
         return coordinates;
     }
 
@@ -153,14 +140,14 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public String getAddress() {
+    public @Nonnull String getAddress() {
         StringBuilder builder = new StringBuilder();
         appendAddress(builder);
         return builder.toString();
     }
 
     @Override
-    public Optional<? extends CellAddressImpl> shiftByOrEmpty(int rowShift, int colShift) {
+    public @Nonnull Optional<? extends CellAddressImpl> shiftByOrEmpty(int rowShift, int colShift) {
         if ((getRow() < -rowShift) || (getCol() < -colShift)) {
             return Optional.empty();
         }
@@ -168,7 +155,7 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public CellAddressImpl shiftBy(int rowShift, int colShift) {
+    public @Nonnull CellAddressImpl shiftBy(int rowShift, int colShift) {
         if ((rowShift == 0) && (colShift == 0)) {
             return this;
         }
@@ -177,7 +164,7 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public CellAddressImpl shiftBy(CellCoordinates shift) {
+    public @Nonnull CellAddressImpl shiftBy(CellCoordinates shift) {
         return shiftBy(shift.getRow(), shift.getCol());
     }
 
@@ -196,7 +183,7 @@ public class CellAddressImpl implements CellAddress {
     }
 
     @Override
-    public String toString() {
+    public @Nonnull String toString() {
         return "CellAddressImpl{" +
                 "sheetName=" + getSheetName().map(value -> '"' + value + '"').orElse("null") +
                 ", row=" + getRow() +

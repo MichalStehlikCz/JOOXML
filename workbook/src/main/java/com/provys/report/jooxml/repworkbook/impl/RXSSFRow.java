@@ -32,7 +32,7 @@ import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.Internal;
 import org.apache.poi.util.NotImplemented;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * Streaming version of XSSFRow implementing the "BigGridDemo" strategy.

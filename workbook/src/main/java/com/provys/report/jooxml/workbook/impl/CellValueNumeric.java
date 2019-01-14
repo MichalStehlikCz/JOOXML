@@ -1,7 +1,7 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellType;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 public class CellValueNumeric extends CellValueBase<Double> {
 

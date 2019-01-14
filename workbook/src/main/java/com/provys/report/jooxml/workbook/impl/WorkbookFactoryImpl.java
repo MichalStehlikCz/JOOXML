@@ -1,7 +1,9 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.*;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @SuppressWarnings("WeakerAccess")
 public class WorkbookFactoryImpl implements WorkbookProvider {
@@ -17,28 +19,33 @@ public class WorkbookFactoryImpl implements WorkbookProvider {
     }
 
     @Override
+    @Nonnull
     public CellAddress getCellAddress(@Nullable String sheetName, int row, int col) {
-        return Workbooks.getCellAddress(sheetName, row, col);
+        return CellAddress.of(sheetName, row, col);
     }
 
     @Override
+    @Nonnull
     public CellAddress getCellAddress(int row, int col) {
-        return Workbooks.getCellAddress(row, col);
+        return CellAddress.of(row, col);
     }
 
     @Override
+    @Nonnull
     public CellAddress getCellAddress(@Nullable String sheetName, CellCoordinates coordinates) {
-        return Workbooks.getCellAddress(sheetName, coordinates);
+        return CellAddress.of(sheetName, coordinates);
     }
 
     @Override
+    @Nonnull
     public CellAddress getCellAddress(CellCoordinates coordinates) {
-        return Workbooks.getCellAddress(coordinates);
+        return CellAddress.of(coordinates);
     }
 
     @Override
+    @Nonnull
     public CellAddress parseCellAddress(String address) {
-        return Workbooks.parseCellAddress(address);
+        return CellAddress.parse(address);
     }
 
     @Override

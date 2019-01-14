@@ -2,8 +2,8 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuilder> {

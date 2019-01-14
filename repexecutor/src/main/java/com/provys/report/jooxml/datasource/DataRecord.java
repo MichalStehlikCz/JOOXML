@@ -2,7 +2,8 @@ package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public interface DataRecord {
     /**

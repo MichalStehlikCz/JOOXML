@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.workbook;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * Interface allows to inject workbook provider to report executor

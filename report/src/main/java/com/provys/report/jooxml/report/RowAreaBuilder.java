@@ -4,8 +4,8 @@ import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.workbook.CellAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

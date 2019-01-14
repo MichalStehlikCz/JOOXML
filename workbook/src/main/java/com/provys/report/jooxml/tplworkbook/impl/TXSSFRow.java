@@ -6,7 +6,9 @@ import com.provys.report.jooxml.tplworkbook.TplRow;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.*;
 
@@ -55,7 +57,7 @@ class TXSSFRow implements TplRow {
     }
 
     @Override
-    public @NotNull Iterator<TplCell> iterator() {
+    public @Nonnull Iterator<TplCell> iterator() {
         return cells.values().iterator();
     }
 

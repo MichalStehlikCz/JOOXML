@@ -1,8 +1,7 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -13,44 +12,16 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CellAddressImplTest {
 
-    static Stream<Object[]> getREGEXPTest() {
-        return Stream.of(
-                new Object[]{"A1", true}
-                , new Object[]{"AA7", true}
-                , new Object[]{"AB30", true}
-                , new Object[]{"Sheet1!A1", true}
-                , new Object[]{"My_Sheet!A1", true}
-                , new Object[]{"'xx''!ab'!A1", true}
-                , new Object[]{"A0", false}
-                , new Object[]{"0", false}
-                , new Object[]{"A", false}
-                , new Object[]{"11", false}
-                , new Object[]{"$A1", false}
-                , new Object[]{"A$1", false}
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void getREGEXPTest(String address, boolean match) {
-        var matcher = Pattern.compile(CellAddressImpl.REGEXP).matcher(address);
-        assertThat(matcher.matches()).isEqualTo(match);
-        if (match) {
-            assertThat(matcher.groupCount()).isEqualTo(0);
-        }
-    }
-
     static Stream<Object[]> parseTest() {
         return Stream.of(
-                new Object[]{"A1", Workbooks.getCellAddress(0, 0), null, null}
-                , new Object[]{"AA7", Workbooks.getCellAddress(6, 26), null, null}
-                , new Object[]{"AB30", Workbooks.getCellAddress(29, 27), null, null}
-                , new Object[]{"My_Sheet!A1", Workbooks.getCellAddress("My_Sheet", 0, 0), null, null}
-                , new Object[]{"'xx''!ab'!A1", Workbooks.getCellAddress("xx'!ab", 0, 0), null, null}
+                new Object[]{"A1", CellAddress.of(0, 0), null, null}
+                , new Object[]{"AA7", CellAddress.of(6, 26), null, null}
+                , new Object[]{"AB30", CellAddress.of(29, 27), null, null}
+                , new Object[]{"My_Sheet!A1", CellAddress.of("My_Sheet", 0, 0), null, null}
+                , new Object[]{"'xx''!ab'!A1", CellAddress.of("xx'!ab", 0, 0), null, null}
                 , new Object[]{"A0", null, IllegalArgumentException.class, "\"A0\""}
                 , new Object[]{"0", null, IllegalArgumentException.class, "\"0\""}
                 , new Object[]{"A", null, IllegalArgumentException.class, "\"A\""}

@@ -2,7 +2,8 @@ package com.provys.report.jooxml.repworkbook;
 
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellValue;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * Represents row in xlsx worksheet where report is being written to

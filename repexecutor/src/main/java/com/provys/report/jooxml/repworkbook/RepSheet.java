@@ -1,7 +1,8 @@
 package com.provys.report.jooxml.repworkbook;
 
 import com.provys.report.jooxml.repexecutor.RowProperties;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * Interface represents sheet in xlsx workbook where report writes its content

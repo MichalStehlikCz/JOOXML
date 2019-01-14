@@ -1,68 +1,52 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.*;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class Workbooks {
 
-    public static CellCoordinates getCellCoordinates(int row, int col) {
+    public static @Nonnull CellCoordinates getCellCoordinates(int row, int col) {
         return CellCoordinatesImpl.of(row, col);
     }
 
-    public static CellCoordinates parseCellCoordinates(String address) {
+    public static @Nonnull CellCoordinates parseCellCoordinates(String address) {
         return CellCoordinatesImpl.parse(address);
     }
 
-    public static CellAddress getCellAddress(@Nullable String sheetName, int row, int col) {
-        return getCellAddress(sheetName, getCellCoordinates(row, col));
+    public static @Nonnull CellReference getCellReference(@Nullable String sheetName, int row, int col,
+                                                          boolean rowAbsolute, boolean colAbsolute) {
+        return CellReferenceImpl.of(sheetName, row, col, rowAbsolute, colAbsolute);
     }
 
-    public static CellAddress getCellAddress(int row, int col) {
-        return getCellAddress(null, row, col);
+    public static @Nonnull CellReference getCellReference(int row, int col, boolean rowAbsolute, boolean colAbsolute) {
+        return CellReferenceImpl.of(row, col, rowAbsolute, colAbsolute);
     }
 
-    public static CellAddress getCellAddress(@Nullable String sheetName, CellCoordinates coordinates) {
-        return CellAddressImpl.of(sheetName, coordinates);
-    }
-
-    public static CellAddress getCellAddress(CellCoordinates coordinates) {
-        return getCellAddress(null, coordinates);
-    }
-
-    public static CellAddress parseCellAddress(String address) {
-        return CellAddressImpl.parse(address);
-    }
-
-    public static CellReference getCellReference(@Nullable String sheetName, int row, int col, boolean rowAbsolute,
-                                          boolean colAbsolute) {
-        return getCellReference(sheetName, getCellCoordinates(row, col), rowAbsolute, colAbsolute);
-    }
-
-    public static CellReference getCellReference(int row, int col, boolean rowAbsolute, boolean colAbsolute) {
-        return getCellReference(null, row, col, rowAbsolute, colAbsolute);
-    }
-
-    public static CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
+    public static @Nonnull CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates,
+                                                          boolean rowAbsolute, boolean colAbsolute) {
         return CellReferenceImpl.of(sheetName, coordinates, rowAbsolute, colAbsolute);
     }
 
-    public static CellReference getCellReference(CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
+    public static @Nonnull CellReference getCellReference(CellCoordinates coordinates, boolean rowAbsolute,
+                                                          boolean colAbsolute) {
         return CellReferenceImpl.of(coordinates, rowAbsolute, colAbsolute);
     }
 
-    public static CellReference getCellReference(@Nullable String sheetName, int row, int col) {
-        return getCellReference(sheetName, row, col, false, false);
+    public static @Nonnull CellReference getCellReference(@Nullable String sheetName, int row, int col) {
+        return CellReferenceImpl.of(sheetName, row, col);
     }
 
-    public static CellReference getCellReference(int row, int col) {
-        return getCellReference(null, row, col);
+    public static @Nonnull CellReference getCellReference(int row, int col) {
+        return CellReferenceImpl.of(row, col);
     }
 
-    public static CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates) {
+    public static @Nonnull CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates) {
         return CellReferenceImpl.of(sheetName, coordinates);
     }
 
-    public static CellReference getCellReference(CellCoordinates coordinates) {
+    public static @Nonnull CellReference getCellReference(CellCoordinates coordinates) {
         return CellReferenceImpl.of(coordinates);
     }
 

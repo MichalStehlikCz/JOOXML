@@ -4,6 +4,7 @@ import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -17,6 +18,7 @@ public class CellCoordinatesImpl implements CellCoordinates {
      * Regular expression for matching coordinates - one or more letters representing column coordinate
      * plus one or more numbers representing row coordinate
      */
+    @Nonnull
     public static final String REGEXP = ColumnFormatter.REGEXP + RowFormatter.REGEXP;
 
     /**

@@ -1,7 +1,7 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellValue;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.Optional;
 

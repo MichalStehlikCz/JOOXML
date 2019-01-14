@@ -4,7 +4,7 @@ import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellReference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;

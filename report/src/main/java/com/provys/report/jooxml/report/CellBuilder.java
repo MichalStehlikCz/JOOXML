@@ -2,8 +2,8 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
