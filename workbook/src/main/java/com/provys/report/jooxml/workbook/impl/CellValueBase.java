@@ -1,11 +1,10 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import com.provys.report.jooxml.workbook.CellValue;
 import javax.annotation.Nullable;
 
 import java.util.Optional;
 
-abstract public class CellValueBase<T> implements CellValue {
+abstract class CellValueBase<T> implements CellValueInt {
 
     @Nullable
     private final T value;
@@ -26,8 +25,7 @@ abstract public class CellValueBase<T> implements CellValue {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        CellValueString that = (CellValueString) o;
+        CellValueBase that = (CellValueBase) o;
 
         return getValue().equals(that.getValue());
     }

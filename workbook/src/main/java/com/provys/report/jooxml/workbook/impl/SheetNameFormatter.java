@@ -50,11 +50,9 @@ public class SheetNameFormatter {
         }
         if (sheetString.charAt(0) != SPECIAL_NAME_DELIMITER) {
             // unquoted sheet name - return as it is
-            if (validate) {
-                if (!NO_ESCAPE_PATTERN.matcher(sheetString).matches()) {
-                    throw new IllegalArgumentException("Sheet name without escaping does not match pattern: \"" +
-                            sheetString + "\"");
-                }
+            if (validate && (!NO_ESCAPE_PATTERN.matcher(sheetString).matches())) {
+                throw new IllegalArgumentException("Sheet name without escaping does not match pattern: \"" +
+                        sheetString + "\"");
             }
             return Optional.of(sheetString);
         }
@@ -65,7 +63,8 @@ public class SheetNameFormatter {
             throw new IllegalArgumentException("Ending ' expected in escaped sheet name \"" + sheetString + "\"");
         }
         StringBuilder builder = new StringBuilder(sheetString.length()-2);
-        for (int i = 1; i < sheetString.length()-1; i++) { // skip outer quotes
+        int i = 1;
+        while (i < sheetString.length()-1) { // skip outer quotes
             char ch = sheetString.charAt(i);
             if (ch == SPECIAL_NAME_DELIMITER) {
                 i++;
@@ -76,6 +75,7 @@ public class SheetNameFormatter {
                 }
             }
             builder.append(ch);
+            i++;
         }
         return Optional.of(builder.toString());
     }
@@ -88,7 +88,7 @@ public class SheetNameFormatter {
      * @return non-escaped sheet name
      * @throws IllegalArgumentException if supplied string is empty or does not contain valid sheet representation
      */
-    static public Optional<String> parse(String sheetString) {
+    public static Optional<String> parse(String sheetString) {
         return parse(sheetString, true);
     }
 

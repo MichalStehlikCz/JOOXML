@@ -1,10 +1,13 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellType;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CellValueString extends CellValueBase<String> {
 
+    @Nonnull
     static CellValueString of(@Nullable String value) {
         return new CellValueString(value);
     }
@@ -14,6 +17,7 @@ public class CellValueString extends CellValueBase<String> {
     }
 
     @Override
+    @Nonnull
     public CellType getCellType() {
         return CellType.STRING;
     }
@@ -24,6 +28,7 @@ public class CellValueString extends CellValueBase<String> {
      * @return string representation of object in form{@literal CellValueString(value="<value>")}
      */
     @Override
+    @Nonnull
     public String toString() {
         return "CellValueString{" +
                 "value=" + getValue().map(val -> "\"" + val + "\"").orElse("null") +

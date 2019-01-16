@@ -5,7 +5,7 @@ import com.provys.report.jooxml.tplworkbook.TplRow;
 import com.provys.report.jooxml.workbook.CellValue;
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellType;
-import com.provys.report.jooxml.workbook.impl.Workbooks;
+import com.provys.report.jooxml.workbook.impl.CellValueFormula;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -25,7 +25,7 @@ class TXSSFCell implements TplCell {
         this.colIndex = cell.getColumnIndex();
         switch (cell.getCellType()) {
             case FORMULA:
-                this.value = Workbooks.getFormulaValue(cell.getCellFormula());
+                this.value = CellValueFormula.of(cell.getCellFormula());
                 break;
             case STRING:
                 this.value = Workbooks.getStringValue(cell.getStringCellValue());

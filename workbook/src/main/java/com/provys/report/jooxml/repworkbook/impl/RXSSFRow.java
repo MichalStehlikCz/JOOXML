@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 
 import com.provys.report.jooxml.repworkbook.RepRow;
 import com.provys.report.jooxml.workbook.CellProperties;
-import com.provys.report.jooxml.workbook.impl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.SpreadsheetVersion;
@@ -32,6 +31,8 @@ import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.Internal;
 import org.apache.poi.util.NotImplemented;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -104,6 +105,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public Iterator<Cell> iterator()
     {
         return new FilledCellIterator();
@@ -412,7 +414,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
      * The row style can be cleared by passing in <code>null</code>.
      */
     @Override
-    public void setRowStyle(CellStyle style) {
+    public void setRowStyle(@Nullable CellStyle style) {
        if(style == null) {
           _style = -1;
        } else {
@@ -447,57 +449,34 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
         switch (value.getCellType()) {
             case FORMULA:
                 cell = createCell(colIndex, CellType.FORMULA);
-                if (value instanceof CellValueFormula) {
-                    cell.setCellFormula(((CellValueFormula) value).getFormula());
-                } else {
-                    LOG.warn("Cell value expected to be of type CellTypeFormula, not {}; formula not set",
-                            () -> value.getClass().getName());
-                }
+                cell.setCellFormula(value.getFormula());
                 break;
             case STRING:
                 cell = createCell(colIndex, CellType.STRING);
-                if (value instanceof CellValueString) {
-                    ((CellValueString) value).getValue().ifPresent(cell::setCellValue);
-                } else {
-                    LOG.warn("Cell value expected to be of type CellTypeString, not {}; value not set",
-                            () -> value.getClass().getName());
-                }
+                value.getStringValue().ifPresent(cell::setCellValue);
                 break;
             case NUMERIC:
                 cell = createCell(colIndex, CellType.NUMERIC);
-                if (value instanceof CellValueNumeric) {
-                    ((CellValueNumeric) value).getValue().ifPresent(cell::setCellValue);
-                } else {
-                    LOG.warn("Cell value expected to be of type CellTypeNumeric, not {}; value not set",
-                            () -> value.getClass().getName());
-                }
+                value.getNumericValue().ifPresent(cell::setCellValue);
                 break;
             case BOOLEAN:
                 cell = createCell(colIndex, CellType.STRING);
-                if (value instanceof CellValueBoolean) {
-                    ((CellValueBoolean) value).getValue().ifPresent(cell::setCellValue);
-                } else {
-                    LOG.warn("Cell value expected to be of type CellTypeBoolean, not {}; value not set",
-                            () -> value.getClass().getName());
-                }
+                value.getBooleanValue().ifPresent(cell::setCellValue);
                 break;
             case ERROR:
                 cell = createCell(colIndex, CellType.ERROR);
-                if (value instanceof CellValueError) {
-                    ((CellValueError) value).getValue().ifPresent(cell::setCellErrorValue);
-                } else {
-                    LOG.warn("Cell value expected to be of type CellTypeError, not {}; value not set",
-                            () -> value.getClass().getName());
-                }
+                value.getErrorValue().ifPresent(cell::setCellErrorValue);
                 break;
             case BLANK:
                 cell = createCell(colIndex, CellType.BLANK);
                 break;
-                default:
-                    LOG.warn("Unexpected cell type {}; value ignored", value.getCellType());
-                    cell = createCell(colIndex);
+            default:
+                LOG.warn("Unexpected cell type {}; value ignored", value.getCellType());
+                cell = createCell(colIndex);
         }
-        properties.getStyleIndex().ifPresent(cell::setCellStyle);
+        if (properties != null) {
+            properties.getStyleIndex().ifPresent(cell::setCellStyle);
+        }
     }
 
     /**
@@ -508,7 +487,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
      * Throws ConcurrentModificationException if cells are added, moved, or
      * removed after the iterator is created.
      */
-    public class FilledCellIterator implements Iterator<Cell>
+    private class FilledCellIterator implements Iterator<Cell>
     {
         private final Iterator<RXSSFCell> iter = _cells.values().iterator();
 
@@ -518,7 +497,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
             return iter.hasNext();
         }
         @Override
-        public Cell next() throws NoSuchElementException
+        public Cell next()
         {
             return iter.next();
         }
@@ -535,7 +514,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
      * cells are added, moved, or removed, though a ConcurrentModificationException
      * is NOT thrown.
      */
-    public class CellIterator implements Iterator<Cell>
+    private class CellIterator implements Iterator<Cell>
     {
         final int maxColumn = getLastCellNum(); //last column PLUS ONE
         int pos;
@@ -546,7 +525,7 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
             return pos < maxColumn;
         }
         @Override
-        public Cell next() throws NoSuchElementException
+        public Cell next()
         {
             if (hasNext()) {
                 return _cells.get(pos++);

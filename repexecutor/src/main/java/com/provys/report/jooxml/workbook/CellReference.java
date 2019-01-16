@@ -1,9 +1,11 @@
 package com.provys.report.jooxml.workbook;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
- * Represents reference to cell in formula, named area etc.
+ * Represents reference to cell in formula, named area etc. It contains cell address and absolute / relative modifiers
+ * for row and cell coordinates
  */
 public interface CellReference extends CellAddress {
 
@@ -25,6 +27,8 @@ public interface CellReference extends CellAddress {
      * @return CellReference shifted by specified offset; returns empty optional if resulting coordinates are not valid
      * (e.g. would have negative row or column index)
      */
+    @Override
+    @Nonnull
     Optional<? extends CellReference> shiftByOrEmpty(int rowShift, int colShift);
 
     /**
@@ -35,6 +39,7 @@ public interface CellReference extends CellAddress {
      * @return CellAddress shifted by specified offset
      */
     @Override
+    @Nonnull
     CellReference shiftBy(int rowShift, int colShift);
 
     /**
@@ -45,5 +50,7 @@ public interface CellReference extends CellAddress {
      *             sheet, supplied cell address also cannot have sheet
      * @return cell address shifted by specified offset
      */
+    @Override
+    @Nonnull
     CellReference shiftBy(CellCoordinates shift);
 }

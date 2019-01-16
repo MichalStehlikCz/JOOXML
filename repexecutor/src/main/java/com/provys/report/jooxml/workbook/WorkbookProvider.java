@@ -28,5 +28,4 @@ public interface WorkbookProvider {
     CellValue getBooleanValue(@Nullable Boolean value);
     CellValue getErrorValue(@Nullable Byte value);
     CellValue getBlankValue();
-    CellProperties getProperties(@Nullable Integer styleIndex);
 }

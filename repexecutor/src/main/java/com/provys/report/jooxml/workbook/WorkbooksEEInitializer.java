@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
  * Note that class will not properly load in Java SE environment, as ServletContext is not available and debug messages
  * from bean manager should be ignored
  */
+@SuppressWarnings("unused")
 @Singleton
 class WorkbooksEEInitializer {
 

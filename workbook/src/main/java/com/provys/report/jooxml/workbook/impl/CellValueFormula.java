@@ -1,15 +1,27 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellType;
-import com.provys.report.jooxml.workbook.CellValue;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
-public class CellValueFormula implements CellValue {
+public class CellValueFormula implements CellValueInt {
 
+    @Nonnull
     private final String formula;
 
-    CellValueFormula(String formula) {
+    /**
+     * Retrieve formula cell value with specified formula
+     *
+     * @param formula is formula to be used in cell value
+     * @return formula cell value with given characteristics
+     */
+    @Nonnull
+    public static CellValueFormula of(String formula) {
+        return new CellValueFormula(formula);
+    }
+
+    private CellValueFormula(String formula) {
         if (formula.isEmpty()) {
             throw new IllegalArgumentException("Formula cannot be empty string");
         }
@@ -17,6 +29,7 @@ public class CellValueFormula implements CellValue {
     }
 
     @Override
+    @Nonnull
     public CellType getCellType() {
         return CellType.FORMULA;
     }
@@ -24,6 +37,8 @@ public class CellValueFormula implements CellValue {
     /**
      * @return formula used in given value
      */
+    @Override
+    @Nonnull
     public String getFormula() {
         return formula;
     }
@@ -42,6 +57,7 @@ public class CellValueFormula implements CellValue {
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "CellValueFormula{formula=\"" + getFormula() + "\"}";
     }

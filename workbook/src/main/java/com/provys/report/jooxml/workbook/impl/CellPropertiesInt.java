@@ -1,29 +1,32 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellProperties;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
 
-class CellPropertiesImpl implements CellProperties {
+class CellPropertiesInt implements CellProperties {
 
     private final Integer styleIndex;
 
-    CellPropertiesImpl(@Nullable Integer styleIndex) {
+    CellPropertiesInt(@Nullable Integer styleIndex) {
         this.styleIndex = styleIndex;
     }
 
     @Override
+    @Nonnull
     public Optional<Integer> getStyleIndex() {
         return Optional.ofNullable(styleIndex);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CellPropertiesImpl that = (CellPropertiesImpl) o;
+        CellPropertiesInt that = (CellPropertiesInt) o;
         return Objects.equals(getStyleIndex(), that.getStyleIndex());
     }
 
@@ -34,7 +37,7 @@ class CellPropertiesImpl implements CellProperties {
 
     @Override
     public String toString() {
-        return "CellPropertiesImpl{" +
+        return "CellPropertiesInt{" +
                 "styleIndex=" + getStyleIndex().map(Object::toString).orElse("null") +
                 '}';
     }

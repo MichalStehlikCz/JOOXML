@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.workbook;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public interface CellCoordinates {
@@ -11,7 +12,8 @@ public interface CellCoordinates {
      * @param col is column index (zero based)
      * @return coordinates based on specified indices
      */
-    public static CellCoordinates of(int row, int col) {
+    @Nonnull
+    static CellCoordinates of(int row, int col) {
         return Workbooks.getCellCoordinates(row, col);
     }
 
@@ -23,7 +25,8 @@ public interface CellCoordinates {
      * @throws IllegalArgumentException if supplied address is not valid Excel cell reference, without sheet and with
      * no absolute position
      */
-    public static CellCoordinates parse(String address) {
+    @Nonnull
+    static CellCoordinates parse(String address) {
         return Workbooks.parseCellCoordinates(address);
     }
 
@@ -47,6 +50,7 @@ public interface CellCoordinates {
     /**
      * @return address as used in Excel (e.g. column identified by letter + one-based row number
      */
+    @Nonnull
     String getAddress();
 
     /**
@@ -57,6 +61,7 @@ public interface CellCoordinates {
      * @return CellAddress shifted by specified offset; returns empty optional if resulting coordinates are not valid
      * (e.g. would have negative row or column index)
      */
+    @Nonnull
     Optional<CellCoordinates> shiftByOrEmpty(int rowShift, int colShift);
 
     /**
@@ -67,6 +72,7 @@ public interface CellCoordinates {
      * @return CellAddress shifted by specified offset
      * @throws IllegalArgumentException when resulting coordinates are not valid (negative row or column index)
      */
+    @Nonnull
     CellCoordinates shiftBy(int rowShift, int colShift);
 
     /**
@@ -75,5 +81,6 @@ public interface CellCoordinates {
      * @param shift are cell coordinates taken as shift offset.
      * @return cell address shifted by specified offset
      */
+    @Nonnull
     CellCoordinates shiftBy(CellCoordinates shift);
 }

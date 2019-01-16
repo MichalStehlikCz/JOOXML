@@ -5,128 +5,123 @@ import com.provys.report.jooxml.workbook.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@SuppressWarnings("WeakerAccess")
-public class WorkbookFactoryImpl implements WorkbookProvider {
+@SuppressWarnings({"WeakerAccess", "unused"})
+public class WorkbookProviderImpl implements WorkbookProvider {
 
     @Override
     public CellCoordinates getCellCoordinates(int row, int col) {
-        return Workbooks.getCellCoordinates(row, col);
+        return CellCoordinatesInt.of(row, col);
     }
 
     @Override
     public CellCoordinates parseCellCoordinates(String address) {
-        return Workbooks.parseCellCoordinates(address);
+        return CellCoordinatesInt.parse(address);
     }
 
     @Override
     @Nonnull
-    public CellAddress getCellAddress(@Nullable String sheetName, int row, int col) {
-        return CellAddress.of(sheetName, row, col);
+    public CellAddressInt getCellAddress(@Nullable String sheetName, int row, int col) {
+        return CellAddressInt.of(sheetName, row, col);
     }
 
     @Override
     @Nonnull
-    public CellAddress getCellAddress(int row, int col) {
-        return CellAddress.of(row, col);
+    public CellAddressInt getCellAddress(int row, int col) {
+        return CellAddressInt.of(row, col);
     }
 
     @Override
     @Nonnull
-    public CellAddress getCellAddress(@Nullable String sheetName, CellCoordinates coordinates) {
-        return CellAddress.of(sheetName, coordinates);
+    public CellAddressInt getCellAddress(@Nullable String sheetName, CellCoordinates coordinates) {
+        return CellAddressInt.of(sheetName, coordinates);
     }
 
     @Override
     @Nonnull
-    public CellAddress getCellAddress(CellCoordinates coordinates) {
-        return CellAddress.of(coordinates);
+    public CellAddressInt getCellAddress(CellCoordinates coordinates) {
+        return CellAddressInt.of(coordinates);
     }
 
     @Override
     @Nonnull
-    public CellAddress parseCellAddress(String address) {
-        return CellAddress.parse(address);
+    public CellAddressInt parseCellAddress(String address) {
+        return CellAddressInt.parse(address);
     }
 
     @Override
     public CellReference getCellReference(@Nullable String sheetName, int row, int col, boolean rowAbsolute,
                                           boolean colAbsolute) {
-        return Workbooks.getCellReference(sheetName, row, col, rowAbsolute, colAbsolute);
+        return CellReferenceInt.of(sheetName, row, col, rowAbsolute, colAbsolute);
     }
 
     @Override
     public CellReference getCellReference(int row, int col, boolean rowAbsolute, boolean colAbsolute) {
-        return Workbooks.getCellReference(row, col, rowAbsolute, colAbsolute);
+        return CellReferenceInt.of(row, col, rowAbsolute, colAbsolute);
     }
 
     @Override
     public CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
-        return Workbooks.getCellReference(sheetName, coordinates, rowAbsolute, colAbsolute);
+        return CellReferenceInt.of(sheetName, coordinates, rowAbsolute, colAbsolute);
     }
 
     @Override
     public CellReference getCellReference(CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
-        return Workbooks.getCellReference(coordinates, rowAbsolute, colAbsolute);
+        return CellReferenceInt.of(coordinates, rowAbsolute, colAbsolute);
     }
 
     @Override
     public CellReference getCellReference(@Nullable String sheetName, int row, int col) {
-        return Workbooks.getCellReference(sheetName, row, col);
+        return CellReferenceInt.of(sheetName, row, col);
     }
 
     @Override
     public CellReference getCellReference(int row, int col) {
-        return Workbooks.getCellReference(row, col);
+        return CellReferenceInt.of(row, col);
     }
 
     @Override
     public CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates) {
-        return Workbooks.getCellReference(sheetName, coordinates);
+        return CellReferenceInt.of(sheetName, coordinates);
     }
 
     @Override
     public CellReference getCellReference(CellCoordinates coordinates) {
-        return Workbooks.getCellReference(coordinates);
+        return CellReferenceInt.of(coordinates);
     }
 
     @Override
     public CellReference parseCellReference(String address) {
-        return Workbooks.parseCellReference(address);
+        return CellReferenceInt.parse(address);
     }
 
     @Override
     public CellValue getFormulaValue(String formula) {
-        return Workbooks.getFormulaValue(formula);
+        return CellValueFormula.of(formula);
     }
 
     @Override
     public CellValue getStringValue(@Nullable String value) {
-        return Workbooks.getStringValue(value);
+        return CellValueString.of(value);
     }
 
     @Override
     public CellValue getNumericValue(@Nullable Double value) {
-        return Workbooks.getNumericValue(value);
+        return CellValueNumeric.of(value);
     }
 
     @Override
     public CellValue getBooleanValue(@Nullable Boolean value) {
-        return Workbooks.getBooleanValue(value);
+        return CellValueBoolean.of(value);
     }
 
     @Override
     public CellValue getErrorValue(@Nullable Byte value) {
-        return Workbooks.getErrorValue(value);
+        return CellValueError.of(value);
     }
 
     @Override
     public CellValue getBlankValue() {
-        return Workbooks.getBlankValue();
-    }
-
-    @Override
-    public CellProperties getProperties(@Nullable Integer styleIndex) {
-        return Workbooks.getProperties(styleIndex);
+        return CellValueBlank.get();
     }
 
 }

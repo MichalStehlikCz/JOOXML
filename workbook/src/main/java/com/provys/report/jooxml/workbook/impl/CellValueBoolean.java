@@ -1,12 +1,30 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellType;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CellValueBoolean extends CellValueBase<Boolean> {
+class CellValueBoolean extends CellValueBase<Boolean> {
 
+    private static final CellValueBoolean TRUE = new CellValueBoolean(Boolean.TRUE);
+    private static final CellValueBoolean FALSE = new CellValueBoolean(Boolean.FALSE);
+    private static final CellValueBoolean EMPTY = new CellValueBoolean(null);
+
+    /**
+     * Creates new cell value of boolean type from supplied value.
+     *
+     * @param value is value to be used for given cell
+     * @return boolean cell value with given value
+     */
+    @Nonnull
     static CellValueBoolean of(@Nullable Boolean value) {
-      return new CellValueBoolean(value);
+        if (value == null) {
+            return EMPTY;
+        } else if (value) {
+            return TRUE;
+        }
+      return FALSE;
     }
 
     private CellValueBoolean(@Nullable Boolean value) {
@@ -14,6 +32,7 @@ public class CellValueBoolean extends CellValueBase<Boolean> {
     }
 
     @Override
+    @Nonnull
     public CellType getCellType() {
         return CellType.BOOLEAN;
     }

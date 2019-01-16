@@ -12,12 +12,14 @@ public interface CellAddress {
      * @return name of sheet cell should be placed on; might be empty, in that case sheet should be inferred from
      * context
      */
-    @Nonnull Optional<String> getSheetName();
+    @Nonnull
+    Optional<String> getSheetName();
 
     /**
      * @return coordinates of cell on sheet
      */
-    @Nonnull CellCoordinates getCoordinates();
+    @Nonnull
+    CellCoordinates getCoordinates();
 
     /**
      * @return row index of cell; indices are zero-based (e.g. one lower than row number displayed in excel sheet)
@@ -39,7 +41,8 @@ public interface CellAddress {
     /**
      * @return address as used in Excel (e.g. column identified by letter + one-based row number
      */
-    @Nonnull String getAddress();
+    @Nonnull
+    String getAddress();
 
     /**
      * Get cell address shifted by specified offset
@@ -49,7 +52,10 @@ public interface CellAddress {
      * @return CellAddress shifted by specified offset; returns empty optional if resulting coordinates are not valid
      * (e.g. would have negative row or column index)
      */
-    @Nonnull Optional<? extends CellAddress> shiftByOrEmpty(int rowShift, int colShift);
+    @Nonnull
+    Optional<? extends CellAddress> shiftByOrEmpty(int rowShift, int colShift); // NOSONAR - wildcard return type needed
+                                                                                // to enable wider interface used in
+                                                                                /// workbook module
 
     /**
      * Get cell reference shifted by specified offset
@@ -58,15 +64,17 @@ public interface CellAddress {
      * @param colShift is column offset
      * @return CellAddress shifted by specified offset
      */
-    @Nonnull CellAddress shiftBy(int rowShift, int colShift);
+    @Nonnull
+    CellAddress shiftBy(int rowShift, int colShift);
 
     /**
      * Get cell reference shifted by offset, specified by another CellAddress.
      *
      * @param shift is cell address taken as shift offset. If supplied coordinates are in fact address, it must either
-     *             have same sheet as cell address it is applied to or no sheet; especially if base cell address has no
-     *             sheet, supplied cell address also cannot have sheet
+     *              have same sheet as cell address it is applied to or no sheet; especially if base cell address has no
+     *              sheet, supplied cell address also cannot have sheet
      * @return cell address shifted by specified offset
      */
-    @Nonnull CellAddress shiftBy(CellCoordinates shift);
+    @Nonnull
+    CellAddress shiftBy(CellCoordinates shift);
 }

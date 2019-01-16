@@ -4,6 +4,8 @@ import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellReference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Objects;
@@ -11,18 +13,17 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class CellReferenceImpl extends CellAddressImpl implements CellReference {
-
-    private static final Logger LOG = LogManager.getLogger(CellReferenceImpl.class.getName());
+class CellReferenceInt extends CellAddressInt implements CellReference {
 
     /**
      * Matches optional sheet reference (anything followed by !), followed by a run of one or more letters followed by
      * a run of one or more digits.
      * Sheet reference is optional, column and row references are mandatory.
      */
-    public static final String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
+    public final static String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
             + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + "[$]?" + ColumnFormatter.REGEXP + "[$]?"
             + RowFormatter.REGEXP;
+
     /**
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
@@ -42,7 +43,8 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
      * @return CellReference corresponding to supplied address
      * @throws IllegalArgumentException if supplied string is not valid Excel cell reference
      */
-    static CellReferenceImpl parse(String reference) {
+    @Nonnull
+    static CellReferenceInt parse(String reference) {
         if (reference.isEmpty()) {
             throw new IllegalArgumentException("Empty string passed to cell reference parsing");
         }
@@ -52,7 +54,7 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
         }
         try {
             return of(SheetNameFormatter.parse(matcher.group(1), false).orElse(null),
-                    Workbooks.getCellCoordinates(RowFormatter.parse(matcher.group(5)),
+                    CellCoordinatesInt.of(RowFormatter.parse(matcher.group(5)),
                             ColumnFormatter.parse(matcher.group(3))), matcher.group(4) != null,
                     matcher.group(2) != null);
         } catch (IllegalArgumentException ex) {
@@ -61,41 +63,50 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
         }
     }
 
-    static CellReferenceImpl of(@Nullable String sheetName, CellCoordinates coordinates, boolean rowAbsolute,
-                                boolean colAbsolute) {
-        return new CellReferenceImpl(sheetName, coordinates, rowAbsolute, colAbsolute);
+    @Nonnull
+    static CellReferenceInt of(@Nullable String sheetName, CellCoordinates coordinates, boolean rowAbsolute,
+                               boolean colAbsolute) {
+        return new CellReferenceInt(sheetName, coordinates, rowAbsolute, colAbsolute);
     }
 
-    static CellReferenceImpl of(@Nullable String sheetName, int row, int col, boolean rowAbsolute, boolean colAbsolute)
+    @Nonnull
+    static CellReferenceInt of(@Nullable String sheetName, int row, int col, boolean rowAbsolute, boolean colAbsolute)
     {
-        return of(sheetName, CellCoordinatesImpl.of(row, col), rowAbsolute, colAbsolute);
+        return of(sheetName, CellCoordinatesInt.of(row, col), rowAbsolute, colAbsolute);
     }
 
-    static CellReferenceImpl of(CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
+    @Nonnull
+    static CellReferenceInt of(CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
         return of(null, coordinates, rowAbsolute, colAbsolute);
     }
 
-    static CellReferenceImpl of(int row, int col, boolean rowAbsolute, boolean colAbsolute) {
-        return of(CellCoordinatesImpl.of(row, col), rowAbsolute, colAbsolute);
+    @Nonnull
+    static CellReferenceInt of(int row, int col, boolean rowAbsolute, boolean colAbsolute) {
+        return of(CellCoordinatesInt.of(row, col), rowAbsolute, colAbsolute);
     }
 
-    static CellReferenceImpl of(@Nullable String sheetName, CellCoordinates coordinates) {
+    @Nonnull
+    static CellReferenceInt of(@Nullable String sheetName, CellCoordinates coordinates) {
         return of(sheetName, coordinates, false, false);
     }
 
-    static CellReferenceImpl of(@Nullable String sheetName, int row, int col) {
-        return of(sheetName, CellCoordinatesImpl.of(row, col));
+    @Nonnull
+    static CellReferenceInt of(@Nullable String sheetName, int row, int col) {
+        return of(sheetName, CellCoordinatesInt.of(row, col));
     }
 
-    static CellReferenceImpl of(CellCoordinates coordinates) {
+    @Nonnull
+    static CellReferenceInt of(CellCoordinates coordinates) {
         return of(null, coordinates, false, false);
     }
 
-    static CellReferenceImpl of(int row, int col) {
-        return of(CellCoordinatesImpl.of(row, col), false, false);
+    @Nonnull
+    static CellReferenceInt of(int row, int col) {
+        return of(CellCoordinatesInt.of(row, col), false, false);
     }
 
-    private CellReferenceImpl(String sheetName, CellCoordinates coordinates, boolean rowAbsolute, boolean colAbsolute) {
+    private CellReferenceInt(@Nullable String sheetName, CellCoordinates coordinates, boolean rowAbsolute,
+                             boolean colAbsolute) {
         super(sheetName, coordinates);
         this.rowAbsolute = rowAbsolute;
         this.colAbsolute = colAbsolute;
@@ -125,7 +136,8 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
     }
 
     @Override
-    public Optional<? extends CellReferenceImpl> shiftByOrEmpty(int rowShift, int colShift) {
+    @Nonnull
+    public Optional<? extends CellReferenceInt> shiftByOrEmpty(int rowShift, int colShift) {
         if ((getRow() < -rowShift) || (getCol() < -colShift)) {
             return Optional.empty();
         }
@@ -133,26 +145,28 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
     }
 
     @Override
-    public CellReferenceImpl shiftBy(int rowShift, int colShift) {
+    @Nonnull
+    public CellReferenceInt shiftBy(int rowShift, int colShift) {
         if ((rowShift == 0) && (colShift == 0)) {
             return this;
         }
-        return new CellReferenceImpl(getSheetName().orElse(null),
-                Workbooks.getCellCoordinates(getRow() + rowShift, getCol() + colShift),
+        return new CellReferenceInt(getSheetName().orElse(null),
+                CellCoordinatesInt.of(getRow() + rowShift, getCol() + colShift),
                 isRowAbsolute(), isColAbsolute());
     }
 
     @Override
-    public CellReferenceImpl shiftBy(CellCoordinates shift) {
+    @Nonnull
+    public CellReferenceInt shiftBy(CellCoordinates shift) {
         return shiftBy(shift.getRow(), shift.getCol());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        CellReferenceImpl that = (CellReferenceImpl) o;
+        CellReferenceInt that = (CellReferenceInt) o;
         return isRowAbsolute() == that.isRowAbsolute() &&
                 isColAbsolute() == that.isColAbsolute();
     }
@@ -163,6 +177,7 @@ class CellReferenceImpl extends CellAddressImpl implements CellReference {
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "CellReferenceImpl{" +
                 "sheetName=" + getSheetName().map(value -> '"' + value + '"').orElse("null") +
