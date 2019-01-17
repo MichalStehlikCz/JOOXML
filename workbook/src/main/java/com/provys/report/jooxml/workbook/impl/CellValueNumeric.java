@@ -7,8 +7,14 @@ import javax.annotation.Nullable;
 
 public class CellValueNumeric extends CellValueBase<Double> {
 
+    /**
+     * Creates new cell value of numeric type from supplied value.
+     *
+     * @param value is value to be used for given cell
+     * @return numeric cell value with given value
+     */
     @Nonnull
-    static CellValueNumeric of(@Nullable Double value) {
+    public static CellValueNumeric of(@Nullable Double value) {
         return new CellValueNumeric(value);
     }
 

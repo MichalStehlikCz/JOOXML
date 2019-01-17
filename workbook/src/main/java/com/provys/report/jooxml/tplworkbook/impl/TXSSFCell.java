@@ -5,19 +5,24 @@ import com.provys.report.jooxml.tplworkbook.TplRow;
 import com.provys.report.jooxml.workbook.CellValue;
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellType;
-import com.provys.report.jooxml.workbook.impl.CellValueFormula;
+import com.provys.report.jooxml.workbook.impl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 class TXSSFCell implements TplCell {
 
     private static final Logger LOG = LogManager.getLogger(TXSSFCell.class.getName());
+    @Nonnull
     private final TplRow row;
     private final int colIndex;
+    @Nonnull
     private final CellValue value;
+    @Nullable
     private final CellProperties properties;
 
     public TXSSFCell(TplRow row, Cell cell) {
@@ -28,28 +33,28 @@ class TXSSFCell implements TplCell {
                 this.value = CellValueFormula.of(cell.getCellFormula());
                 break;
             case STRING:
-                this.value = Workbooks.getStringValue(cell.getStringCellValue());
+                this.value = CellValueString.of(cell.getStringCellValue());
                 break;
             case NUMERIC:
-                this.value = Workbooks.getNumericValue(cell.getNumericCellValue());
+                this.value = CellValueNumeric.of(cell.getNumericCellValue());
                 break;
             case BOOLEAN:
-                this.value = Workbooks.getBooleanValue(cell.getBooleanCellValue());
+                this.value = CellValueBoolean.of(cell.getBooleanCellValue());
                 break;
             case ERROR:
-                this.value = Workbooks.getErrorValue(cell.getErrorCellValue());
+                this.value = CellValueError.of(cell.getErrorCellValue());
                 break;
             case BLANK:
-                this.value = Workbooks.getBlankValue();
+                this.value = CellValueBlank.get();
                 break;
             default:
                 LOG.warn("TXSSFCell: Unexpected cell type in base template {}", cell.getCellType());
-                this.value = Workbooks.getBlankValue();
+                this.value = CellValueBlank.get();
         }
         Integer styleIndex = ((cell.getCellStyle() == null) ? null : (int) cell.getCellStyle().getIndex());
         org.apache.poi.ss.usermodel.Comment cellComment = cell.getCellComment();
         if (styleIndex != null) {
-            properties = Workbooks.getProperties(styleIndex);
+            properties = CellPropertiesInt.of(styleIndex);
         } else {
             properties = null;
         }
@@ -66,16 +71,19 @@ class TXSSFCell implements TplCell {
     }
 
     @Override
+    @Nonnull
     public CellType getCellType() {
         return value.getCellType();
     }
 
     @Override
+    @Nonnull
     public CellValue getCellValue() {
         return value;
     }
 
     @Override
+    @Nonnull
     public Optional<CellProperties> getCellProperties() {
         return Optional.ofNullable(properties);
     }

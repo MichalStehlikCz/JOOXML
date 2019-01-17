@@ -7,8 +7,14 @@ import javax.annotation.Nullable;
 
 public class CellValueString extends CellValueBase<String> {
 
+    /**
+     * Creates new cell value of string type from supplied value.
+     *
+     * @param value is value to be used for given cell
+     * @return string cell value with given value
+     */
     @Nonnull
-    static CellValueString of(@Nullable String value) {
+    public static CellValueString of(@Nullable String value) {
         return new CellValueString(value);
     }
 

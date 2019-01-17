@@ -8,9 +8,20 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-class CellPropertiesInt implements CellProperties {
+public class CellPropertiesInt implements CellProperties {
 
     private final Integer styleIndex;
+
+    /**
+     * Return properties with specified style index.
+     *
+     * @param styleIndex is style index properties should use
+     * @return propertiss with given characteristics
+     */
+    @Nonnull
+    public static CellPropertiesInt of(@Nullable Integer styleIndex) {
+        return new CellPropertiesInt(styleIndex);
+    }
 
     CellPropertiesInt(@Nullable Integer styleIndex) {
         this.styleIndex = styleIndex;
@@ -36,6 +47,7 @@ class CellPropertiesInt implements CellProperties {
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "CellPropertiesInt{" +
                 "styleIndex=" + getStyleIndex().map(Object::toString).orElse("null") +

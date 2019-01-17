@@ -7,8 +7,14 @@ import javax.annotation.Nullable;
 
 public class CellValueError extends CellValueBase<Byte> {
 
+    /**
+     * Creates new cell value of error type from supplied value.
+     *
+     * @param value is value to be used for given cell
+     * @return error cell value with given value
+     */
     @Nonnull
-    static CellValueError of(@Nullable Byte value) {
+    public static CellValueError of(@Nullable Byte value) {
         return new CellValueError(value);
     }
 

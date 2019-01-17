@@ -5,7 +5,7 @@ import com.provys.report.jooxml.workbook.CellType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-class CellValueBoolean extends CellValueBase<Boolean> {
+public class CellValueBoolean extends CellValueBase<Boolean> {
 
     private static final CellValueBoolean TRUE = new CellValueBoolean(Boolean.TRUE);
     private static final CellValueBoolean FALSE = new CellValueBoolean(Boolean.FALSE);
@@ -18,7 +18,7 @@ class CellValueBoolean extends CellValueBase<Boolean> {
      * @return boolean cell value with given value
      */
     @Nonnull
-    static CellValueBoolean of(@Nullable Boolean value) {
+    public static CellValueBoolean of(@Nullable Boolean value) {
         if (value == null) {
             return EMPTY;
         } else if (value) {

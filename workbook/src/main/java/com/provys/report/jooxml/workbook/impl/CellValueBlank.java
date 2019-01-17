@@ -4,7 +4,7 @@ import com.provys.report.jooxml.workbook.CellType;
 
 import javax.annotation.Nonnull;
 
-class CellValueBlank implements CellValueInt {
+public class CellValueBlank implements CellValueInt {
 
     @Nonnull
     private static final CellValueBlank instance = new CellValueBlank();
@@ -13,7 +13,7 @@ class CellValueBlank implements CellValueInt {
      * @return instance of blank cell value
      */
     @Nonnull
-    static CellValueBlank get() {
+    public static CellValueBlank get() {
         return instance;
     }
 
