@@ -18,12 +18,12 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
 
     private static final Logger LOG = LogManager.getLogger(RowCellAreaBuilder.class.getName());
 
-    final private Map<CellCoordinates, CellBind> fieldBinds;
+    private final Map<CellCoordinates, CellBind> fieldBinds;
 
     /**
      * Default constructor of empty area.
      */
-    public RowCellAreaBuilder(StepBuilder parent) {
+    RowCellAreaBuilder(StepBuilder parent) {
         super(parent);
         fieldBinds = new ConcurrentHashMap<>(5);
     }
@@ -69,62 +69,6 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
 
     @Override
     protected RowCellAreaBuilder self() {
-        return this;
-    }
-
-    private void parseBind(XMLStreamReader reader) throws XMLStreamException {
-        String column = null;
-        String coordinates = null;
-        while (reader.hasNext()) {
-            int eventType = reader.next();
-            if (eventType == XMLStreamConstants.START_ELEMENT) {
-                switch (reader.getLocalName()) {
-                    case "COLUMN":
-                        if (column != null) {
-                            LOG.warn("RowCellArea: Duplicate COLUMN definition in bind");
-                        }
-                        column = reader.getElementText();
-                        break;
-                    case "CELL":
-                        if (coordinates != null) {
-                            LOG.warn("RowCellArea: Duplicate CELL definition in bind");
-                        }
-                        coordinates = reader.getElementText();
-                        break;
-                    default:
-                        LOG.error("RowCellArea: Unsupported element {} in BIND; supported elements are CELL, COLUMN",
-                                reader.getLocalName());
-                        throw new RuntimeException("RowCellArea: Unsupported element " + reader.getLocalName() +
-                                " in BIND; supported elements are CELL, COLUMN");
-                }
-            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
-                break;
-            }
-        }
-        if (column == null) {
-            LOG.warn("RowCellArea: Column missing in bind definition");
-        } else if (coordinates == null) {
-            LOG.warn("RowCellArea: Cell coordinates missing in bind definition");
-        } else {
-            addFieldBind(new CellBind(column, coordinates));
-        }
-    }
-
-    RowCellAreaBuilder parse(XMLStreamReader reader) throws XMLStreamException {
-        while (reader.hasNext()) {
-            int eventType = reader.next();
-            if (eventType == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("BIND")) {
-                    parseBind(reader);
-                } else {
-                    LOG.error("RowCellArea: Unsupported element {}; supported elements are BIND", reader.getLocalName());
-                    throw new RuntimeException("RowCellArea: Skipping unsupported element " + reader.getLocalName() +
-                            "; supported elements are BIND");
-                }
-            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
-                break;
-            }
-        }
         return this;
     }
 
