@@ -3,6 +3,7 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.CellType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class CellValueFormula implements CellValueInt {
@@ -44,7 +45,7 @@ public class CellValueFormula implements CellValueInt {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CellValueFormula that = (CellValueFormula) o;

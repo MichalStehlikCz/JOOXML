@@ -18,16 +18,19 @@ class CellReferenceInt extends CellAddressInt implements CellReference {
      * a run of one or more digits.
      * Sheet reference is optional, column and row references are mandatory.
      */
-    public final static String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
+    @Nonnull
+    public static final String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
             + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + "[$]?" + ColumnFormatter.REGEXP + "[$]?"
             + RowFormatter.REGEXP;
 
     /**
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
+    @Nonnull
     private static final String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
             SheetNameFormatter.SHEET_NAME_DELIMITER + ")?([$])?(" + ColumnFormatter.REGEXP + ")([$])?(" +
             RowFormatter.REGEXP + ')';
+    @Nonnull
     private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
 
     private final boolean rowAbsolute;

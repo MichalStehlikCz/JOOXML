@@ -3,27 +3,38 @@ package com.provys.report.jooxml.workbook.impl;
 import com.provys.report.jooxml.workbook.RowProperties;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class RowPropertiesInt implements RowProperties {
 
-    private final float heightInPoints;
+    @Nullable
+    private final Float heightInPoints;
     private final boolean hidden;
-    private final int styleIndex;
+    @Nullable
+    private final Short styleIndex;
 
     @Nonnull
-    static public RowPropertiesInt of(float heightInPoints, boolean hidden, int styleIndex) {
+    public static RowPropertiesInt of(@Nullable Float heightInPoints, boolean hidden, @Nullable Short styleIndex) {
         return new RowPropertiesInt(heightInPoints, hidden, styleIndex);
     }
 
-    private RowPropertiesInt(float heightInPoints, boolean hidden, int styleIndex) {
+    private RowPropertiesInt(@Nullable Float heightInPoints, boolean hidden, @Nullable Short styleIndex) {
+        if ((heightInPoints != null) && (heightInPoints.compareTo(0f) < 0)) {
+            throw new IllegalArgumentException("Row height cannot be negative");
+        }
         this.heightInPoints = heightInPoints;
         this.hidden = hidden;
+        if ((styleIndex != null) && (styleIndex < (short) 0)) {
+            throw new IllegalArgumentException("Style index cannot be negative");
+        }
         this.styleIndex = styleIndex;
     }
 
     @Override
-    public float getHeightInPoints() {
-        return heightInPoints;
+    @Nonnull
+    public Optional<Float> getHeightInPoints() {
+        return Optional.ofNullable(heightInPoints);
     }
 
     @Override
@@ -32,27 +43,28 @@ public class RowPropertiesInt implements RowProperties {
     }
 
     @Override
-    public int getStyleIndex() {
-        return styleIndex;
+    @Nonnull
+    public Optional<Short> getStyleIndex() {
+        return Optional.ofNullable(styleIndex);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         RowPropertiesInt that = (RowPropertiesInt) o;
 
-        if (Float.compare(that.getHeightInPoints(), getHeightInPoints()) != 0) return false;
+        if (!getHeightInPoints().equals(that.getHeightInPoints())) return false;
         if (isHidden() != that.isHidden()) return false;
-        return getStyleIndex() == that.getStyleIndex();
+        return getStyleIndex().equals(that.getStyleIndex());
     }
 
     @Override
     public int hashCode() {
-        int result = (getHeightInPoints() != +0.0f ? Float.floatToIntBits(getHeightInPoints()) : 0);
+        int result = getHeightInPoints().hashCode();
         result = 31 * result + (isHidden() ? 1 : 0);
-        result = 31 * result + getStyleIndex();
+        result = 31 * result + getStyleIndex().hashCode();
         return result;
     }
 
@@ -60,9 +72,9 @@ public class RowPropertiesInt implements RowProperties {
     @Nonnull
     public String toString() {
         return "RowPropertiesInt{" +
-                "heightInPoints=" + heightInPoints +
-                ", hidden=" + hidden +
-                ", styleIndex=" + styleIndex +
+                "heightInPoints=" + getHeightInPoints().map(Object::toString).orElse("null") +
+                ", hidden=" + isHidden() +
+                ", styleIndex=" + getStyleIndex().map(Object::toString).orElse("null") +
                 '}';
     }
 }

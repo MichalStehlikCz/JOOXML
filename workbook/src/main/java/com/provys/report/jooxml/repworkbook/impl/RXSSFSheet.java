@@ -63,6 +63,8 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetProtection;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 
+import javax.annotation.Nullable;
+
 /**
  * Streaming version of XSSFSheet implementing the "BigGridDemo" strategy.
 */
@@ -149,12 +151,14 @@ public class RXSSFSheet implements Sheet, RepSheet
     }
 
     @Override
-    public RXSSFRow createRow(int rowNum, RowProperties rowProperties) {
+    public RXSSFRow createRow(int rowNum, @Nullable RowProperties rowProperties) {
         RXSSFRow row = createRow(rowNum);
-        row.setHeightInPoints(rowProperties.getHeightInPoints());
-        row.setZeroHeight(rowProperties.isHidden());
-        row.setRowStyle((rowProperties.getStyleIndex() < 0)
-                ? null : getWorkbook().getCellStyleAt(rowProperties.getStyleIndex()));
+        if (rowProperties != null) {
+            rowProperties.getHeightInPoints().ifPresent((height) -> row.setHeightInPoints(height));
+            row.setZeroHeight(rowProperties.isHidden());
+            row.setRowStyle(rowProperties.getStyleIndex().map((styleIndex) -> getWorkbook().getCellStyleAt(styleIndex))
+                    .orElse(null));
+        }
         return row;
     }
 

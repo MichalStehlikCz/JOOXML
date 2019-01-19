@@ -27,13 +27,13 @@ public interface WorkbookProvider {
     /**
      * Return instance of RowProperties with given characteristics
      *
-     * @param heightInPoints is height in points for given row, -1 if left on default height
+     * @param heightInPoints is height in points for given row, null if left on default height
      * @param hidden indicates if row should be hidden
-     * @param styleIndex is style index (within given workbook), -1 if no style is set
+     * @param styleIndex is style index (within given workbook), null if no style is specified on row level
      * @return instance of RowProperties with given characteristics
      */
     @Nonnull
-    RowProperties getRowProperties(float heightInPoints, boolean hidden, int styleIndex);
+    RowProperties getRowProperties(@Nullable Float heightInPoints, boolean hidden, @Nullable Short styleIndex);
 
     CellValue getFormulaValue(String formula);
     CellValue getStringValue(@Nullable String value);

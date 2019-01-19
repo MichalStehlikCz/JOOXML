@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Optional;
@@ -16,16 +17,20 @@ public class SheetNameFormatter {
     /** The character (') used to quote sheet names when they contain special characters */
     private static final char SPECIAL_NAME_DELIMITER = '\'';
     /** Regexp for sheet name without escaping */
+    @Nonnull
     private static final String NO_ESCAPE_REGEXP = "[a-zA-Z][0-9a-zA-Z._]*";
     /** Pattern for matching of sheet name without escaping */
+    @Nonnull
     private static final Pattern NO_ESCAPE_PATTERN = Pattern.compile(NO_ESCAPE_REGEXP);
     /** Pattern for matching cell address - used to decide if escaping is to be used */
+    @Nonnull
     private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("[$]?" + ColumnFormatter.REGEXP + "[$]?" +
             RowFormatter.REGEXP);
     /**
      * String that corresponds to sheet specification pattern; it is either valid unescaped sheet name or escaped sheet
      * string
      */
+    @Nonnull
     public static final String REGEXP = "(?:" + NO_ESCAPE_REGEXP + ")" +
             "|(?:" + SPECIAL_NAME_DELIMITER +
             "(?:[^" + SPECIAL_NAME_DELIMITER + "]|" + SPECIAL_NAME_DELIMITER + SPECIAL_NAME_DELIMITER + ")+" +
@@ -41,6 +46,7 @@ public class SheetNameFormatter {
      * @return non-escaped sheet name
      * @throws IllegalArgumentException if supplied string is empty or does not contain valid sheet representation
      */
+    @Nonnull
     static Optional<String> parse(@Nullable String sheetString, boolean validate) {
         if (sheetString == null) {
             return Optional.empty();
@@ -88,6 +94,7 @@ public class SheetNameFormatter {
      * @return non-escaped sheet name
      * @throws IllegalArgumentException if supplied string is empty or does not contain valid sheet representation
      */
+    @Nonnull
     public static Optional<String> parse(String sheetString) {
         return parse(sheetString, true);
     }

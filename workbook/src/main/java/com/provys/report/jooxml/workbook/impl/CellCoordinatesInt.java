@@ -26,17 +26,20 @@ public class CellCoordinatesInt implements CellCoordinates {
      * Regular expression for matching coordinates - one or more letters representing column coordinate
      * plus one or more numbers representing row coordinate
      */
+    @Nonnull
     private static final String PARSE_REGEXP = "(" + ColumnFormatter.REGEXP + ")(" + RowFormatter.REGEXP + ")";
 
     /**
      * Matches a run of one or more letters followed by a run of one or more digits.
      * The run of letters is group 1 and the run of digits is group 2.
      */
+    @Nonnull
     private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
 
     /**
      * Coordinates 0, 0 are often referenced, thus it makes sense to cache them
      */
+    @Nonnull
     private static final CellCoordinatesInt A1 = new CellCoordinatesInt(0, 0);
 
     private final int row;
@@ -50,6 +53,7 @@ public class CellCoordinatesInt implements CellCoordinates {
      * @throws IllegalArgumentException if supplied address is not valid Excel cell reference, without sheet and with
      * no absolute position
      */
+    @Nonnull
     static CellCoordinatesInt parse(String address) {
         if (address.isEmpty()) {
             throw new IllegalArgumentException("Empty string passed to cell reference parsing");
@@ -74,6 +78,7 @@ public class CellCoordinatesInt implements CellCoordinates {
      * @return instance of CellCoordinates with given coordinates
      * @throws IllegalArgumentException if either coordinate is negative
      */
+    @Nonnull
     static CellCoordinatesInt of(int row, int col) {
         if ((row == 0) && (col == 0)) {
             return A1;
@@ -157,6 +162,7 @@ public class CellCoordinatesInt implements CellCoordinates {
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "CellCoordinatesInt{" +
                 "row=" + row +

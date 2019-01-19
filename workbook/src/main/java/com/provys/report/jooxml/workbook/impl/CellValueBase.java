@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ abstract class CellValueBase<T> implements CellValueInt {
 
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CellValueBase that = (CellValueBase) o;
@@ -40,6 +41,7 @@ abstract class CellValueBase<T> implements CellValueInt {
      * null literal
      */
     @Override
+    @Nonnull
     public String toString() {
         return this.getClass().getSimpleName() + "{" +
                 "value=" + getValue().map(T::toString).orElse("null") +

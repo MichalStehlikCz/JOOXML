@@ -18,7 +18,8 @@ public interface RowProperties {
 
     /**
      * @return row cell style index; we do not manipulate with styles, thus it is possible to transfer style from
-     * template to target sheet using index
+     * template to target sheet using index. Empty when cell style is not specified on row level
      */
-    int getStyleIndex();
+    @Nonnull
+    Optional<Short> getStyleIndex();
 }

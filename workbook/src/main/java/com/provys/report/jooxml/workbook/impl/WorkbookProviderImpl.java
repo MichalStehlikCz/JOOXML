@@ -107,7 +107,7 @@ public class WorkbookProviderImpl implements WorkbookProvider {
 
     @Override
     @Nonnull
-    public RowProperties getRowProperties(float heightInPoints, boolean hidden, int styleIndex) {
+    public RowProperties getRowProperties(@Nullable Float heightInPoints, boolean hidden, @Nullable Short styleIndex) {
         return RowPropertiesInt.of(heightInPoints, hidden, styleIndex);
     }
 

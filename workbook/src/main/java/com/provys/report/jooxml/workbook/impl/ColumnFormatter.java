@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 /**
@@ -11,6 +12,7 @@ public class ColumnFormatter {
     /**
      * String that corresponds to column definition pattern
      */
+    @Nonnull
     public static final String REGEXP = "[a-zA-Z]{1,3}";
 
     /**

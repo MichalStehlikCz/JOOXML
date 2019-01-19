@@ -7,8 +7,11 @@ import javax.annotation.Nullable;
 
 public class CellValueBoolean extends CellValueBase<Boolean> {
 
+    @Nonnull
     private static final CellValueBoolean TRUE = new CellValueBoolean(Boolean.TRUE);
+    @Nonnull
     private static final CellValueBoolean FALSE = new CellValueBoolean(Boolean.FALSE);
+    @Nonnull
     private static final CellValueBoolean EMPTY = new CellValueBoolean(null);
 
     /**

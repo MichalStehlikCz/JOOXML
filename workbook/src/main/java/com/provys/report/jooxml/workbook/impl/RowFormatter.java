@@ -1,10 +1,13 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import javax.annotation.Nonnull;
+
 public class RowFormatter {
 
     /**
      * String that corresponds to column definition pattern
      */
+    @Nonnull
     public static final String REGEXP = "[1-9][0-9]{0,5}";
 
     /**

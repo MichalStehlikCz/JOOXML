@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public class CellPropertiesInt implements CellProperties {
 
+    @Nullable
     private final Integer styleIndex;
 
     /**

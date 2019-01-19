@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.workbook.impl;
 
 import com.provys.report.jooxml.workbook.CellCoordinates;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -192,6 +194,7 @@ class CellCoordinatesIntTest {
         assertThat(coordinates.shiftBy(shiftBy)).isEqualTo(result);
     }
 
+    @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), CellCoordinatesInt.of(0, 0), true}
@@ -209,6 +212,7 @@ class CellCoordinatesIntTest {
         assertThat(coordinates.equals(other)).isEqualTo(result);
     }
 
+    @Nonnull
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), CellCoordinatesInt.of(0, 0)}
@@ -224,6 +228,7 @@ class CellCoordinatesIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> toStringTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), "CellCoordinatesInt{row=0, col=0}"}
