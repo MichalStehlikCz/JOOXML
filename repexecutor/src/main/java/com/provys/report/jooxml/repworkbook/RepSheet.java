@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.repworkbook;
 
-import com.provys.report.jooxml.repexecutor.RowProperties;
+import com.provys.report.jooxml.workbook.RowProperties;
 
 import javax.annotation.Nullable;
 

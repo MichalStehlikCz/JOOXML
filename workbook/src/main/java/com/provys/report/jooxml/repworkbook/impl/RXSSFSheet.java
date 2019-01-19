@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.provys.report.jooxml.repworkbook.RepSheet;
-import com.provys.report.jooxml.repexecutor.RowProperties;
+import com.provys.report.jooxml.workbook.RowProperties;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.AutoFilter;
 import org.apache.poi.ss.usermodel.Cell;

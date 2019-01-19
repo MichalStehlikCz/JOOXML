@@ -1,6 +1,6 @@
 package com.provys.report.jooxml.tplworkbook;
 
-import com.provys.report.jooxml.repexecutor.RowProperties;
+import com.provys.report.jooxml.workbook.RowProperties;
 
 import java.util.Collection;
 import java.util.Optional;

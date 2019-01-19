@@ -81,21 +81,21 @@ class CellReferenceIntTest {
 
     static Stream<Object[]> propertiesTest() {
         return Stream.of(
-                new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)), null,
-                        Workbooks.getCellCoordinates(0, 0), 0, 0, false, false}
-                , new Object[]{CellReferenceInt.of("Sheet1", Workbooks.getCellCoordinates(5, 15)),
-                        "Sheet1", Workbooks.getCellCoordinates(5, 15), 5, 15, false, false}
+                new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), null,
+                        CellCoordinatesInt.of(0, 0), 0, 0, false, false}
+                , new Object[]{CellReferenceInt.of("Sheet1", CellCoordinatesInt.of(5, 15)),
+                        "Sheet1", CellCoordinatesInt.of(5, 15), 5, 15, false, false}
                 , new Object[]{CellReferenceInt.of("Sheet 1", 15674, 123), "Sheet 1",
-                        Workbooks.getCellCoordinates(15674, 123), 15674, 123, false, false}
+                        CellCoordinatesInt.of(15674, 123), 15674, 123, false, false}
                 , new Object[]{CellReferenceInt.of("My'sheet", 74, 5, true,
-                        true), "My'sheet", Workbooks.getCellCoordinates(74, 5), 74, 5, true, true}
+                        true), "My'sheet", CellCoordinatesInt.of(74, 5), 74, 5, true, true}
                 , new Object[]{CellReferenceInt.of(74, 5, false, true), null,
-                        Workbooks.getCellCoordinates(74, 5), 74, 5, false, true}
-                , new Object[]{CellReferenceInt.of("My.Sheet", Workbooks.getCellCoordinates(74, 5),
-                        true, false), "My.Sheet", Workbooks.getCellCoordinates(74, 5),
+                        CellCoordinatesInt.of(74, 5), 74, 5, false, true}
+                , new Object[]{CellReferenceInt.of("My.Sheet", CellCoordinatesInt.of(74, 5),
+                        true, false), "My.Sheet", CellCoordinatesInt.of(74, 5),
                         74, 5, true, false}
-                , new Object[]{CellReferenceInt.of("A1", Workbooks.getCellCoordinates(12845, 15),
-                        false, false), "A1", Workbooks.getCellCoordinates(12845, 15),
+                , new Object[]{CellReferenceInt.of("A1", CellCoordinatesInt.of(12845, 15),
+                        false, false), "A1", CellCoordinatesInt.of(12845, 15),
                         12845, 15, false, false}
         );
     }
@@ -144,16 +144,16 @@ class CellReferenceIntTest {
 
     static Stream<Object[]> appendAddressTest() {
         return Stream.of(
-                new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)), "A1"}
-                , new Object[]{CellReferenceInt.of("Sheet1", Workbooks.getCellCoordinates(15, 5)),
+                new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), "A1"}
+                , new Object[]{CellReferenceInt.of("Sheet1", CellCoordinatesInt.of(15, 5)),
                         "Sheet1!F16"}
                 , new Object[]{CellReferenceInt.of("Sheet 1", 15674, 123), "'Sheet 1'!DT15675"}
                 , new Object[]{CellReferenceInt.of("My'sheet", 74, 5, true,
                         true), "'My''sheet'!$F$75"}
                 , new Object[]{CellReferenceInt.of(74, 5, false, true), "$F75"}
-                , new Object[]{CellReferenceInt.of("My.Sheet", Workbooks.getCellCoordinates(74, 5),
+                , new Object[]{CellReferenceInt.of("My.Sheet", CellCoordinatesInt.of(74, 5),
                         true, false), "My.Sheet!F$75"}
-                , new Object[]{CellReferenceInt.of("A1", Workbooks.getCellCoordinates(12845, 15),
+                , new Object[]{CellReferenceInt.of("A1", CellCoordinatesInt.of(12845, 15),
                         false, false), "'A1'!P12846"}
         );
     }
@@ -204,16 +204,16 @@ class CellReferenceIntTest {
 
     static Stream<Object[]> shiftBy1Test() {
         return Stream.of(
-                new Object[]{CellReferenceInt.of(0, 0), Workbooks.getCellCoordinates(0, 0),
+                new Object[]{CellReferenceInt.of(0, 0), CellCoordinatesInt.of(0, 0),
                         CellReferenceInt.of(0, 0)}
                 , new Object[]{CellReferenceInt.of("My_Sheet", 5, 10),
-                        Workbooks.getCellCoordinates(0, 0),
+                        CellCoordinatesInt.of(0, 0),
                         CellReferenceInt.of("My_Sheet", 5, 10)}
                 , new Object[]{CellReferenceInt.of("My_Sheet", 5, 10, true,
-                        false), Workbooks.getCellCoordinates(3, 4),
+                        false), CellCoordinatesInt.of(3, 4),
                         CellReferenceInt.of("My_Sheet", 8, 14, true, false)}
                 , new Object[]{CellReferenceInt.of("My_Sheet", 5, 10, false,
-                        true), Workbooks.getCellCoordinates(1, 2),
+                        true), CellCoordinatesInt.of(1, 2),
                         CellReferenceInt.of("My_Sheet", 6, 12,
                         false, true)}
         );
@@ -227,17 +227,17 @@ class CellReferenceIntTest {
 
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)), null, false}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)), "A1", false}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), null, false}
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), "A1", false}
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of(0, 0), true}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of("Sheet", 0, 0), false}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of(0, 0, true, false), false}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of(0, 0, false, true), false}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of(0, 0, false, false), true}
                 , new Object[]{CellReferenceInt.of("Sheet1", 5, 15, true,
                         true), CellReferenceInt.of("Sheet1", 5, 15, true,
@@ -268,9 +268,9 @@ class CellReferenceIntTest {
 
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
-                new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of(0, 0)}
-                , new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                , new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
                         CellReferenceInt.of(0, 0, false, false)}
                 , new Object[]{CellReferenceInt.of("Sheet1", 5, 15, true,
                         true), CellReferenceInt.of("Sheet1", 5, 15, true,
@@ -288,9 +288,9 @@ class CellReferenceIntTest {
 
     static Stream<Object[]> toStringTest() {
         return Stream.of(
-                new Object[]{CellReferenceInt.of(Workbooks.getCellCoordinates(0, 0)),
+                new Object[]{CellReferenceInt.of(0, 0),
                         "CellReferenceImpl{sheetName=null, row=0, col=0, rowAbsolute=false, colAbsolute=false}"}
-                , new Object[]{CellReferenceInt.of("Sheet1", Workbooks.getCellCoordinates(5, 15)),
+                , new Object[]{CellReferenceInt.of("Sheet1", 5, 15),
                         "CellReferenceImpl{sheetName=\"Sheet1\", row=5, col=15, rowAbsolute=false, colAbsolute=false}"}
                 , new Object[]{CellReferenceInt.of("Sheet 1", 15674, 123),
                         "CellReferenceImpl{sheetName=\"Sheet 1\", row=15674, col=123, rowAbsolute=false, colAbsolute=false}"}
@@ -299,11 +299,10 @@ class CellReferenceIntTest {
                         "CellReferenceImpl{sheetName=\"My'sheet\", row=74, col=5, rowAbsolute=true, colAbsolute=true}"}
                 , new Object[]{CellReferenceInt.of(74, 5, false, true),
                         "CellReferenceImpl{sheetName=null, row=74, col=5, rowAbsolute=false, colAbsolute=true}"}
-                , new Object[]{CellReferenceInt.of("My.Sheet", Workbooks.getCellCoordinates(74, 5),
+                , new Object[]{CellReferenceInt.of("My.Sheet", CellCoordinatesInt.of(74, 5),
                         true, false),
                         "CellReferenceImpl{sheetName=\"My.Sheet\", row=74, col=5, rowAbsolute=true, colAbsolute=false}"}
-                , new Object[]{CellReferenceInt.of("A1", Workbooks.getCellCoordinates(12845, 15),
-                        false, false),
+                , new Object[]{CellReferenceInt.of("A1", 12845, 15,false, false),
                         "CellReferenceImpl{sheetName=\"A1\", row=12845, col=15, rowAbsolute=false, colAbsolute=false}"}
         );
     }

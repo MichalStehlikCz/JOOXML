@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.workbook;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -22,6 +23,18 @@ public interface WorkbookProvider {
     CellReference getCellReference(@Nullable String sheetName, CellCoordinates coordinates);
     CellReference getCellReference(CellCoordinates coordinates);
     CellReference parseCellReference(String formula);
+
+    /**
+     * Return instance of RowProperties with given characteristics
+     *
+     * @param heightInPoints is height in points for given row, -1 if left on default height
+     * @param hidden indicates if row should be hidden
+     * @param styleIndex is style index (within given workbook), -1 if no style is set
+     * @return instance of RowProperties with given characteristics
+     */
+    @Nonnull
+    RowProperties getRowProperties(float heightInPoints, boolean hidden, int styleIndex);
+
     CellValue getFormulaValue(String formula);
     CellValue getStringValue(@Nullable String value);
     CellValue getNumericValue(@Nullable Double value);

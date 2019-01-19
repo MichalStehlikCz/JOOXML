@@ -1,14 +1,14 @@
 package com.provys.report.jooxml.tplworkbook.impl;
 
-import com.provys.report.jooxml.repexecutor.RowProperties;
+import com.provys.report.jooxml.workbook.RowProperties;
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.tplworkbook.TplRow;
+import com.provys.report.jooxml.workbook.impl.RowPropertiesInt;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import java.util.*;
 
@@ -24,10 +24,10 @@ class TXSSFRow implements TplRow {
         // height if it is the same as default sheet row height.
         // If in future we decide to parse sheet ourselves, we can simplify this construct and just return explicitly
         // set height...
-        float heightInPoints = (row.getHeightInPoints() == row.getSheet().getDefaultRowHeightInPoints())
-                ? -1 : row.getHeightInPoints();
-        int styleIndex = (row.getRowStyle() == null) ? -1 : row.getRowStyle().getIndex();
-        return RowProperties.get(heightInPoints, row.getZeroHeight(), styleIndex);
+        Float heightInPoints = (row.getHeightInPoints() == row.getSheet().getDefaultRowHeightInPoints())
+                ? null : row.getHeightInPoints();
+        Short styleIndex = (row.getRowStyle() == null) ? null : row.getRowStyle().getIndex();
+        return RowPropertiesInt.of(heightInPoints, row.getZeroHeight(), styleIndex);
     }
 
     private SortedMap<Integer, TplCell> initCells(Row row) {

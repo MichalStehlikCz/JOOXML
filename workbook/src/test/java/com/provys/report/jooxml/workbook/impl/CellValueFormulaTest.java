@@ -5,13 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 
 class CellValueFormulaTest {
 
-    static Stream<Object[]> newTest() {
+    @Nonnull
+    static Stream<Object[]> ofTest() {
         return Stream.of(
                 new Object[] {"SUM(A1:A10)", null}
                 , new Object[] {"", IllegalArgumentException.class}
@@ -20,23 +22,23 @@ class CellValueFormulaTest {
 
     @ParameterizedTest
     @MethodSource
-    void newTest(String formula, Class<Throwable> exception) {
+    void ofTest(String formula, Class<Throwable> exception) {
         if (exception == null) {
-            assertThatCode(() -> new CellValueFormula(formula)).doesNotThrowAnyException();
+            assertThatCode(() -> CellValueFormula.of(formula)).doesNotThrowAnyException();
         } else {
-            assertThatThrownBy(() -> new CellValueFormula(formula)).isInstanceOf(exception);
+            assertThatThrownBy(() -> CellValueFormula.of(formula)).isInstanceOf(exception);
         }
     }
 
     @Test
     void getCellTypeTest() {
-        assertThat(new CellValueFormula("SUM(A1:A10").getCellType()).isEqualTo(CellType.FORMULA);
+        assertThat(CellValueFormula.of("SUM(A1:A10").getCellType()).isEqualTo(CellType.FORMULA);
     }
 
     static Stream<Object[]> getFormulaTest() {
         return Stream.of(
-                new Object[]{new CellValueFormula("SUM(A1:A10)"), "SUM(A1:A10)"}
-                , new Object[]{new CellValueFormula("test"), "test"});
+                new Object[]{CellValueFormula.of("SUM(A1:A10)"), "SUM(A1:A10)"}
+                , new Object[]{CellValueFormula.of("test"), "test"});
     }
 
     @ParameterizedTest
@@ -47,12 +49,12 @@ class CellValueFormulaTest {
 
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[] {new CellValueFormula("SUM(A1:A10)"), new CellValueFormula("SUM(A1:A10)"), Boolean.TRUE}
-                , new Object[] {new CellValueFormula("SUM(A1:A10)"), new CellValueFormula(" SUM(A1:A10)"), Boolean.FALSE}
-                , new Object[] {new CellValueFormula("SUM(A1:A10)"), new CellValueFormula("SUM(A1:A10) "), Boolean.FALSE}
-                , new Object[] {new CellValueFormula("SUM(A1:A10)"), new CellValueFormula("sum(A1:A10) "), Boolean.FALSE}
-                , new Object[] {new CellValueFormula("SUM(A1:A10)"), "SUM(A1:A10) ", Boolean.FALSE}
-                , new Object[] {new CellValueFormula("SUM(A1:A10)"), null, Boolean.FALSE});
+                new Object[] {CellValueFormula.of("SUM(A1:A10)"), CellValueFormula.of("SUM(A1:A10)"), Boolean.TRUE}
+                , new Object[] {CellValueFormula.of("SUM(A1:A10)"), CellValueFormula.of(" SUM(A1:A10)"), Boolean.FALSE}
+                , new Object[] {CellValueFormula.of("SUM(A1:A10)"), CellValueFormula.of("SUM(A1:A10) "), Boolean.FALSE}
+                , new Object[] {CellValueFormula.of("SUM(A1:A10)"), CellValueFormula.of("sum(A1:A10) "), Boolean.FALSE}
+                , new Object[] {CellValueFormula.of("SUM(A1:A10)"), "SUM(A1:A10) ", Boolean.FALSE}
+                , new Object[] {CellValueFormula.of("SUM(A1:A10)"), null, Boolean.FALSE});
     }
 
     @ParameterizedTest
@@ -63,8 +65,8 @@ class CellValueFormulaTest {
 
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
-                new Object[] {new CellValueFormula("SUM(A1:A10)"), new CellValueFormula("SUM(A1:A10)")}
-                , new Object[] {new CellValueFormula("test"), new CellValueFormula("test")});
+                new Object[] {CellValueFormula.of("SUM(A1:A10)"), CellValueFormula.of("SUM(A1:A10)")}
+                , new Object[] {CellValueFormula.of("test"), CellValueFormula.of("test")});
     }
 
     @ParameterizedTest
@@ -77,8 +79,8 @@ class CellValueFormulaTest {
 
     static Stream<Object[]> toStringTest() {
         return Stream.of(
-                new Object[] {new CellValueFormula("SUM(A1:A10)"), "CellValueFormula{formula=\"SUM(A1:A10)\"}"}
-                , new Object[] {new CellValueFormula("test"), "CellValueFormula{formula=\"test\"}"});
+                new Object[] {CellValueFormula.of("SUM(A1:A10)"), "CellValueFormula{formula=\"SUM(A1:A10)\"}"}
+                , new Object[] {CellValueFormula.of("test"), "CellValueFormula{formula=\"test\"}"});
     }
 
     @ParameterizedTest

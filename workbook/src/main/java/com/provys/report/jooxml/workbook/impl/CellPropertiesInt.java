@@ -16,14 +16,14 @@ public class CellPropertiesInt implements CellProperties {
      * Return properties with specified style index.
      *
      * @param styleIndex is style index properties should use
-     * @return propertiss with given characteristics
+     * @return properties with given characteristics
      */
     @Nonnull
     public static CellPropertiesInt of(@Nullable Integer styleIndex) {
         return new CellPropertiesInt(styleIndex);
     }
 
-    CellPropertiesInt(@Nullable Integer styleIndex) {
+    private CellPropertiesInt(@Nullable Integer styleIndex) {
         this.styleIndex = styleIndex;
     }
 
