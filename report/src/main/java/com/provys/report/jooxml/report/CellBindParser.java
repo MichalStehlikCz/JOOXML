@@ -8,11 +8,26 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+/**
+ * Class supports parsing of CellBind from XML file.
+ */
 @Singleton
 class CellBindParser {
 
     private static final Logger LOG = LogManager.getLogger(CellBindParser.class.getName());
 
+    /**
+     * Parses CellBind from XMLStreamReader. Expects current position in reader is on start element of CellBind,
+     * but does not verify this assumption. When finished, reader is positioned on end element of cell bind.
+     *
+     * CellBind should have one element {@code <COLUMN>} that contains string with column name and one element
+     * {@code <CELL>} that contains cell coordinates in Excel format (with relative addresses and without sheet
+     * specification)
+     *
+     * @param reader is XML reader containing cell bind definition
+     * @return cell bind object read from stream
+     * @throws XMLStreamException
+     */
     CellBind parse(XMLStreamReader reader) throws XMLStreamException {
         CellBindBuilder builder = new CellBindBuilder();
         while (reader.hasNext()) {

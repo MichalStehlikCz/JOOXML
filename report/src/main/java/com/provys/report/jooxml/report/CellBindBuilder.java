@@ -8,7 +8,8 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CellBindBuilder {
+@SuppressWarnings("UnusedReturnValue")
+class CellBindBuilder {
 
     private static final Logger LOG = LogManager.getLogger(CellBindBuilder.class.getName());
 
@@ -17,11 +18,11 @@ public class CellBindBuilder {
     @Nullable
     private CellCoordinates coordinates;
 
-    public Optional<String> getSourceColumn() {
+    Optional<String> getSourceColumn() {
         return Optional.ofNullable(sourceColumn);
     }
 
-    public CellBindBuilder setSourceColumn(String sourceColumn) {
+    CellBindBuilder setSourceColumn(String sourceColumn) {
         this.sourceColumn = sourceColumn;
         return this;
     }
