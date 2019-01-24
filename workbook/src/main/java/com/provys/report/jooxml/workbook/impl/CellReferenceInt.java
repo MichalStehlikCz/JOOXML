@@ -181,7 +181,7 @@ class CellReferenceInt extends CellAddressInt implements CellReference {
     @Nonnull
     public String toString() {
         return "CellReferenceImpl{" +
-                "sheetName=" + getSheetName().map(value -> '"' + value + '"').orElse("null") +
+                "sheetName=" + getSheetName().map(value -> '\'' + value + '\'').orElse("null") +
                 ", row=" + getRow() +
                 ", col=" + getCol() +
                 ", rowAbsolute=" + isRowAbsolute() +

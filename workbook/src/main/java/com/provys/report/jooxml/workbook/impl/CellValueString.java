@@ -37,7 +37,7 @@ public class CellValueString extends CellValueBase<String> {
     @Nonnull
     public String toString() {
         return "CellValueString{" +
-                "value=" + getValue().map(val -> "\"" + val + "\"").orElse("null") +
+                "value=" + getValue().map(val -> '\'' + val + '\'').orElse("null") +
                 '}';
     }
 }

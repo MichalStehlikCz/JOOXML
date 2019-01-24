@@ -201,7 +201,7 @@ public class CellAddressInt implements CellAddress {
     @Override
     public @Nonnull String toString() {
         return "CellAddressImpl{" +
-                "sheetName=" + getSheetName().map(value -> '"' + value + '"').orElse("null") +
+                "sheetName=" + getSheetName().map(value -> '\'' + value + '\'').orElse("null") +
                 ", row=" + getRow() +
                 ", col=" + getCol() +
                 '}';

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 final class CellBind {
 
-    private static final Pattern columnValidator = Pattern.compile("[a-zA-Z][a-zA-Z0-9_$]");
+    private static final Pattern columnValidator = Pattern.compile("[a-zA-Z][a-zA-Z0-9_$]*");
     @Nonnull
     private final String sourceColumn;
     @Nonnull
@@ -29,10 +29,10 @@ final class CellBind {
      */
     CellBind(String sourceColumn, CellCoordinates coordinates) {
         if (!columnValidator.matcher(Objects.requireNonNull(sourceColumn)).matches()) {
-            throw new IllegalArgumentException("Column name must start with letter and contain opnly letters, numbers " +
+            throw new IllegalArgumentException("Column name must start with letter and contain only letters, numbers " +
                     "and _, not " + sourceColumn);
         }
-        this.sourceColumn = sourceColumn;
+        this.sourceColumn = sourceColumn.toUpperCase();
         this.coordinates = Objects.requireNonNull(coordinates);
     }
 
@@ -54,5 +54,14 @@ final class CellBind {
     @Nonnull
     CellCoordinates getCoordinates() {
         return coordinates;
+    }
+
+    @Override
+    @Nonnull
+    public String toString() {
+        return "CellBind{" +
+                "sourceColumn='" + sourceColumn + '\'' +
+                ", coordinates=" + coordinates +
+                '}';
     }
 }

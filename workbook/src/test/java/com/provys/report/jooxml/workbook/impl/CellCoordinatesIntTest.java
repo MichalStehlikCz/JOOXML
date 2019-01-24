@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class CellCoordinatesIntTest {
 
+    @Nonnull
     static Stream<Object[]> getRegExpTest() {
         return Stream.of(
                 new Object[]{"A1", true, "A", "1"}
@@ -41,6 +42,7 @@ class CellCoordinatesIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{"A1", CellCoordinatesInt.of(0, 0), null, null}
@@ -70,6 +72,7 @@ class CellCoordinatesIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> ofTest() {
         return Stream.of(
                 new Object[]{0, 0, null}
@@ -102,6 +105,7 @@ class CellCoordinatesIntTest {
         assertThat(CellCoordinatesInt.of(5, 3).getCol()).isEqualTo(3);
     }
 
+    @Nonnull
     static Stream<Object[]> appendAddressTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), "A1"}
@@ -117,6 +121,7 @@ class CellCoordinatesIntTest {
         assertThat(builder.toString()).isEqualTo("Prefix" + result);
     }
 
+    @Nonnull
     static Stream<Object[]> getAddressTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), "A1"}
@@ -130,6 +135,7 @@ class CellCoordinatesIntTest {
         assertThat(coordinates.getAddress()).isEqualTo(result);
     }
 
+    @Nonnull
     static Stream<Object[]> shiftByOrEmptyTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), 0, 0, CellCoordinatesInt.of(0, 0)}
@@ -151,6 +157,7 @@ class CellCoordinatesIntTest {
         assertThat(coordinates.shiftByOrEmpty(rowShift, colShift)).isEqualTo(Optional.ofNullable(result));
     }
 
+    @Nonnull
     static Stream<Object[]> shiftByTest() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), 0, 0,
@@ -170,8 +177,8 @@ class CellCoordinatesIntTest {
 
     @ParameterizedTest
     @MethodSource
-    void shiftByTest(CellCoordinatesInt coordinates, int rowShift, int colShift, CellCoordinates result,
-                     Class<Throwable> exception) {
+    void shiftByTest(CellCoordinatesInt coordinates, int rowShift, int colShift, @Nullable CellCoordinates result,
+                     @Nullable Class<Throwable> exception) {
         if (exception == null) {
             assertThat(coordinates.shiftBy(rowShift, colShift)).isEqualTo(result);
         } else {
@@ -179,6 +186,7 @@ class CellCoordinatesIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> shiftBy1Test() {
         return Stream.of(
                 new Object[]{CellCoordinatesInt.of(0, 0), CellCoordinatesInt.of(0, 0),

@@ -291,19 +291,19 @@ class CellReferenceIntTest {
                 new Object[]{CellReferenceInt.of(0, 0),
                         "CellReferenceImpl{sheetName=null, row=0, col=0, rowAbsolute=false, colAbsolute=false}"}
                 , new Object[]{CellReferenceInt.of("Sheet1", 5, 15),
-                        "CellReferenceImpl{sheetName=\"Sheet1\", row=5, col=15, rowAbsolute=false, colAbsolute=false}"}
+                        "CellReferenceImpl{sheetName='Sheet1', row=5, col=15, rowAbsolute=false, colAbsolute=false}"}
                 , new Object[]{CellReferenceInt.of("Sheet 1", 15674, 123),
-                        "CellReferenceImpl{sheetName=\"Sheet 1\", row=15674, col=123, rowAbsolute=false, colAbsolute=false}"}
+                        "CellReferenceImpl{sheetName='Sheet 1', row=15674, col=123, rowAbsolute=false, colAbsolute=false}"}
                 , new Object[]{CellReferenceInt.of("My'sheet", 74, 5, true,
                         true),
-                        "CellReferenceImpl{sheetName=\"My'sheet\", row=74, col=5, rowAbsolute=true, colAbsolute=true}"}
+                        "CellReferenceImpl{sheetName='My'sheet', row=74, col=5, rowAbsolute=true, colAbsolute=true}"}
                 , new Object[]{CellReferenceInt.of(74, 5, false, true),
                         "CellReferenceImpl{sheetName=null, row=74, col=5, rowAbsolute=false, colAbsolute=true}"}
                 , new Object[]{CellReferenceInt.of("My.Sheet", CellCoordinatesInt.of(74, 5),
                         true, false),
-                        "CellReferenceImpl{sheetName=\"My.Sheet\", row=74, col=5, rowAbsolute=true, colAbsolute=false}"}
+                        "CellReferenceImpl{sheetName='My.Sheet', row=74, col=5, rowAbsolute=true, colAbsolute=false}"}
                 , new Object[]{CellReferenceInt.of("A1", 12845, 15,false, false),
-                        "CellReferenceImpl{sheetName=\"A1\", row=12845, col=15, rowAbsolute=false, colAbsolute=false}"}
+                        "CellReferenceImpl{sheetName='A1', row=12845, col=15, rowAbsolute=false, colAbsolute=false}"}
         );
     }
 

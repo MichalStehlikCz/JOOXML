@@ -12,25 +12,24 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 @Singleton
-class RowCellAreaParser {
+public class RowParentAreaParser {
 
     @Nonnull
     private static final Logger LOG = LogManager.getLogger(RowCellAreaParser.class.getName());
     @Inject
-    private CellBindParser cellBindParser;
+    StepParser stepParser;
 
-    RowCellAreaBuilder parse(@Nullable StepBuilder parent, XMLStreamReader reader) throws XMLStreamException {
-        RowCellAreaBuilder builder = new RowCellAreaBuilder(parent);
+    RowParentAreaBuilder parse(@Nullable StepBuilder parent, XMLStreamReader reader) throws XMLStreamException {
+        RowParentAreaBuilder builder = new RowParentAreaBuilder(parent);
         while (reader.hasNext()) {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("BIND")) {
-                    builder.addFieldBind(cellBindParser.parse(reader));
-                } else {
-                    LOG.error("RowCellArea: Unsupported element {}; supported elements are BIND", reader.getLocalName());
-                    throw new RuntimeException("RowCellArea: Skipping unsupported element " + reader.getLocalName() +
-                            "; supported elements are BIND");
+                String name = reader.getLocalName();
+                StepBuilder child = stepParser.parse(builder, reader);
+                if (!(child instanceof RowAreaBuilder)) {
+                    throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
                 }
+                builder.addSubRegion((RowAreaBuilder) child);
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;
             }

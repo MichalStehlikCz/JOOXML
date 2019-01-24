@@ -6,6 +6,7 @@ import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -23,7 +24,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
     /**
      * Default constructor of empty area.
      */
-    RowCellAreaBuilder(StepBuilder parent) {
+    RowCellAreaBuilder(@Nullable StepBuilder parent) {
         super(parent);
         fieldBinds = new ConcurrentHashMap<>(5);
     }

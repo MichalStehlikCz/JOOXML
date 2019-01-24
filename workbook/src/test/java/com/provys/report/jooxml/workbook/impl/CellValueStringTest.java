@@ -21,7 +21,7 @@ class CellValueStringTest {
     static Stream<Object[]> toStringTest() {
         return Stream.of(
                 new Object[]{CellValueString.of(null), "CellValueString{value=null}"}
-                , new Object[]{CellValueString.of("test"), "CellValueString{value=\"test\"}"}
+                , new Object[]{CellValueString.of("test"), "CellValueString{value='test'}"}
         );
     }
     @ParameterizedTest
