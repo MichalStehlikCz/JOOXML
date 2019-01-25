@@ -13,7 +13,25 @@ import java.util.regex.Pattern;
  */
 final class CellBind {
 
+    @Nonnull
     private static final Pattern columnValidator = Pattern.compile("[a-zA-Z][a-zA-Z0-9_$]*");
+
+    /**
+     * Validate supplied String as column name and return uppercase version of it
+     *
+     * @param sourceColumn is value to be validated
+     * @return validated (uppercase) version of supplied string
+     * @throws IllegalArgumentException if string does not pass validation
+     */
+    @Nonnull
+    static String validateSourceColumn(String sourceColumn) {
+        if (!columnValidator.matcher(Objects.requireNonNull(sourceColumn)).matches()) {
+            throw new IllegalArgumentException("Column name must start with letter and contain only letters, numbers " +
+                    "and _, not " + sourceColumn);
+        }
+        return sourceColumn.toUpperCase();
+    }
+
     @Nonnull
     private final String sourceColumn;
     @Nonnull
@@ -28,11 +46,7 @@ final class CellBind {
      * _ or $ characters)
      */
     CellBind(String sourceColumn, CellCoordinates coordinates) {
-        if (!columnValidator.matcher(Objects.requireNonNull(sourceColumn)).matches()) {
-            throw new IllegalArgumentException("Column name must start with letter and contain only letters, numbers " +
-                    "and _, not " + sourceColumn);
-        }
-        this.sourceColumn = sourceColumn.toUpperCase();
+        this.sourceColumn = validateSourceColumn(sourceColumn);
         this.coordinates = Objects.requireNonNull(coordinates);
     }
 
@@ -57,6 +71,22 @@ final class CellBind {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CellBind cellBind = (CellBind) o;
+        if (!getSourceColumn().equals(cellBind.getSourceColumn())) return false;
+        return getCoordinates().equals(cellBind.getCoordinates());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getSourceColumn().hashCode();
+        result = 31 * result + getCoordinates().hashCode();
+        return result;
+    }
+
+    @Override
     @Nonnull
     public String toString() {
         return "CellBind{" +
@@ -64,4 +94,5 @@ final class CellBind {
                 ", coordinates=" + coordinates +
                 '}';
     }
+
 }

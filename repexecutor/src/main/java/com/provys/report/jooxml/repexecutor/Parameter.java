@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.repexecutor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -8,19 +10,10 @@ import java.util.Optional;
  */
 public class Parameter {
 
+    @Nonnull
     private final String name;
-    private final Optional<String> value;
-
-    /**
-     * Create parameter with given name from supplied value.
-     *
-     * @param name is name of parameter, mandatory
-     * @param value is optional value of parameter
-     */
-    Parameter(String name, String value) {
-        this.name = Objects.requireNonNull(name);
-        this.value = Optional.ofNullable(value);
-    }
+    @Nullable
+    private final String value;
 
     /**
      * Create parameter with given name from supplied value.
@@ -28,7 +21,7 @@ public class Parameter {
      * @param name is name of parameter, mandatory
      * @param value is value of parameter
      */
-    Parameter(String name, Optional<String> value) {
+    Parameter(String name, @Nullable String value) {
         this.name = Objects.requireNonNull(name);
         this.value = value;
     }
@@ -36,6 +29,7 @@ public class Parameter {
     /**
      * @return parameter name
      */
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -43,8 +37,9 @@ public class Parameter {
     /**
      * @return parameter value
      */
+    @Nonnull
     public Optional<String> getValue() {
-        return value;
+        return Optional.ofNullable(value);
     }
 
     @Override
@@ -72,7 +67,7 @@ public class Parameter {
      */
     @Override
     public String toString() {
-        return "Parameter{" + getName() + "=" + getValue().map(value -> ('"' + value + '"')).orElse("null")
+        return "Parameter{" + getName() + "=" + getValue().map(value -> ('\'' + value + '\'')).orElse("null")
                 + "}";
     }
 }

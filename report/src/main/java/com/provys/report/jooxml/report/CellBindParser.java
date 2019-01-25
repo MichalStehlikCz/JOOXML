@@ -1,8 +1,11 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.workbook.WorkbookProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -15,6 +18,19 @@ import javax.xml.stream.XMLStreamReader;
 class CellBindParser {
 
     private static final Logger LOG = LogManager.getLogger(CellBindParser.class.getName());
+    @Nonnull
+    private static final String COLUMN_TAG = "COLUMN";
+    @Nonnull
+    private static final String CELL_TAG = "CELL";
+
+    @Nonnull
+    private final WorkbookProvider workbookProvider;
+
+    @SuppressWarnings("CdiInjectionPointsInspection")
+    @Inject
+    CellBindParser(WorkbookProvider workbookProvider) {
+        this.workbookProvider = workbookProvider;
+    }
 
     /**
      * Parses CellBind from XMLStreamReader. Expects current position in reader is on start element of CellBind,
@@ -26,7 +42,7 @@ class CellBindParser {
      *
      * @param reader is XML reader containing cell bind definition
      * @return cell bind object read from stream
-     * @throws XMLStreamException
+     * @throws XMLStreamException when error occurs reading XML stream
      */
     CellBind parse(XMLStreamReader reader) throws XMLStreamException {
         CellBindBuilder builder = new CellBindBuilder();
@@ -34,21 +50,21 @@ class CellBindParser {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
                 switch (reader.getLocalName()) {
-                    case "COLUMN":
+                    case COLUMN_TAG:
                         String column = reader.getElementText();
-                        builder.getSourceColumn().filter((val) -> !val.equals(column)).
-                                ifPresent((val) -> LOG.warn("Duplicate COLUMN assignment {} > {}", val, column));
+                        builder.getSourceColumn().
+                                ifPresent((val) -> {throw new RuntimeException("Duplicate " + COLUMN_TAG + " element");});
                         builder.setSourceColumn(column);
                         break;
-                    case "CELL":
+                    case CELL_TAG:
                         String address = reader.getElementText();
-                        builder.getAddress().filter((val) -> !val.equals(address)).
-                                ifPresent((val) -> LOG.warn("Duplicate ADDRESS assignment {} > {}", val, address));
-                        builder.setAddress(address);
+                        builder.getCoordinates().
+                                ifPresent((val) -> {throw new RuntimeException("Duplicate " + CELL_TAG + " element");});
+                        builder.setCoordinates(workbookProvider.parseCellCoordinates(address));
                         break;
                     default:
-                        throw new RuntimeException("RowCellArea: Unsupported element " + reader.getLocalName() +
-                                " in BIND; supported elements are CELL, COLUMN");
+                        throw new RuntimeException("CellBind: Unsupported element " + reader.getLocalName() +
+                                " in BIND; supported elements are " + COLUMN_TAG + ", " + CELL_TAG);
                 }
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;

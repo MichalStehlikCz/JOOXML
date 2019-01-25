@@ -24,7 +24,7 @@ class CellBindBuilder {
     }
 
     CellBindBuilder setSourceColumn(String sourceColumn) {
-        this.sourceColumn = sourceColumn;
+        this.sourceColumn = CellBind.validateSourceColumn(sourceColumn);
         return this;
     }
 
@@ -33,7 +33,7 @@ class CellBindBuilder {
     }
 
     public CellBindBuilder setCoordinates(CellCoordinates coordinates) {
-        this.coordinates = coordinates;
+        this.coordinates = Objects.requireNonNull(coordinates);
         return this;
     }
 

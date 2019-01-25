@@ -99,7 +99,7 @@ class ParameterTest {
 
     static Stream<Object[]> toStringTest() {
         return Stream.of(
-                new Object[] {new Parameter("NAME", "value"), "Parameter{NAME=\"value\"}"}
+                new Object[] {new Parameter("NAME", "value"), "Parameter{NAME='value'}"}
                 , new Object[] {new Parameter("NAME", (String) null), "Parameter{NAME=null}"});
     }
 

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.annotation.Nonnull;
@@ -18,8 +17,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CellBindTest {
 
-    @Mock
-    static CellCoordinates coordinates = mock(CellCoordinates.class);
+    private static CellCoordinates coordinates = mock(CellCoordinates.class);
+    private static CellCoordinates otherCoordinates = mock(CellCoordinates.class);
 
     @Nonnull
     static Stream<Object[]> getNewTest() {
@@ -55,6 +54,34 @@ class CellBindTest {
     void getCoordinatesTest() {
         assertThat(new CellBind("a_b", coordinates).getCoordinates()).
                 isSameAs(coordinates);
+    }
+
+    @Nonnull
+    static Stream<Object[]> equalsTest() {
+        return Stream.of(
+                new Object[]{new CellBind("A_B", coordinates),
+                        new CellBind("A_B", coordinates), true}
+                , new Object[]{new CellBind("A_B", coordinates),
+                        new CellBind("C", coordinates), false}
+                , new Object[]{new CellBind("A_B", coordinates),
+                        new CellBind("A_B", otherCoordinates), false}
+                , new Object[]{new CellBind("A_B", coordinates),
+                        "XXX", false}
+                , new Object[]{new CellBind("A_B", coordinates),
+                        null, false}
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void equalsTest(CellBind cellBind, @Nullable Object other, boolean result) {
+        assertThat(cellBind.equals(other)).isEqualTo(result);
+    }
+
+    @Test
+    void hashCodeTest() {
+        assertThat(new CellBind("xyz", coordinates).hashCode()).
+                isEqualTo(new CellBind("xyz", coordinates).hashCode());
     }
 
     @Test
