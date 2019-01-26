@@ -4,6 +4,7 @@ import com.provys.report.jooxml.workbook.CellType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class CellValueError extends CellValueBase<Byte> {
 
@@ -26,5 +27,11 @@ public class CellValueError extends CellValueBase<Byte> {
     @Nonnull
     public CellType getCellType() {
         return CellType.ERROR;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Byte> getErrorValue() {
+        return getValue();
     }
 }

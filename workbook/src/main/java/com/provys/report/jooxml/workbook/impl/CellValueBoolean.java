@@ -4,6 +4,7 @@ import com.provys.report.jooxml.workbook.CellType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class CellValueBoolean extends CellValueBase<Boolean> {
 
@@ -38,6 +39,12 @@ public class CellValueBoolean extends CellValueBase<Boolean> {
     @Nonnull
     public CellType getCellType() {
         return CellType.BOOLEAN;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Boolean> getBooleanValue() {
+        return getValue();
     }
 
 }

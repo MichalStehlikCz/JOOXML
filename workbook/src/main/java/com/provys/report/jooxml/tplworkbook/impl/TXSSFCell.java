@@ -2,6 +2,7 @@ package com.provys.report.jooxml.tplworkbook.impl;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.tplworkbook.TplRow;
+import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellValue;
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellType;
@@ -25,7 +26,7 @@ class TXSSFCell implements TplCell {
     @Nullable
     private final CellProperties properties;
 
-    public TXSSFCell(TplRow row, Cell cell) {
+    TXSSFCell(TplRow row, Cell cell) {
         this.row = row;
         this.colIndex = cell.getColumnIndex();
         switch (cell.getCellType()) {
@@ -68,6 +69,12 @@ class TXSSFCell implements TplCell {
     @Override
     public int getColIndex() {
         return colIndex;
+    }
+
+    @Nonnull
+    @Override
+    public CellCoordinates getCoordinates() {
+        return CellCoordinatesFactoryImpl.getInstance().of(getRowIndex(), getColIndex());
     }
 
     @Override

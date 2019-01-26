@@ -3,22 +3,17 @@ package com.provys.report.jooxml.report;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
+final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
 
-    private static final Logger LOG = LogManager.getLogger(RowCellAreaBuilder.class.getName());
-
+    @Nonnull
     private final Map<CellCoordinates, CellBind> fieldBinds;
 
     /**
@@ -29,11 +24,13 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
         fieldBinds = new ConcurrentHashMap<>(5);
     }
 
+    @Nonnull
     @Override
     public String getDefaultNameNmPrefix() {
         return "CELLAREA";
     }
 
+    @Nonnull
     @Override
     public String proposeChildName(StepBuilder child) {
         return child.getDefaultNameNmPrefix();
@@ -52,22 +49,13 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
      * @param cellBind is rule to be used for populating region
      */
     @SuppressWarnings("UnusedReturnValue")
-    public RowCellAreaBuilder addFieldBind(CellBind cellBind) {
+    @Nonnull
+    RowCellAreaBuilder addFieldBind(CellBind cellBind) {
         fieldBinds.put(cellBind.getCoordinates(), cellBind);
         return self();
     }
 
-    /**
-     * Retrieves field bind for particular cell
-     *
-     * @param row is row index of cell being queried
-     * @param col is column index of cell being queried
-     * @return reference to field bind if one exists, empty optional if no bind exists for given field
-     */
-    public Optional<CellBind> getFieldBindAt(int row, int col) {
-        return Optional.ofNullable(fieldBinds.get(CellCoordinates.of(row, col)));
-    }
-
+    @Nonnull
     @Override
     protected RowCellAreaBuilder self() {
         return this;
@@ -109,6 +97,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
     /**
      * @return collection of rows for this region
      */
+    @Nonnull
     private Collection<Row> buildRows(TplWorkbook template) {
         // first we will go through cells in template and we will try to find corresponding bindings
         return Stream.concat(
@@ -130,6 +119,7 @@ public final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder>
         ).collect(Collectors.groupingBy(RowBuilder::getRowIndex, new RowBuilder.AreaRowCollector())).values();
     }
 
+    @Nonnull
     @Override
     protected ReportStep doBuild(TplWorkbook template) {
         return new RowCellArea(getNameNm().orElseThrow() /* empty should be handled by validation */, isTopLevel(),

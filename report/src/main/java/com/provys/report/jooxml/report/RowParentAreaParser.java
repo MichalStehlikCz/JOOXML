@@ -10,14 +10,20 @@ import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.Objects;
 
 @Singleton
-public class RowParentAreaParser {
+class RowParentAreaParser {
 
     @Nonnull
     private static final Logger LOG = LogManager.getLogger(RowCellAreaParser.class.getName());
+    @Nonnull
+    private final StepParser stepParser;
+
     @Inject
-    StepParser stepParser;
+    RowParentAreaParser(StepParser stepParser) {
+        this.stepParser = Objects.requireNonNull(stepParser);
+    }
 
     RowParentAreaBuilder parse(@Nullable StepBuilder parent, XMLStreamReader reader) throws XMLStreamException {
         RowParentAreaBuilder builder = new RowParentAreaBuilder(parent);

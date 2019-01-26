@@ -4,6 +4,7 @@ import com.provys.report.jooxml.workbook.CellType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class CellValueNumeric extends CellValueBase<Double> {
 
@@ -26,6 +27,12 @@ public class CellValueNumeric extends CellValueBase<Double> {
     @Nonnull
     public CellType getCellType() {
         return CellType.NUMERIC;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Double> getNumericValue() {
+        return getValue();
     }
 
 }

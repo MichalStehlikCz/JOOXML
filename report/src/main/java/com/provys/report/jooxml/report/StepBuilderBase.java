@@ -5,18 +5,19 @@ import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder {
+abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder {
 
-    private final Logger LOG = LogManager.getLogger(StepBuilderBase.class.getName());
+    private static final Logger LOG = LogManager.getLogger(StepBuilderBase.class.getName());
     @Nullable
     protected final StepBuilder parent;
     @Nullable
     private String nameNm;
 
-    public StepBuilderBase(@Nullable StepBuilder parent) {
+    StepBuilderBase(@Nullable StepBuilder parent) {
         this.parent = parent;
     }
 
@@ -28,6 +29,7 @@ public abstract class StepBuilderBase<T extends StepBuilderBase> implements Step
     /**
      * @return default name - for root level item, returns default prefix, otherwise asks parent to supply the name
      */
+    @Nonnull
     protected String getDefaultNameNm() {
         if (parent == null) {
             return getDefaultNameNmPrefix();
@@ -38,6 +40,7 @@ public abstract class StepBuilderBase<T extends StepBuilderBase> implements Step
     /**
      * @return internal name of row area
      */
+    @Nonnull
     @Override
     public Optional<String> getNameNm() {
         return Optional.ofNullable(nameNm);
@@ -49,6 +52,7 @@ public abstract class StepBuilderBase<T extends StepBuilderBase> implements Step
      * @param nameNm is new internal name
      * @return self to allow fluent build
      */
+    @Nonnull
     public T setNameNm(String nameNm) {
         if (this.nameNm != null) {
             if (this.nameNm.equals(nameNm)) {
@@ -77,18 +81,21 @@ public abstract class StepBuilderBase<T extends StepBuilderBase> implements Step
     /**
      * Builds region from this builder. Called from build after validation.
      */
-    abstract protected ReportStep doBuild(TplWorkbook template);
+    @Nonnull
+    protected abstract ReportStep doBuild(TplWorkbook template);
 
     /**
      * Method allows fluent build for children of this type
      *
      * @return properly typed self
      */
-    abstract protected T self();
+    @Nonnull
+    protected abstract T self();
 
     /**
      * Validates and builds step from builder.
      */
+    @Nonnull
     public ReportStep build(TplWorkbook template) {
         validate();
         return doBuild(template);

@@ -50,16 +50,6 @@ final class CellBind {
         this.coordinates = Objects.requireNonNull(coordinates);
     }
 
-    /**
-     * Creates CellBind from supplied data.
-     *
-     * @param sourceColumn is name of column in dataset used to populate cell
-     * @param address is string reference to cell in Excel format
-     */
-    CellBind(String sourceColumn, String address) {
-        this(sourceColumn, CellCoordinates.parse(address));
-    }
-
     @Nonnull
     String getSourceColumn() {
         return sourceColumn;

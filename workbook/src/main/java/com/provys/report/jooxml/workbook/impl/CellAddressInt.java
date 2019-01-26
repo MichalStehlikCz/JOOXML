@@ -37,8 +37,8 @@ public class CellAddressInt implements CellAddress {
     private final @Nonnull CellCoordinates coordinates;
 
 
-    static @Nonnull
-    CellAddressInt parse(String address) {
+    @Nonnull
+    static CellAddressInt parse(String address) {
         if (address.isEmpty()) {
             throw new IllegalArgumentException("Empty string passed to cell reference parsing");
         }
@@ -65,8 +65,8 @@ public class CellAddressInt implements CellAddress {
      * @return instance of CellAddressInt with given coordinates
      * @throws IllegalArgumentException if sheet name is supplied, but empty
      */
-    static @Nonnull
-    CellAddressInt of(@Nullable String sheetName, CellCoordinates coordinates) {
+    @Nonnull
+    static CellAddressInt of(@Nullable String sheetName, CellCoordinates coordinates) {
         if ((sheetName == null) && (coordinates.getRow() == 0) && (coordinates.getCol() == 0)) {
             return A1;
         }
@@ -80,8 +80,8 @@ public class CellAddressInt implements CellAddress {
      * @return instance of CellAddressInt with given coordinates
      * @throws IllegalArgumentException if sheet name is supplied, but empty
      */
-    static @Nonnull
-    CellAddressInt of(CellCoordinates coordinates) {
+    @Nonnull
+    static CellAddressInt of(CellCoordinates coordinates) {
         return of(null, coordinates);
     }
 

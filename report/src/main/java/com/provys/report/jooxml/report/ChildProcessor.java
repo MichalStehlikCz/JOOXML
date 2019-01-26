@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class ChildProcessor extends StepProcessorAncestor {
 
-    final private StepWithChildren step;
+    private final StepWithChildren step;
 
     ChildProcessor(StepWithChildren step, StepContext stepContext) {
         super(stepContext);
@@ -28,7 +28,7 @@ public class ChildProcessor extends StepProcessorAncestor {
      * @return stream of step processors for children of given step
      */
     Stream<StepProcessor> expand() {
-        return getStep().getChildren().map(step -> step.getProcessorSupplier().apply(getStepContext()));
+        return getStep().getChildren().map((childStep) -> childStep.getProcessorSupplier().apply(getStepContext()));
     }
 
     @Override

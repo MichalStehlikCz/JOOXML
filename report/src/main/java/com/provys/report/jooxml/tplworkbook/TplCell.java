@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.tplworkbook;
 
+import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
@@ -17,6 +18,11 @@ public interface TplCell {
      * @return column index; columns are indexed from 0
      */
     int getColIndex();
+
+    /**
+     * @return coordinates of given cell
+     */
+    CellCoordinates getCoordinates();
 
     /**
      * @return type of cell

@@ -3,9 +3,11 @@ package com.provys.report.jooxml.repexecutor;
 import com.provys.report.jooxml.datasource.RootDataRecord;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
+import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.Files;
@@ -16,11 +18,34 @@ import java.util.stream.Stream;
 public class RepExecutor {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
+    /** workbook factory used to create and edit resulting workbook */
+    @Nonnull
+    private final RepWorkbookFactory repWorkBookFactory;
+    /** Cell value factory used to create cell values during report execution */
+    @Nonnull
+    private final CellValueFactory cellValueFactory;
     private Report report;
     private File targetFile;
     private List<Parameter> parameters = new ArrayList<>(0);
+
+    @SuppressWarnings("CdiInjectionPointsInspection") // implementations are supplied from libraries
     @Inject
-    private RepWorkbookFactory repWorkBookFactory;
+    public RepExecutor(RepWorkbookFactory repWorkBookFactory, CellValueFactory cellValueFactory) {
+        this.repWorkBookFactory = Objects.requireNonNull(repWorkBookFactory);
+        this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+    }
+
+    /**
+     * @return value of field cellValueFactory
+     */
+    @Nonnull
+    public CellValueFactory getCellValueFactory() {
+        return cellValueFactory;
+    }
+
+    public RepWorkbookFactory getRepWorkBookFactory() {
+        return repWorkBookFactory;
+    }
 
     public Report getReport() {
         return report;
@@ -59,14 +84,6 @@ public class RepExecutor {
         return this;
     }
 
-    public RepWorkbookFactory getRepWorkBookFactory() {
-        return repWorkBookFactory;
-    }
-
-    public void setRepWorkBookFactory(RepWorkbookFactory repWorkBookFactory) {
-        this.repWorkBookFactory = repWorkBookFactory;
-    }
-
     private RepWorkbook readWorkbook() {
         try {
             LOG.info("ReadWorkbook: Read template workbook from file {}", getReport().getTemplate());
@@ -89,7 +106,7 @@ public class RepExecutor {
     }
 
     public void run() {
-        try (ReportContext reportContext = new ReportContext(getParameters())) {
+        try (ReportContext reportContext = new ReportContext(getParameters(), getCellValueFactory())) {
             try (RepWorkbook workbook = readWorkbook()) {
                 reportContext.open(workbook);
                 StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)

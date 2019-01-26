@@ -30,8 +30,7 @@ class CellBuilder {
     }
 
     CellBuilder(TplCell tplCell, RowAreaBuilder region) {
-        this.coordinates = CellCoordinates.of(tplCell.getRowIndex() - region.getFirstRow()
-                , tplCell.getColIndex());
+        this.coordinates = tplCell.getCoordinates().shiftBy(-region.getFirstRow(), 0);
         this.tplCell = tplCell;
         this.bindColumn = null;
     }

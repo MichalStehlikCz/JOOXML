@@ -5,6 +5,7 @@ import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -14,10 +15,9 @@ import java.util.Optional;
  */
 class EmptyCellWithBind implements AreaCell {
 
-    final private int columnIndex;
-    final String bindColumn; // in fact, this field is always filled in; but getter needs Optional to be compatible
-                                 // with other region cell types, thus it is more effective to store value as optional
-                                 // even in this case
+    private final int columnIndex;
+    @Nonnull
+    private final String bindColumn;
 
     /**
      * Constructor used when bind points to empty (non-existent) cell.
@@ -35,21 +35,25 @@ class EmptyCellWithBind implements AreaCell {
         return columnIndex;
     }
 
+    @Nonnull
     @Override
     public CellType getCellType() {
-        return CellType.STRING;
+        return CellType.BLANK;
     }
 
+    @Nonnull
     @Override
     public Optional<CellValue> getCellValue() {
         return Optional.empty();
     }
 
+    @Nonnull
     @Override
     public CellValue getEffectiveValue(DataRecord data) {
         return data.getValue(bindColumn);
     }
 
+    @Nonnull
     @Override
     public Optional<CellProperties> getProperties() {
         return Optional.empty();
@@ -60,6 +64,7 @@ class EmptyCellWithBind implements AreaCell {
      *
      * @return source field for cell's data binding
      */
+    @Nonnull
     @Override
     public Optional<String> getBindColumn() {
         return Optional.of(bindColumn);

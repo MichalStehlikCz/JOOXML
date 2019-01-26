@@ -41,11 +41,6 @@ class CellBindBuilder {
         return (coordinates == null) ? Optional.empty() : Optional.of(coordinates.getAddress());
     }
 
-    public CellBindBuilder setAddress(String address) {
-        setCoordinates(CellCoordinates.parse(address));
-        return this;
-    }
-
     /**
      * @return CellBind built from this builder
      * @throws IllegalStateException if column or coordinates are not specified

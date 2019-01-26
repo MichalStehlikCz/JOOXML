@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.workbook.WorkbookProvider;
+import com.provys.report.jooxml.workbook.CellAddressFactory;
+import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,12 +25,12 @@ class CellBindParser {
     private static final String CELL_TAG = "CELL";
 
     @Nonnull
-    private final WorkbookProvider workbookProvider;
+    private final CellCoordinatesFactory cellCoordinatesFactory;
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    CellBindParser(WorkbookProvider workbookProvider) {
-        this.workbookProvider = workbookProvider;
+    CellBindParser(CellCoordinatesFactory cellCoordinatesFactory) {
+        this.cellCoordinatesFactory = cellCoordinatesFactory;
     }
 
     /**
@@ -60,7 +61,7 @@ class CellBindParser {
                         String address = reader.getElementText();
                         builder.getCoordinates().
                                 ifPresent((val) -> {throw new RuntimeException("Duplicate " + CELL_TAG + " element");});
-                        builder.setCoordinates(workbookProvider.parseCellCoordinates(address));
+                        builder.setCoordinates(cellCoordinatesFactory.parse(address));
                         break;
                     default:
                         throw new RuntimeException("CellBind: Unsupported element " + reader.getLocalName() +
