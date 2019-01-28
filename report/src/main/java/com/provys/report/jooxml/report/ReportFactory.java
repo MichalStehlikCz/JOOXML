@@ -44,7 +44,6 @@ public class ReportFactory {
                     stepReader.close();
                 }
             }
-
         } catch (FileNotFoundException e) {
             LOG.error("ReadParameters: Parameter file not found {} {}", bodyFile.getName(), e);
             throw new RuntimeException("Parameter file not found", e);

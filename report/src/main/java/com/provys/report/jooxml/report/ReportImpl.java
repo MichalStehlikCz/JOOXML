@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * While it can be modified when report definition changes, it is not modified by execution and this is reflected by
  * interface used by report executor.
  */
-public class ReportImpl implements Report {
+class ReportImpl implements Report {
 
     private final Map<String, ReportDataSource> dataSources;
     private ReportStep rootStep;
@@ -60,7 +60,7 @@ public class ReportImpl implements Report {
      *                         reference something mutable out of our control
      * @param template is file containing template excel workbook
      */
-    public ReportImpl(Collection<ReportDataSource> dataSources, StepBuilder rootRegionBuilder, File template,
+    ReportImpl(Collection<ReportDataSource> dataSources, StepBuilder rootRegionBuilder, File template,
                       TplWorkbookFactory tplWorkbookFactory) {
         this.dataSources = initDataSources(dataSources);
         try (TplWorkbook workbook = tplWorkbookFactory.get(template)) {
@@ -79,7 +79,7 @@ public class ReportImpl implements Report {
      * @throws NullPointerException is supplied internal name is null
      * @throws IllegalArgumentException in case datasource with such name doesn't exists
      */
-    public ReportDataSource getDataSourceByNameNm(String nameNm) {
+    ReportDataSource getDataSourceByNameNm(String nameNm) {
         ReportDataSource result = dataSources.get(Objects.requireNonNull(nameNm));
         if (result == null) {
             throw new IllegalArgumentException("Data source not found by nameNm " + nameNm);

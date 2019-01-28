@@ -23,7 +23,6 @@ class CellBindParser {
     private static final String COLUMN_TAG = "COLUMN";
     @Nonnull
     private static final String CELL_TAG = "CELL";
-
     @Nonnull
     private final CellCoordinatesFactory cellCoordinatesFactory;
 

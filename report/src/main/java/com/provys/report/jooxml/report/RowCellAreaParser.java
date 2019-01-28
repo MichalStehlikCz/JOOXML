@@ -10,14 +10,20 @@ import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.Objects;
 
 @Singleton
 class RowCellAreaParser {
 
     @Nonnull
     private static final Logger LOG = LogManager.getLogger(RowCellAreaParser.class.getName());
-    @Inject
+    @Nonnull
     private CellBindParser cellBindParser;
+
+    @Inject
+    RowCellAreaParser(CellBindParser cellBindParser) {
+        this.cellBindParser = Objects.requireNonNull(cellBindParser);
+    }
 
     RowCellAreaBuilder parse(@Nullable StepBuilder parent, XMLStreamReader reader) throws XMLStreamException {
         RowCellAreaBuilder builder = new RowCellAreaBuilder(parent);
