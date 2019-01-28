@@ -6,6 +6,7 @@ import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLInputFactory;
@@ -16,42 +17,29 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Objects;
 
 @Singleton
 public class ReportFactory {
 
-    private static final Logger LOG = LogManager.getLogger(StepParser.class.getName());
+    @Nonnull
+    private final TplWorkbookFactory tplWorkbookFactory;
+    @Nonnull
+    private final ReportBodyReader bodyReader;
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    private TplWorkbookFactory tplWorkbookFactory;
-    @Inject
-    StepParser rootStepParser;
+    ReportFactory(ReportBodyReader bodyReader, TplWorkbookFactory tplWorkbookFactory) {
+        this.bodyReader = Objects.requireNonNull(bodyReader);
+        this.tplWorkbookFactory = Objects.requireNonNull(tplWorkbookFactory);
+    }
 
     public Report build(Collection<ReportDataSource> dataSources, StepBuilder rootStepBuilder, File template) {
         return new ReportImpl(dataSources, rootStepBuilder, template, tplWorkbookFactory);
     }
 
     public Report build(Collection<ReportDataSource> dataSources, File bodyFile, File template) {
-        StepBuilder rootStepBuilder;
-        try (var bodyFileStream = new FileInputStream(bodyFile)) {
-            XMLStreamReader stepReader = null;
-            try {
-                stepReader = XMLInputFactory.newInstance().createXMLStreamReader(bodyFileStream);
-                rootStepBuilder = rootStepParser.parse(null, stepReader);
-            } finally {
-                if (stepReader != null) {
-                    stepReader.close();
-                }
-            }
-        } catch (FileNotFoundException e) {
-            LOG.error("ReadParameters: Parameter file not found {} {}", bodyFile.getName(), e);
-            throw new RuntimeException("Parameter file not found", e);
-        } catch (XMLStreamException e) {
-            throw new RuntimeException("Error reading XML body file", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IO exception reading body file", e);
-        }
+        StepBuilder rootStepBuilder = bodyReader.read(bodyFile);
         return new ReportImpl(dataSources, rootStepBuilder, template, tplWorkbookFactory);
     }
 
