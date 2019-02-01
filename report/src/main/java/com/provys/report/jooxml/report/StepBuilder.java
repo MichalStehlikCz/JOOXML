@@ -52,7 +52,22 @@ public interface StepBuilder {
      * @return datasource used for step builder; if step builder doesn't define data source, it inherits one from parent
      * step builder
      */
-    public Optional<ReportDataSource> getDataSource();
+    @Nonnull
+    Optional<ReportDataSource> getDataSource();
+
+    /**
+     * @return indication if region is top level region (e.g. no region above will initialize rows and region should
+     * flush rows)
+     */
+    boolean isTopLevel();
+
+    /**
+     * Validate that builder fulfills conditions for building the step.
+     * Validation is called as part of build process as well. Throws exceptions if validation fails
+     *
+     * @param dataSources is map of data-sources in report, used to validate data source name and parent
+     */
+    void validate(Map<String, ReportDataSource> dataSources);
 
     /**
      * Builds report step

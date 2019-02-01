@@ -41,7 +41,7 @@ class CellBuilder {
      * @param tplCell is template cell new object will reference
      * @param region is region within which cell binding is defined, coordinates will be relative against this region
      */
-    CellBuilder(TplCell tplCell, RowAreaBuilder region) {
+    CellBuilder(TplCell tplCell, RowStepBuilder region) {
         this.coordinates = tplCell.getCoordinates().shiftBy(-region.getFirstRow(), 0);
         this.tplCell = tplCell;
         this.bindColumn = null;
@@ -54,7 +54,7 @@ class CellBuilder {
      * @param cellBind is cell binding new object will take column name and coordinates from
      * @param region is region within which cell binding is defined, coordinates will be relative against this region
      */
-    CellBuilder(CellBind cellBind, RowAreaBuilder region) {
+    CellBuilder(CellBind cellBind, RowStepBuilder region) {
         this.coordinates = cellBind.getCoordinates().shiftBy(-region.getFirstRow(), 0);
         this.tplCell = null;
         this.bindColumn = cellBind.getSourceColumn();

@@ -6,7 +6,7 @@ import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-class RowRepeaterBuilder extends RowAreaBuilder<RowRepeaterBuilder> {
+class RowRepeaterBuilder extends RowStepBuilderBase<RowRepeaterBuilder> {
 
 
     RowRepeaterBuilder(@Nullable StepBuilder parent) {

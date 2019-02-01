@@ -46,10 +46,10 @@ class ReportBodyReader {
                     builder.setDataSource(reader.getElementText());
                 } else {
                     StepBuilder child = stepParser.parse(builder, reader);
-                    if (!(child instanceof RowAreaBuilder)) {
+                    if (!(child instanceof RowStepBuilderBase)) {
                         throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
                     }
-                    builder.addSubRegion((RowAreaBuilder) child);
+                    builder.addChild((RowStepBuilder) child);
                 }
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;

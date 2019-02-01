@@ -8,35 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb767349-52e0-45d4-9f4e-8156c764d22c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/DataReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/DataReaderProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/DataRepeater.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/DataRepeaterProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RootAreaBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowRepeaterBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellReferenceFactoryImplTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/RepExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/RepExecutor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/ReportStep.java" beforeDir="false" afterPath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/ReportStep.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/StepContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/StepContext.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ChildProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ChildProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilderBase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellArea.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentArea.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowRepeaterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowRepeaterBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepProcessorAncestor.java" beforeDir="false" afterPath="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepProcessorAncestor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workbook/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesFactoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesFactoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellReferenceFactoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellReferenceFactoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesFactoryImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesFactoryImplTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -62,54 +45,62 @@
   <component name="CoverageViewManager">
     <option name="myElementSize" value="58" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="1612556751">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="2" />
-          <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.24" value="1" />
-          <entry key="project.open.time.28" value="1" />
-          <entry key="project.open.time.32" value="1" />
-          <entry key="project.opened" value="4" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="java" value="78" />
-          <entry key="xml" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="JAVA" value="78" />
-          <entry key="XML" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="dummy" value="5" />
-          <entry key="java" value="6216" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="JAVA" value="6216" />
-          <entry key="PLAIN_TEXT" value="5" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FavoritesManager">
     <favorites_list name="JOOXML" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="62" column="43" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="43" />
+            <state relative-caret-position="418">
+              <caret line="166" column="12" selection-start-line="166" selection-start-column="12" selection-end-line="166" selection-end-column="12" />
+              <folding>
+                <element signature="e#605#606#0" expanded="true" />
+                <element signature="e#672#673#0" expanded="true" />
+                <element signature="e#1648#1649#0" expanded="true" />
+                <element signature="e#1683#1684#0" expanded="true" />
+                <element signature="e#745#746#0" expanded="true" />
+                <element signature="e#780#781#0" expanded="true" />
+                <element signature="e#1578#1579#0" expanded="true" />
+                <element signature="e#1605#1606#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilderBase.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1920">
+              <caret line="132" column="19" selection-start-line="132" selection-start-column="19" selection-end-line="132" selection-end-column="19" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="322">
+              <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+              <folding>
+                <element signature="e#770#771#0" expanded="true" />
+                <element signature="e#806#807#0" expanded="true" />
+                <element signature="e#2130#2131#0" expanded="true" />
+                <element signature="e#2200#2201#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="707">
+              <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
             </state>
           </provider>
         </entry>
@@ -122,8 +113,8 @@
         <option value="Enum" />
         <option value="package-info" />
         <option value="JUnit5 Test Class" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -162,8 +153,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/workbook/src/test/java/com/provys/report/jooxml/workbook/impl/CellValueFactoryImplTest.java" />
-        <option value="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinatesFactory.java" />
         <option value="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellCoordinates.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBind.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/tplworkbook/TplCell.java" />
@@ -190,8 +179,6 @@
         <option value="$PROJECT_DIR$/workbook/src/main/java/com/provys/report/jooxml/workbook/impl/CellCoordinatesFactoryImpl.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/CellBuilder.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/ReportImpl.java" />
-        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java" />
-        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/DataReaderStep.java" />
         <option value="$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/StepContext.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowDataReader.java" />
@@ -210,17 +197,15 @@
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaProcessor.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowRepeaterBuilder.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowCellAreaBuilder.java" />
-        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowBuilder.java" />
+        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java" />
+        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilder.java" />
+        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilderBase.java" />
         <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java" />
+        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java" />
+        <option value="$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java" />
       </list>
     </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -305,6 +290,16 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="jooxml" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JOOXML" type="462c0819:PsiDirectoryNode" />
+              <item name="repexecutor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="jooxml" type="462c0819:PsiDirectoryNode" />
+              <item name="repexecutor" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="JOOXML" type="b2602c69:ProjectViewProjectNode" />
@@ -461,8 +456,8 @@
       <recent name="com.provys.report.jooxml.repexecutor" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
-      <recent name="com.provys.report.jooxml.workbook.impl" />
       <recent name="com.provys.report.jooxml.report" />
+      <recent name="com.provys.report.jooxml.workbook.impl" />
       <recent name="com.provys.jooxml.report" />
       <recent name="com.provys.jooxml.repexecutor" />
     </key>
@@ -643,6 +638,8 @@
       <workItem from="1549000026157" duration="55000" />
       <workItem from="1549000312945" duration="160000" />
       <workItem from="1549000645273" duration="595000" />
+      <workItem from="1549003776279" duration="52000" />
+      <workItem from="1549004090929" duration="7631000" />
     </task>
     <servers />
   </component>
@@ -679,7 +676,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="418504000" />
+    <option name="totallyTimeSpent" value="426187000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -691,10 +688,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1215" height="775" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6064815" visible="true" weight="0.382684" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6064815" visible="true" weight="0.2375" />
       <window_info id="Structure" order="1" sideWeight="0.3935185" side_tool="true" weight="0.3011727" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" sideWeight="0.37318256" side_tool="true" weight="0.26066098" />
@@ -702,7 +699,7 @@
       <window_info id="Image Layers" order="5" />
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3281493" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32804233" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.29237947" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3978836" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -769,9 +766,6 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="XDebuggerManager">
     <watches-manager>
       <configuration name="Application">
@@ -794,13 +788,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/workbook/CellReferenceFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.3.2/junit-platform-commons-1.3.2.jar!/org/junit/platform/commons/util/ReflectionUtils.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
@@ -959,13 +946,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="54" column="54" selection-start-line="54" selection-start-column="54" selection-end-line="54" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/repexecutor/src/main/java/com/provys/report/jooxml/repexecutor/StepContext.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
@@ -1000,19 +980,6 @@
           <caret line="58" column="5" lean-forward="true" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="84" lean-forward="true" selection-start-line="83" selection-end-line="84" />
-          <folding>
-            <element signature="e#770#771#0" expanded="true" />
-            <element signature="e#806#807#0" expanded="true" />
-            <element signature="e#2130#2131#0" expanded="true" />
-            <element signature="e#2200#2201#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1134,26 +1101,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowAreaBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="118" selection-start-line="118" selection-end-line="118" />
-          <folding>
-            <element signature="e#1694#1695#0" expanded="true" />
-            <element signature="e#1745#1746#0" expanded="true" />
-            <element signature="e#2335#2336#0" expanded="true" />
-            <element signature="e#2385#2386#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../jdk11/lib/src.zip!/java.base/java/util/Optional.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="379" column="13" selection-start-line="379" selection-start-column="13" selection-end-line="379" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$PROJECT_DIR$/../jdk11/lib/src.zip!/java.base/java/util/Optional.java" />
     <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="137">
@@ -1168,10 +1116,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilderBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1920">
+          <caret line="132" column="19" selection-start-line="132" selection-start-column="19" selection-end-line="132" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowParentAreaBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="62" column="43" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="43" />
+        <state relative-caret-position="418">
+          <caret line="166" column="12" selection-start-line="166" selection-start-column="12" selection-end-line="166" selection-end-column="12" />
+          <folding>
+            <element signature="e#605#606#0" expanded="true" />
+            <element signature="e#672#673#0" expanded="true" />
+            <element signature="e#1648#1649#0" expanded="true" />
+            <element signature="e#1683#1684#0" expanded="true" />
+            <element signature="e#745#746#0" expanded="true" />
+            <element signature="e#780#781#0" expanded="true" />
+            <element signature="e#1578#1579#0" expanded="true" />
+            <element signature="e#1605#1606#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/RowStepBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilderBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+          <folding>
+            <element signature="e#770#771#0" expanded="true" />
+            <element signature="e#806#807#0" expanded="true" />
+            <element signature="e#2130#2131#0" expanded="true" />
+            <element signature="e#2200#2201#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/report/src/main/java/com/provys/report/jooxml/report/StepBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="707">
+          <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
         </state>
       </provider>
     </entry>

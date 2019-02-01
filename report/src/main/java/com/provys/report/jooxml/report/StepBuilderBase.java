@@ -88,7 +88,8 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
      * Base implementation fills in default internal name if one is not specified. Subclasses might add additional
      * validation rules
      */
-    protected void validate() {
+    @Override
+    public void validate() {
         if (getNameNm().isEmpty()) {
             setNameNm(getDefaultNameNm());
         }
@@ -114,7 +115,7 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
     @Nonnull
     public ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
         validateDataSource(dataSources);
-        validate();
+        validate(dataSources);
         return doBuild(template);
     }
 }

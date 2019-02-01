@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
+final class RowCellAreaBuilder extends RowStepBuilderBase<RowCellAreaBuilder> {
 
     @Nonnull
     private final Map<CellCoordinates, CellBind> fieldBinds;
