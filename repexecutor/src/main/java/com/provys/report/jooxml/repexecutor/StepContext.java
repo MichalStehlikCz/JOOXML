@@ -16,13 +16,13 @@ public class StepContext {
 
     /**
      * Creates step context from supplied data and coordinates context. Keeps reference to context coordinates, as these
-     * should be shared between step contexts
+     * might be intentionally shared between step contexts
      *
      * @param reportContext is report context this steps executed in. Holds reference to target workbook
      * @param data is data record that is used for current step
      * @param coordinates are offsets where step should be placed, and that step should move further
      */
-    StepContext(ReportContext reportContext, DataRecord data, ContextCoordinates coordinates) {
+    public StepContext(ReportContext reportContext, DataRecord data, ContextCoordinates coordinates) {
         this.reportContext = Objects.requireNonNull(reportContext);
         this.data = Objects.requireNonNull(data);
         this.coordinates = Objects.requireNonNull(coordinates);

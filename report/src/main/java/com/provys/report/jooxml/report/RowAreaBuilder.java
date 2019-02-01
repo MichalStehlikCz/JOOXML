@@ -5,6 +5,7 @@ import com.provys.report.jooxml.workbook.CellAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -18,15 +19,16 @@ import java.util.*;
  *
  * Class is not thread-safe, it is expected to onl be used when building report definition within single thread
  */
+@SuppressWarnings("UnusedReturnValue")
 abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<T> {
 
     private static final Logger LOG = LogManager.getLogger(RowAreaBuilder.class.getName());
 
     private boolean topLevel = false;
-    private int firstRow = -1;
-    private int lastRow = -1;
     @Nullable
-    private ReportDataSource reportDataSource;
+    private Integer firstRow = null;
+    @Nullable
+    private Integer lastRow = null;
 
     RowAreaBuilder(@Nullable StepBuilder parent) {
         super(parent);
@@ -41,8 +43,9 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<
     /**
      * @return first row in template covered by area; returns -1 if it has not been initialized yet
      */
-    public int getFirstRow() {
-        return firstRow;
+    @Nonnull
+    Optional<Integer> getFirstRow() {
+        return Optional.ofNullable(firstRow);
     }
 
     /**
@@ -51,7 +54,8 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<
      * @param firstRow is first row covered by given region
      * @return self to allow fluent build
      */
-    public T setFirstRow(int firstRow) {
+    @Nonnull
+    T setFirstRow(Integer firstRow) {
         if (firstRow < 0) {
             throw new IllegalArgumentException("First row cannot be negative");
         }
@@ -62,8 +66,9 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<
     /**
      * @return last row in template covered by area; returns -1 if it has not been initialized et
      */
-    public int getLastRow() {
-        return lastRow;
+    @Nonnull
+    Optional<Integer> getLastRow() {
+        return Optional.ofNullable(lastRow);
     }
 
     /**
@@ -72,7 +77,8 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<
      * @param lastRow is last row in template coveerd by region
      * @return self to allow fluent build
      */
-    public T setLastRow(int lastRow) {
+    @Nonnull
+    T setLastRow(int lastRow) {
         if (lastRow < 0) {
             throw new IllegalArgumentException("Last row cannot be negative");
         }
@@ -84,49 +90,17 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<
      * @return indication if region is top level region (e.g. no region above will initialize rows and region should
      * flush rows)
      */
-    public boolean isTopLevel() {
+    boolean isTopLevel() {
         return topLevel;
     }
 
     /**
-     * Sets indicationthat region is top level region
+     * Sets indication that region is top level region
      *
      * @param topLevel flag indicating if reion should be considered top level or not
      */
-    public T setTopLevel(boolean topLevel) {
+    T setTopLevel(boolean topLevel) {
         this.topLevel = topLevel;
-        return self();
-    }
-
-    /**
-     * @return value indicating if cell with given position is inside template area of region
-     */
-    public boolean isInTemplateRegion(int rowIndex, int columnIndex) {
-        return (rowIndex >= getFirstRow()) && (rowIndex <= getLastRow());
-    }
-
-    /**
-     * @return value indicating if cell with given position is inside template area of region
-     */
-    public boolean isInTemplateRegion(CellAddress cell) {
-        return isInTemplateRegion(cell.getRow(), cell.getCol());
-    }
-
-    /**
-     * @return data source used to populate this region
-     */
-    public Optional<ReportDataSource> getReportDataSource() {
-        return Optional.ofNullable(reportDataSource);
-    }
-
-    /**
-     * Set specified data source as report region's data source
-     *
-     * @param reportDataSource is data source to be used for region
-     * @return self to allow fluent build
-     */
-    public T setReportDataSource(ReportDataSource reportDataSource) {
-        this.reportDataSource = reportDataSource;
         return self();
     }
 
@@ -138,13 +112,10 @@ abstract class RowAreaBuilder<T extends RowAreaBuilder> extends StepBuilderBase<
     @Override
     protected void validate() {
         super.validate();
-        if (getFirstRow() < 0) {
-            throw new IllegalStateException("First row of covered area has not been initialized");
-        }
-        if (getLastRow() < 0) {
-            throw new IllegalStateException("Last row of covered area has not been initialized");
-        }
-        if (getFirstRow() > getLastRow()) {
+        if (getFirstRow().orElseThrow(
+                () -> new IllegalStateException("First row of covered area has not been initialized"))
+                > getLastRow().orElseThrow(
+                () -> new IllegalStateException("Last row of covered area has not been initialized"))) {
             throw new IllegalStateException("First row of region has to be above last row");
         }
     }

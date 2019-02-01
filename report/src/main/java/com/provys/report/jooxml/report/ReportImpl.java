@@ -8,10 +8,7 @@ import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,7 +61,7 @@ class ReportImpl implements Report {
                       TplWorkbookFactory tplWorkbookFactory) {
         this.dataSources = initDataSources(dataSources);
         try (TplWorkbook workbook = tplWorkbookFactory.get(template)) {
-            this.rootStep = rootRegionBuilder.build(workbook);
+            this.rootStep = rootRegionBuilder.build(Collections.unmodifiableMap(this.dataSources), workbook);
         } catch (IOException e) {
             throw new RuntimeException("IO error working with template file", e);
         }

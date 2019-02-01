@@ -30,7 +30,7 @@ class ReportBodyReader {
     }
 
     private StepBuilder parse(XMLStreamReader reader) throws XMLStreamException {
-        var builder = new RowParentAreaBuilder(null);
+        var builder = new RootAreaBuilder();
         // read root element
         reader.nextTag();
         if (!reader.getLocalName().equals(rootElement)) {
@@ -42,11 +42,15 @@ class ReportBodyReader {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
                 String name = reader.getLocalName();
-                StepBuilder child = stepParser.parse(builder, reader);
-                if (!(child instanceof RowAreaBuilder)) {
-                    throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
+                if (name.equals("DATASOURCE")) {
+                    builder.setDataSource(reader.getElementText());
+                } else {
+                    StepBuilder child = stepParser.parse(builder, reader);
+                    if (!(child instanceof RowAreaBuilder)) {
+                        throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
+                    }
+                    builder.addSubRegion((RowAreaBuilder) child);
                 }
-                builder.addSubRegion((RowAreaBuilder) child);
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;
             }

@@ -22,7 +22,7 @@ class CellCoordinatesFactoryImplTest {
     @ParameterizedTest
     @MethodSource
     void ofTest(int row, int col) {
-        var factory = new CellCoordinatesFactoryImpl();
+        var factory = CellCoordinatesFactoryImpl.getInstance();
         var coordinates = factory.of(row, col);
         assertThat(coordinates.getRow()).isEqualTo(row);
         assertThat(coordinates.getCol()).isEqualTo(col);
@@ -39,7 +39,7 @@ class CellCoordinatesFactoryImplTest {
     @ParameterizedTest
     @MethodSource
     void parseTest(String address, int row, int col) {
-        var factory = new CellCoordinatesFactoryImpl();
+        var factory = CellCoordinatesFactoryImpl.getInstance();
         var coordinates = factory.parse(address);
         assertThat(coordinates.getRow()).isEqualTo(row);
         assertThat(coordinates.getCol()).isEqualTo(col);

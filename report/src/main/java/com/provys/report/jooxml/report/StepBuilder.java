@@ -1,9 +1,12 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
 import javax.annotation.Nonnull;
+import javax.sql.DataSource;
+import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("UnusedReturnValue")
@@ -46,8 +49,14 @@ public interface StepBuilder {
     String proposeChildName(StepBuilder child);
 
     /**
+     * @return datasource used for step builder; if step builder doesn't define data source, it inherits one from parent
+     * step builder
+     */
+    public Optional<ReportDataSource> getDataSource();
+
+    /**
      * Builds report step
      */
     @Nonnull
-    ReportStep build(TplWorkbook template);
+    ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template);
 }

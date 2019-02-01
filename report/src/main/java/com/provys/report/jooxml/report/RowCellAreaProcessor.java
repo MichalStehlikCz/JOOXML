@@ -6,22 +6,19 @@ import com.provys.report.jooxml.repexecutor.StepContext;
 
 import java.util.Objects;
 
-public class RowCellAreaProcessor extends StepProcessorAncestor {
+class RowCellAreaProcessor extends StepProcessorAncestor<RowCellArea> {
 
-    private final RowCellArea region;
-
-    RowCellAreaProcessor(RowCellArea region, StepContext stepContext) {
-        super(stepContext);
-        this.region = Objects.requireNonNull(region);
+    RowCellAreaProcessor(RowCellArea step, StepContext stepContext) {
+        super(step, stepContext);
     }
 
     @Override
     public void execute() {
         ContextCoordinates coordinates = getStepContext().getCoordinates();
         // populate cells in sheet with cells from region
-        for (Row regionRow : region.getRows()) {
+        for (Row regionRow : getStep().getRows()) {
             RepRow targetRow;
-            if (region.isTopLevel()) {
+            if (getStep().isTopLevel()) {
                 targetRow = coordinates.getSheet().createRow(coordinates.getRowIndex() + regionRow.getRowIndex()
                         , regionRow.getRowProperties());
             } else {
@@ -35,6 +32,6 @@ public class RowCellAreaProcessor extends StepProcessorAncestor {
             }
         }
         // and move coordinates for the next area
-        coordinates.incRowBy(region.getHeight());
+        coordinates.incRowBy(getStep().getHeight());
     }
 }

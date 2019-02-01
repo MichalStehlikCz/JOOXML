@@ -69,11 +69,11 @@ final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
      */
     private void validateFieldBind(CellBind cellBind) {
         Objects.requireNonNull(cellBind);
-        if (cellBind.getCoordinates().getRow() < getFirstRow()) {
+        if (cellBind.getCoordinates().getRow() < getFirstRow().orElseThrow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
                     + getFirstRow() + ", bind row " + cellBind.getCoordinates().getRow());
         }
-        if (cellBind.getCoordinates().getRow() > getLastRow()) {
+        if (cellBind.getCoordinates().getRow() > getLastRow().orElseThrow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
                     + getLastRow() + ", bind row " + cellBind.getCoordinates().getRow());
         }
@@ -103,17 +103,18 @@ final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
         return Stream.concat(
                 Stream.concat( // rows built from cells
                         template.getSheet()// cells retrieved from template
-                                .getRows(getFirstRow(), getLastRow())
+                                .getRows(getFirstRow().orElseThrow(), getLastRow().orElseThrow()) // validate ensures
+                                                                                   // there will be no exception here
                                 .stream()
                                 .flatMap(row -> row.getCells().stream())
-                                .filter(cell -> this.isInTemplateRegion(cell.getRowIndex(), cell.getColIndex()))
                                 .map(cell -> new CellBuilder(cell, this))
                         , getFieldBinds().values().stream() // cells construed from required field binds
                                 .map(cellBind -> new CellBuilder(cellBind, this))
                 ).collect(Collectors.groupingBy(CellBuilder::getRowIndex
                         , new RowBuilder.RowBuilderCollector())).values().stream()
                 , template.getSheet() // rows built from template (no cells, but row height etc. )
-                        .getRows(getFirstRow(), getLastRow())
+                        .getRows(getFirstRow().orElseThrow(), getLastRow().orElseThrow()) // validate ensures there will
+                                                                                          // be no exception here
                         .stream()
                         .map(row -> new RowBuilder(row, this))
         ).collect(Collectors.groupingBy(RowBuilder::getRowIndex, new RowBuilder.AreaRowCollector())).values();
@@ -123,6 +124,6 @@ final class RowCellAreaBuilder extends RowAreaBuilder<RowCellAreaBuilder> {
     @Override
     protected ReportStep doBuild(TplWorkbook template) {
         return new RowCellArea(getNameNm().orElseThrow() /* empty should be handled by validation */, isTopLevel(),
-                getLastRow() - getFirstRow() + 1, buildRows(template));
+                getLastRow().orElseThrow() - getFirstRow().orElseThrow() + 1, buildRows(template));
     }
 }

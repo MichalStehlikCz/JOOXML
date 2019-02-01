@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import org.apache.logging.log4j.LogManager;
@@ -7,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.sql.DataSource;
+import java.util.Map;
 import java.util.Optional;
 
 abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder {
@@ -67,8 +70,21 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
         return self();
     }
 
+    @Nonnull
+    public Optional<ReportDataSource> getDataSource() {
+        return getParent().flatMap(StepBuilder::getDataSource);
+    }
+
     /**
-     * Validates all properites of this region.
+     * Validate region data source.
+     * Empty for regions without data source, should be overwritten for region with data source.
+     *
+     * @param dataSources is map of data-sources in report
+     */
+    protected void validateDataSource(Map<String, ReportDataSource> dataSources) {};
+
+    /**
+     * Validates all properties of this region.
      * Base implementation fills in default internal name if one is not specified. Subclasses might add additional
      * validation rules
      */
@@ -96,7 +112,8 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
      * Validates and builds step from builder.
      */
     @Nonnull
-    public ReportStep build(TplWorkbook template) {
+    public ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
+        validateDataSource(dataSources);
         validate();
         return doBuild(template);
     }

@@ -112,7 +112,7 @@ public class RepExecutor {
                 StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)
                         , new ContextCoordinates(workbook.getSheet(), 0, 0));
                 Stream<StepProcessor> pipeline
-                        = Stream.of(getReport().getRootStep().getProcessorSupplier().apply(stepContext));
+                        = Stream.of(getReport().getRootStep().getProcessor(stepContext));
                 getReport().getRootStep().addStepProcessing(pipeline).forEachOrdered(StepProcessor::execute);
                 writeWorkbook(workbook);
             } catch (IOException ex) {

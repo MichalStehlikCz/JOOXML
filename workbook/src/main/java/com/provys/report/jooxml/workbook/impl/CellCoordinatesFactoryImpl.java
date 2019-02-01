@@ -4,15 +4,19 @@ import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.inject.Produces;
 
 public class CellCoordinatesFactoryImpl implements CellCoordinatesFactory {
 
     private static final CellCoordinatesFactoryImpl INSTANCE = new CellCoordinatesFactoryImpl();
 
+    @Produces
     @Nonnull
     public static CellCoordinatesFactoryImpl getInstance() {
         return INSTANCE;
     }
+
+    private CellCoordinatesFactoryImpl() {}
 
     @Nonnull
     @Override

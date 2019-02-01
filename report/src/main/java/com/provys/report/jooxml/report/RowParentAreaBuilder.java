@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuilder> {
+class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuilder> {
 
     @Nonnull
     private final List<RowAreaBuilder> children = new ArrayList<>(5);
@@ -58,7 +58,7 @@ final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuilder> {
     }
 
     private void validateFirstRowOfFirstChild(RowAreaBuilder child) {
-        if (child.getFirstRow() == -1) {
+        if (child.getFirstRow().isEmpty()) {
             // first child can inherit start from us
             child.setFirstRow(getFirstRow());
         } else if (child.getFirstRow() < getFirstRow()) {
@@ -143,7 +143,7 @@ final class RowParentAreaBuilder extends RowAreaBuilder<RowParentAreaBuilder> {
      * @return collection of sub-regions for this region
      */
     @Nonnull
-    private Collection<ReportStep> doBuildChildren(TplWorkbook template) {
+    protected Collection<ReportStep> doBuildChildren(TplWorkbook template) {
         List<ReportStep> builtChildren = new ArrayList<>(children.size());
         for (RowAreaBuilder child : children) {
             builtChildren.add(child.doBuild(template));

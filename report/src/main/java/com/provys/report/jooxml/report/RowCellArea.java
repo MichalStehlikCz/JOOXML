@@ -53,7 +53,7 @@ class RowCellArea extends Step {
 
     @Nonnull
     @Override
-    public Function<StepContext, StepProcessor> getProcessorSupplier() {
-        return (context -> new RowCellAreaProcessor(this, context));
+    public StepProcessor getProcessor(StepContext stepContext) {
+        return new RowCellAreaProcessor(this, stepContext);
     }
 }

@@ -27,7 +27,10 @@ public interface ReportStep {
     Stream<StepProcessor> addStepProcessing(Stream<StepProcessor> pipeline);
 
     /**
-     * Get step processor supplier
+     * Get step processor for given step and specified context
+     *
+     * @param stepContext is context step processor will get assigned
+     * @return step processor that will represent this step in processing pipeline
      */
-    Function<StepContext, StepProcessor> getProcessorSupplier();
+    StepProcessor getProcessor(StepContext stepContext);
 }

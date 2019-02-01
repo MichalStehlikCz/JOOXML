@@ -28,8 +28,8 @@ class RowParentArea extends Step implements StepWithChildren {
     }
 
     @Override
-    public Function<StepContext, StepProcessor> getProcessorSupplier() {
-        return (context) -> new ChildProcessor(this, context);
+    public StepProcessor getProcessor(StepContext stepContext) {
+        return new ChildProcessor(this, stepContext);
     }
 
     @Override
