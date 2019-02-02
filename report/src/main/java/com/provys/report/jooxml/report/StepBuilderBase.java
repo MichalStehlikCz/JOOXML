@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("UnusedReturnValue") // we want to allow fluent build even if it is not used now
-abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder<T> {
+abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder {
 
     private static final Logger LOG = LogManager.getLogger(StepBuilderBase.class.getName());
     @Nullable
@@ -100,10 +100,11 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
      * modifications (using default values etc.) should be done as part of validation
      */
     @Nonnull
-    protected abstract ReportStep doBuild(TplWorkbook template);
-
     @Override
+    public abstract ReportStep doBuild(TplWorkbook template);
+
     @Nonnull
+    @Override
     public ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
         validate(dataSources);
         return doBuild(template);

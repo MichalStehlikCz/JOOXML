@@ -82,7 +82,7 @@ class RootAreaBuilder extends RowParentAreaBuilder {
 
     @Nonnull
     @Override
-    protected ReportStep doBuild(TplWorkbook template) {
+    public ReportStep doBuild(TplWorkbook template) {
         if (dataSource == null) {
             return super.doBuild(template);
         } else {

@@ -24,7 +24,7 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
     @Nonnull
     @Override
     public Optional<Integer> getEffFirstRow() {
-        return getFirstRow().or(() -> (!(children.isEmpty()) ? children.get(0).getEffFirstRow() : Optional.of((Integer) 1)));
+        return getFirstRow().or(() -> (!(children.isEmpty()) ? children.get(0).getEffFirstRow() : Optional.empty()));
     }
 
     /**
@@ -99,7 +99,7 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
             // set child to follow previous child
             child.setEffFirstRow(
                     previousChild.getEffLastRow().
-                            orElseThrow(() -> new IllegalStateException("Missing boundry between children "
+                            orElseThrow(() -> new IllegalStateException("Missing boundary between children "
                                     + previousChild.getNameNm() + " and " + child.getNameNm())) + 1);
         } else {
             int childEffPrevLastRow = child.getEffFirstRow().get() - 1;
@@ -179,7 +179,7 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
      * @return collection of sub-regions for this region
      */
     @Nonnull
-    private Collection<ReportStep> doBuildChildren(TplWorkbook template) {
+    Collection<ReportStep> doBuildChildren(TplWorkbook template) {
         List<ReportStep> builtChildren = new ArrayList<>(children.size());
         for (var child : children) {
             builtChildren.add(child.doBuild(template));
@@ -189,7 +189,7 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
 
     @Nonnull
     @Override
-    protected ReportStep doBuild(TplWorkbook template) {
+    public ReportStep doBuild(TplWorkbook template) {
         return new RowParentArea(getNameNm().orElseThrow() /*empty should be caught during validation */,
                 doBuildChildren(template));
     }

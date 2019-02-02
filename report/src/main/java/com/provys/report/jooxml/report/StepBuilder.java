@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("UnusedReturnValue")
-interface StepBuilder<T extends StepBuilder> {
+interface StepBuilder {
 
     /**
      * @return parent builder
@@ -31,7 +31,7 @@ interface StepBuilder<T extends StepBuilder> {
      * @throws IllegalArgumentException if nameNm parameter contains empty String
      */
     @Nonnull
-    T setNameNm(String nameNm);
+    StepBuilder setNameNm(String nameNm);
 
     /**
      * @return default prefix for step of this type

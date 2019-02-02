@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.workbook.CellCoordinates;
@@ -89,8 +90,8 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void validate(Map<String, ReportDataSource> dataSources) {
+        super.validate(dataSources);
         validateFieldBinds();
     }
 
@@ -122,7 +123,7 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
 
     @Nonnull
     @Override
-    protected ReportStep doBuild(TplWorkbook template) {
+    public ReportStep doBuild(TplWorkbook template) {
         return new RowCellArea(getNameNm().orElseThrow() /* empty should be handled by validation */, isTopLevel(),
                 getLastRow().orElseThrow() - getFirstRow().orElseThrow() + 1, buildRows(template));
     }

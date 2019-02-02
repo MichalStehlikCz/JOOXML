@@ -17,7 +17,7 @@ import java.util.*;
  * Class is not thread-safe, it is expected to onl be used when building report definition within single thread
  */
 @SuppressWarnings("UnusedReturnValue") // we want to enable fluent build
-abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderBase<T> implements RowStepBuilder<T> {
+abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderBase<T> implements RowStepBuilder {
 
     @Nullable
     private Integer firstRow = null;

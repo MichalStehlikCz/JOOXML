@@ -42,7 +42,8 @@ class CellBuilder {
      * @param region is region within which cell binding is defined, coordinates will be relative against this region
      */
     CellBuilder(TplCell tplCell, RowStepBuilder region) {
-        this.coordinates = tplCell.getCoordinates().shiftBy(-region.getFirstRow(), 0);
+        this.coordinates = tplCell.getCoordinates().shiftBy(-region.getEffFirstRow().orElseThrow(
+                () -> new RuntimeException("Cannot build cell - region coordinates not known")), 0);
         this.tplCell = tplCell;
         this.bindColumn = null;
     }
@@ -55,7 +56,8 @@ class CellBuilder {
      * @param region is region within which cell binding is defined, coordinates will be relative against this region
      */
     CellBuilder(CellBind cellBind, RowStepBuilder region) {
-        this.coordinates = cellBind.getCoordinates().shiftBy(-region.getFirstRow(), 0);
+        this.coordinates = cellBind.getCoordinates().shiftBy(-region.getEffFirstRow().orElseThrow(
+                () -> new RuntimeException("Cannot build cell - region coordinates not known")), 0);
         this.tplCell = null;
         this.bindColumn = cellBind.getSourceColumn();
     }

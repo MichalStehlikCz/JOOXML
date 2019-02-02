@@ -33,7 +33,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
 
     @Nonnull
     @Override
-    protected ReportStep doBuild(TplWorkbook template) {
+    public ReportStep doBuild(TplWorkbook template) {
         return null;
     }
 
