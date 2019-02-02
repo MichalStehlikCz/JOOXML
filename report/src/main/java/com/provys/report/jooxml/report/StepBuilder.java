@@ -5,12 +5,11 @@ import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
 import javax.annotation.Nonnull;
-import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("UnusedReturnValue")
-public interface StepBuilder {
+interface StepBuilder<T extends StepBuilder> {
 
     /**
      * @return parent builder
@@ -19,9 +18,7 @@ public interface StepBuilder {
     Optional<StepBuilder> getParent();
 
     /**
-     * Return internal name of step builder.
-     *
-     * @return internal name
+     * @return internal name of step builder
      */
     @Nonnull
     Optional<String> getNameNm();
@@ -30,10 +27,11 @@ public interface StepBuilder {
      * Set internal name of step builder.
      *
      * @param nameNm is internal name to be assigned to step builder
+     * @return self to support fluent build
      * @throws IllegalArgumentException if nameNm parameter contains empty String
      */
     @Nonnull
-    StepBuilder setNameNm(String nameNm);
+    T setNameNm(String nameNm);
 
     /**
      * @return default prefix for step of this type
@@ -48,10 +46,6 @@ public interface StepBuilder {
     @Nonnull
     String proposeChildName(StepBuilder child);
 
-    /**
-     * @return datasource used for step builder; if step builder doesn't define data source, it inherits one from parent
-     * step builder
-     */
     @Nonnull
     Optional<ReportDataSource> getDataSource();
 
@@ -63,14 +57,23 @@ public interface StepBuilder {
 
     /**
      * Validate that builder fulfills conditions for building the step.
-     * Validation is called as part of build process as well. Throws exceptions if validation fails
+     * Validation is called as part of build process as well and usually doesn't have to be called explicitly. Throws
+     * exceptions if validation fails. Validation might fill in default values of values taken from parent or children if appropriate.
      *
-     * @param dataSources is map of data-sources in report, used to validate data source name and parent
+     * @param dataSources is map of data-sources in report, might be used for data source validation
      */
     void validate(Map<String, ReportDataSource> dataSources);
 
     /**
-     * Builds report step
+     * Do actual build of step.
+     * Usually called internally from build. Expects that validation passed successfully and might behave unpredictably
+     * if builder is in state that is not suitable for validation
+     */
+    @Nonnull
+    ReportStep doBuild(TplWorkbook template);
+
+    /**
+     * Validates and builds step from builder.
      */
     @Nonnull
     ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template);

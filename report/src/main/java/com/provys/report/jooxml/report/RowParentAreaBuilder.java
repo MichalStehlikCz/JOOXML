@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 
@@ -7,7 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-class RowParentAreaBuilder extends RowStepBuilderBase<RowParentAreaBuilder> {
+class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
 
     @Nonnull
     private final List<RowStepBuilder> children = new ArrayList<>(5);
@@ -23,7 +24,7 @@ class RowParentAreaBuilder extends RowStepBuilderBase<RowParentAreaBuilder> {
     @Nonnull
     @Override
     public Optional<Integer> getEffFirstRow() {
-        return getFirstRow().or(() -> (children.isEmpty()) ? Optional.empty() : (children.get(0).getEffFirstRow()));
+        return getFirstRow().or(() -> (!(children.isEmpty()) ? children.get(0).getEffFirstRow() : Optional.of((Integer) 1)));
     }
 
     /**
@@ -61,7 +62,7 @@ class RowParentAreaBuilder extends RowStepBuilderBase<RowParentAreaBuilder> {
     @Nonnull
     @Override
     public String proposeChildName(StepBuilder child) {
-        if (!(child instanceof RowStepBuilderBase)) {
+        if (!(child instanceof RowRegionBuilder)) {
             throw new IllegalArgumentException("Only RowStepBuilder can be child of RowParentAreaBuilder");
         }
         int index = children.indexOf(child);
@@ -141,7 +142,7 @@ class RowParentAreaBuilder extends RowStepBuilderBase<RowParentAreaBuilder> {
      * Validate sub-regions. Calls validate on each region plus checks that regions are in ascending order of first row
      * and do not overlap.
      */
-    private void validateChildren() {
+    private void validateChildren(Map<String, ReportDataSource> dataSources) {
         // we go through regions and verify
         // - that they are inside template area of this builder
         // - that they do not overlap
@@ -164,23 +165,23 @@ class RowParentAreaBuilder extends RowStepBuilderBase<RowParentAreaBuilder> {
         // and now we can validate children; we couldn't have done it in first pass because end of child might have been
         // filled in on its successor
         for (RowStepBuilder child : children) {
-            child.validate();
+            child.validate(dataSources);
         }
     }
 
     @Override
-    protected void validate() {
-        super.validate();
-        validateChildren();
+    public void validate(Map<String, ReportDataSource> dataSources) {
+        super.validate(dataSources);
+        validateChildren(dataSources);
     }
 
     /**
      * @return collection of sub-regions for this region
      */
     @Nonnull
-    protected Collection<ReportStep> doBuildChildren(TplWorkbook template) {
+    private Collection<ReportStep> doBuildChildren(TplWorkbook template) {
         List<ReportStep> builtChildren = new ArrayList<>(children.size());
-        for (RowStepBuilderBase child : children) {
+        for (var child : children) {
             builtChildren.add(child.doBuild(template));
         }
         return builtChildren;

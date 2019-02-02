@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.datasource.ReportDataSource;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -15,19 +17,18 @@ import java.util.*;
  * Class is not thread-safe, it is expected to onl be used when building report definition within single thread
  */
 @SuppressWarnings("UnusedReturnValue") // we want to enable fluent build
-abstract class RowStepBuilderBase<T extends RowStepBuilderBase> extends StepBuilderBase<T> implements RowStepBuilder {
+abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderBase<T> implements RowStepBuilder<T> {
 
     @Nullable
     private Integer firstRow = null;
     @Nullable
     private Integer lastRow = null;
 
-    RowStepBuilderBase(@Nullable StepBuilder parent) {
+    RowRegionBuilder(@Nullable StepBuilder parent) {
         super(parent);
         if (parent == null) {
             // root region has some defaults...
             firstRow = 0;
-            lastRow = Integer.MAX_VALUE;
         }
     }
 
@@ -74,7 +75,8 @@ abstract class RowStepBuilderBase<T extends RowStepBuilderBase> extends StepBuil
     }
 
     /**
-     * @return last row in template covered by area; returns -1 if it has not been initialized et
+     * @return last row in template covered by area; if it has not been initialized but region is root region, returns
+     * max integer
      */
     @Nonnull
     Optional<Integer> getLastRow() {
@@ -124,19 +126,23 @@ abstract class RowStepBuilderBase<T extends RowStepBuilderBase> extends StepBuil
         return getParent().map(StepBuilder::isTopLevel).orElse(true);
     }
 
-    /**
-     * Validates all properties of this region.
-     * Base implementation validates effective row range. Subclasses might add additional rules on what is
-     * actually considered valid region definition (e.g. validation of sub-regions, binds, ...)
-     */
-    @Override
-    protected void validate() {
-        super.validate();
+    private void validateEffRows() {
         if (getEffFirstRow().orElseThrow(
                 () -> new IllegalStateException("First row of covered area has not been initialized"))
                 > getEffLastRow().orElseThrow(
                 () -> new IllegalStateException("Last row of covered area has not been initialized"))) {
             throw new IllegalStateException("First row of region has to be above last row");
         }
+    }
+
+    /**
+     * Validates all properties of this region.
+     * Apart from validation provided by parent, it validates that effective first and last row being known and first
+     * row being before last.
+     */
+    @Override
+    public void validate(Map<String, ReportDataSource> dataSources) {
+        super.validate(dataSources);
+        validateEffRows();
     }
 }

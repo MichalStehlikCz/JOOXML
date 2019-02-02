@@ -32,7 +32,7 @@ class RowParentAreaParser {
             if (eventType == XMLStreamConstants.START_ELEMENT) {
                 String name = reader.getLocalName();
                 StepBuilder child = stepParser.parse(builder, reader);
-                if (!(child instanceof RowStepBuilderBase)) {
+                if (!(child instanceof RowRegionBuilder)) {
                     throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
                 }
                 builder.addChild((RowStepBuilder) child);

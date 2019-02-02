@@ -8,15 +8,15 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Optional;
 
-abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder {
+@SuppressWarnings("UnusedReturnValue") // we want to allow fluent build even if it is not used now
+abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder<T> {
 
     private static final Logger LOG = LogManager.getLogger(StepBuilderBase.class.getName());
     @Nullable
-    protected final StepBuilder parent;
+    private final StepBuilder parent;
     @Nullable
     private String nameNm;
 
@@ -25,36 +25,18 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
     }
 
     @Override
+    @Nonnull
     public Optional<StepBuilder> getParent() {
         return Optional.ofNullable(parent);
     }
 
-    /**
-     * @return default name - for root level item, returns default prefix, otherwise asks parent to supply the name
-     */
-    @Nonnull
-    protected String getDefaultNameNm() {
-        if (parent == null) {
-            return getDefaultNameNmPrefix();
-        }
-        return parent.proposeChildName(this);
-    }
-
-    /**
-     * @return internal name of row area
-     */
-    @Nonnull
     @Override
+    @Nonnull
     public Optional<String> getNameNm() {
         return Optional.ofNullable(nameNm);
     }
 
-    /**
-     * Set internal name of report region
-     *
-     * @param nameNm is new internal name
-     * @return self to allow fluent build
-     */
+    @Override
     @Nonnull
     public T setNameNm(String nameNm) {
         if (this.nameNm != null) {
@@ -70,36 +52,26 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
         return self();
     }
 
+    /**
+     * @return default name - for root level item, returns default prefix, otherwise asks parent to supply the name
+     */
+    @Nonnull
+    private String getDefaultNameNm() {
+        if (parent == null) {
+            return getDefaultNameNmPrefix();
+        }
+        return parent.proposeChildName(this);
+    }
+
+    /**
+     * @return datasource used for step builder; if step builder doesn't define data source, it inherits one from parent
+     * step builder
+     */
+    @Override
     @Nonnull
     public Optional<ReportDataSource> getDataSource() {
         return getParent().flatMap(StepBuilder::getDataSource);
     }
-
-    /**
-     * Validate region data source.
-     * Empty for regions without data source, should be overwritten for region with data source.
-     *
-     * @param dataSources is map of data-sources in report
-     */
-    protected void validateDataSource(Map<String, ReportDataSource> dataSources) {};
-
-    /**
-     * Validates all properties of this region.
-     * Base implementation fills in default internal name if one is not specified. Subclasses might add additional
-     * validation rules
-     */
-    @Override
-    public void validate() {
-        if (getNameNm().isEmpty()) {
-            setNameNm(getDefaultNameNm());
-        }
-    }
-
-    /**
-     * Builds region from this builder. Called from build after validation.
-     */
-    @Nonnull
-    protected abstract ReportStep doBuild(TplWorkbook template);
 
     /**
      * Method allows fluent build for children of this type
@@ -110,11 +82,29 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
     protected abstract T self();
 
     /**
-     * Validates and builds step from builder.
+     * Validate that builder fulfills conditions for building the step.
+     * Base implementation fills in default internal name if one is not specified and calls data set validation.
+     * Subclasses might add additional validation rules
+     *
+     * @param dataSources is map of data-sources in report
+     */
+    @Override
+    public void validate(Map<String, ReportDataSource> dataSources) {
+        if (getNameNm().isEmpty()) {
+            setNameNm(getDefaultNameNm());
+        }
+    }
+
+    /**
+     * Builds region from this builder. Called from build after validation. Should NOT modify builder - all needed
+     * modifications (using default values etc.) should be done as part of validation
      */
     @Nonnull
+    protected abstract ReportStep doBuild(TplWorkbook template);
+
+    @Override
+    @Nonnull
     public ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
-        validateDataSource(dataSources);
         validate(dataSources);
         return doBuild(template);
     }
