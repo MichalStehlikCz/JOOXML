@@ -3,20 +3,28 @@ package com.provys.report.jooxml.repexecutor;
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.datasource.ReportDataSource;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 /**
  * Represents data context associated with RegionProcessor.
  * Binds RegionProcessor to DataSource, holds resources needed to access data and can return actual data stream.
+ * Constructor should not be too slow, preparation should be deferred to prepare method and prepare method must be
+ * called before data context usage
  */
 public interface DataContext extends AutoCloseable {
+
+    /**
+     * @return data source this context was created for
+     */
+    @Nonnull
     ReportDataSource getDataSource();
 
     /**
-     * Prepare data context. For database data sources, it means create PreparedStatement that will be then executed on
-     * each invocation of execute. Does nothing for data sources that do not need prior preparation.
+     * Prepare associated prepared statement etc.
+     * Data context should track its state and repeated execution of prepare method should do nothing.
      */
-    void prepare();
+    void prepare(ReportContext reportContext);
 
     /**
      * Retrieves data from data context. Supplies master data that can be bound or otherwise used.

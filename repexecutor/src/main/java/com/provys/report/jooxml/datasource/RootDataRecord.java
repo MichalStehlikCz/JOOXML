@@ -7,6 +7,7 @@ import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -17,12 +18,14 @@ import java.util.regex.Pattern;
 public class RootDataRecord implements DataRecord {
 
     private static final Logger LOG = LogManager.getLogger(RootDataRecord.class.getName());
+    @Nonnull
     private final ReportContext reportContext;
 
     public RootDataRecord(ReportContext reportContext) {
         this.reportContext = Objects.requireNonNull(reportContext);
     }
 
+    @Nonnull
     private static Boolean convertStringToBoolean(String value) {
         if (value.equals("Y")) {
             return true;
@@ -33,6 +36,7 @@ public class RootDataRecord implements DataRecord {
         throw new RuntimeException("Invalid boolean value, Y or N expected, " + value + " found");
     }
 
+    @Nonnull
     @Override
     public CellValue getValue(String columnName, @Nullable CellType prefType) {
         String value = reportContext.getParameterValue(columnName).orElse(null);
@@ -87,6 +91,7 @@ public class RootDataRecord implements DataRecord {
         return result;
     }
 
+    @Nonnull
     @Override
     public CellValue getValue(String columnName) {
         return getValue(columnName, null);

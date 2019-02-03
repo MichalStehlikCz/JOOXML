@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.repexecutor;
 
+import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +24,7 @@ public class ReportContext implements AutoCloseable {
     @Nonnull
     private final CellValueFactory cellValueFactory;
     @Nonnull
-    private final List<DataContext> dataContexts = new ArrayList<>(3);
+    private final Map<ReportDataSource, DataContext> dataContexts = new ConcurrentHashMap<>(3);
     @Nonnull
     private final Map<String, Connection> connections = new HashMap<>(3);
     @Nonnull
@@ -46,14 +48,11 @@ public class ReportContext implements AutoCloseable {
 
     /**
      * Starts execution of report. Registers workbook and prepares all data contexts.
-     * @param workbook
+     * @param workbook is target report workbook
      */
-    public void open(RepWorkbook workbook) {
+    void open(RepWorkbook workbook) {
         isOpen = true;
         this.workbook = Objects.requireNonNull(workbook);
-        for (DataContext dataContext : dataContexts) {
-            dataContext.prepare();
-        }
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ReportContext implements AutoCloseable {
         if (isOpen) {
             isOpen = false;
             // close all data contexts
-            for (DataContext dataContext : dataContexts) {
+            for (DataContext dataContext : dataContexts.values()) {
                 dataContext.close();
             }
             dataContexts.clear();
@@ -81,8 +80,25 @@ public class ReportContext implements AutoCloseable {
     /**
      * @return value of field cellValueFactory
      */
+    @Nonnull
     public CellValueFactory getCellValueFactory() {
         return cellValueFactory;
+    }
+
+    /**
+     * Retrieve data context for given data source.
+     * It tries to find it in cache. If not found, retrieves data context from data source and registers it in cache
+     *
+     * @param dataSource is report data source that defines data access
+     * @return data context for this report execution and data source, used to retrieve data
+     * @throws IllegalStateException if report context is not opened
+     */
+    @Nonnull
+    public DataContext getDataContext(ReportDataSource dataSource) {
+        DataContext dataContext = dataContexts.computeIfAbsent(Objects.requireNonNull(dataSource),
+                ReportDataSource::getDataContext);
+        dataContext.prepare(this);
+        return dataContext;
     }
 
     /**
@@ -90,9 +106,8 @@ public class ReportContext implements AutoCloseable {
      */
     public Optional<String> getParameterValue(String name) {
         Optional<String> value = parameters.get(name);
-        if (value == null) {
+        if (value.isEmpty()) {
             LOG.warn("ReportContext: Trying to access non-existent parameter " + name);
-            value = Optional.empty();
         }
         return value;
     }
@@ -100,7 +115,11 @@ public class ReportContext implements AutoCloseable {
     /**
      * @return target workbook
      */
+    @Nonnull
     public RepWorkbook getWorkbook() {
+        if (workbook == null) {
+            throw new IllegalStateException("Method getWorkbook should only be accessed when report context is opened");
+        }
         return workbook;
     }
 

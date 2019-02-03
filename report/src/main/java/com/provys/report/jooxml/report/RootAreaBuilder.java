@@ -72,7 +72,7 @@ class RootAreaBuilder extends RowParentAreaBuilder {
                 throw new RuntimeException("DataSource parent does not match master step datasource");
             }
         }
-    };
+    }
 
     @Override
     public void validate(Map<String, ReportDataSource> dataSources) {
@@ -87,7 +87,7 @@ class RootAreaBuilder extends RowParentAreaBuilder {
             return super.doBuild(template);
         } else {
             return new DataReader(getNameNm().orElseThrow() + "DATA", dataSource,
-                    new RowParentArea(getNameNm().orElseThrow() /*empty should be caught during validation */,
+                    new ParentStep(getNameNm().orElseThrow() /*empty should be caught during validation */,
                             doBuildChildren(template)));
         }
     }

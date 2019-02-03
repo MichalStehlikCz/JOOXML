@@ -1,22 +1,23 @@
 package com.provys.report.jooxml.report;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-@Singleton
+@ApplicationScoped
 class RowCellAreaParser {
 
-    @Nonnull
-    private static final Logger LOG = LogManager.getLogger(RowCellAreaParser.class.getName());
+    private static final String ROW_SPAN_TAG = "ROWSPAN";
+    private static final String BIND_TAG = "BIND";
+    private static final String ROW_SPAN_REGEXP = "([0-9]+):([0-9]+)";
+    private static final Pattern ROW_SPAN_PATTERN = Pattern.compile(ROW_SPAN_REGEXP);
+
     @Nonnull
     private CellBindParser cellBindParser;
 
@@ -30,12 +31,18 @@ class RowCellAreaParser {
         while (reader.hasNext()) {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("BIND")) {
+                if (reader.getLocalName().equals(ROW_SPAN_TAG)) {
+                    var matcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
+                    if (!matcher.matches()) {
+                        throw new RuntimeException("Row span does not match pattern minrow:maxrow");
+                    }
+                    builder.setFirstRow(Integer.valueOf(matcher.group(0)));
+                    builder.setLastRow(Integer.valueOf(matcher.group(1)));
+                } else if (reader.getLocalName().equals(BIND_TAG)) {
                     builder.addFieldBind(cellBindParser.parse(reader));
                 } else {
-                    LOG.error("RowCellArea: Unsupported element {}; supported elements are BIND", reader.getLocalName());
                     throw new RuntimeException("RowCellArea: Skipping unsupported element " + reader.getLocalName() +
-                            "; supported elements are BIND");
+                            "; supported elements are " + ROW_SPAN_TAG + ", " + BIND_TAG);
                 }
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;

@@ -190,7 +190,7 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
     @Nonnull
     @Override
     public ReportStep doBuild(TplWorkbook template) {
-        return new RowParentArea(getNameNm().orElseThrow() /*empty should be caught during validation */,
+        return new ParentStep(getNameNm().orElseThrow() /*empty should be caught during validation */,
                 doBuildChildren(template));
     }
 }

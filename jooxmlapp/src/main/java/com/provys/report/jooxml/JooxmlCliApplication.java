@@ -5,6 +5,7 @@ import picocli.CommandLine;
 
 public class JooxmlCliApplication {
 
+    @SuppressWarnings("squid:S106") // we do not mind warnings being written to console in CLI application
     public static void main(String[] args) {
         CommandLine commandLine = new CommandLine(new JooxmlInitializer());
         commandLine.registerConverter(Level.class, Level::valueOf);

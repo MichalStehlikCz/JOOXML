@@ -95,14 +95,6 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
         }
     }
 
-    /**
-     * Builds region from this builder. Called from build after validation. Should NOT modify builder - all needed
-     * modifications (using default values etc.) should be done as part of validation
-     */
-    @Nonnull
-    @Override
-    public abstract ReportStep doBuild(TplWorkbook template);
-
     @Nonnull
     @Override
     public ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template) {

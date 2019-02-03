@@ -1,7 +1,9 @@
 package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.DataContext;
+import com.provys.report.jooxml.repexecutor.ReportContext;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -10,11 +12,13 @@ import java.util.Optional;
  */
 class RootDataSource implements ReportDataSource {
 
+    @Nonnull
     private static final RootDataSource instance = new RootDataSource();
 
     /**
      * @return the only instance of root data executor there is
      */
+    @Nonnull
     public static RootDataSource getInstance() {
         return instance;
     }
@@ -22,13 +26,14 @@ class RootDataSource implements ReportDataSource {
     /**
      * Creates root data source
      */
-    private RootDataSource() {};
+    private RootDataSource() {}
 
     /**
      * Root data source has no parent
      *
      * @return empty optional (as root data source has no parent)
      */
+    @Nonnull
     @Override
     public Optional<ReportDataSource> getParent() {
         return Optional.empty();
@@ -39,13 +44,15 @@ class RootDataSource implements ReportDataSource {
      *
      * @return string ROOT
      */
+    @Nonnull
     @Override
     public String getNameNm() {
         return "ROOT";
     }
 
+    @Nonnull
     @Override
-    public DataContext getDataContext() {
-        return null;
+    public DataContext getDataContext(ReportContext reportContext) {
+        return new RootDataContext(this, reportContext);
     }
 }

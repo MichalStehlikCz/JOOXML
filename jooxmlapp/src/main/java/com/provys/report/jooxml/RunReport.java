@@ -10,23 +10,30 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@Singleton
+@ApplicationScoped
 class RunReport implements Runnable {
 
     private File template;
     private File bodyFile;
     private File paramFile;
     private File targetFile;
+    private final RepExecutor executor;
+    private final ReportFactory reportFactory;
+    private final DataSourceFactory dataSourceFactory;
+
     @Inject
-    private RepExecutor executor;
-    @Inject
-    private ReportFactory reportFactory;
+    RunReport(RepExecutor executor, ReportFactory reportFactory, DataSourceFactory dataSourceFactory) {
+        this.executor = Objects.requireNonNull(executor);
+        this.reportFactory = Objects.requireNonNull(reportFactory);
+        this.dataSourceFactory = Objects.requireNonNull(dataSourceFactory);
+    }
 
     RunReport setTemplate(File template) {
         this.template = template;
@@ -64,7 +71,7 @@ class RunReport implements Runnable {
     public void run() {
         addLoggerShutdownHook();
         List<ReportDataSource> dataSources = new ArrayList<>(1);
-        dataSources.add(DataSourceFactory.getRootDataSource());
+        dataSources.add(dataSourceFactory.getRootDataSource());
         Report report = reportFactory.build(dataSources, bodyFile, template);
         executor.setReport(report).
                 setParamFile(paramFile).

@@ -23,7 +23,8 @@ abstract class StepProcessorAncestor<T extends ReportStep> implements StepProces
      * @return step this processor is associated with
      */
     @Nonnull
-    T getStep() {
+    @Override
+    public T getStep() {
         return step;
     }
 
