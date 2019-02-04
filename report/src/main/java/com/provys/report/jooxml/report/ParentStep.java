@@ -25,10 +25,10 @@ class ParentStep extends Step {
     }
 
     @Override
-    public Stream<StepProcessor> addStepProcessing(Stream<StepProcessor> pipeline) {
-        return pipeline.flatMap(stepProcessor -> (stepProcessor.getStep() == this) ? Stream.of(stepProcessor) :
-                ((ParentProcessor) stepProcessor).expand()); // this retype is safe, as processor is processor is always
-                                        // produced by its step and ParentStep produces ParentProcessor as its processor
+    public int getNeededProcessorApplications() {
+        // need to expand this step's processor + all children
+        return getChildren().map(ReportStep::getNeededProcessorApplications).max(Integer::compareTo).orElse(0)
+                + 1;
     }
 
     /**
@@ -60,7 +60,7 @@ class ParentStep extends Step {
          *
          * @return stream of step processors for children of given step
          */
-        Stream<StepProcessor> expand() {
+        public Stream<StepProcessor> apply() {
             return getStep().getChildren().map(childStep -> childStep.getProcessor(getStepContext()));
         }
     }

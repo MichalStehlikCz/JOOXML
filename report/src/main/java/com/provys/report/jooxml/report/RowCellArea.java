@@ -47,10 +47,10 @@ class RowCellArea extends Step {
         return height;
     }
 
-    @Nonnull
     @Override
-    public Stream<StepProcessor> addStepProcessing(Stream<StepProcessor> pipeline) {
-        return pipeline;
+    public int getNeededProcessorApplications() {
+        // terminal step, no mapping needed
+        return 0;
     }
 
     @Nonnull
@@ -63,6 +63,11 @@ class RowCellArea extends Step {
 
         RowCellAreaProcessor(RowCellArea step, StepContext stepContext) {
             super(step, stepContext);
+        }
+
+        @Override
+        public Stream<StepProcessor> apply() {
+            return Stream.of(this);
         }
 
         @Override

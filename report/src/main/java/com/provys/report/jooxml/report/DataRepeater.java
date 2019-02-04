@@ -36,10 +36,8 @@ class DataRepeater extends Step {
     }
 
     @Override
-    public Stream<StepProcessor> addStepProcessing(Stream<StepProcessor> pipeline) {
-        return pipeline.flatMap(stepProcessor -> ((stepProcessor instanceof DataRepeaterProcessor)
-                && (((DataRepeaterProcessor) stepProcessor).getStep() == this))
-                ? ((DataRepeaterProcessor) stepProcessor).expand() : Stream.of(stepProcessor));
+    public int getNeededProcessorApplications() {
+        return getChild().getNeededProcessorApplications() + 1;
     }
 
     @Override
@@ -59,7 +57,8 @@ class DataRepeater extends Step {
          * @return stream of step processors for children of given step
          */
         @Nonnull
-        Stream<StepProcessor> expand() {
+        @Override
+        public Stream<StepProcessor> apply() {
             return getStep().getDataSource().getDataContext().
                     execute(getStepContext().getData()).
                     map(dataRecord -> getStep().getChild().getProcessor(

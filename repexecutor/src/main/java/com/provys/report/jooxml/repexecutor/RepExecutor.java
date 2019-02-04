@@ -39,11 +39,11 @@ public class RepExecutor {
      * @return value of field cellValueFactory
      */
     @Nonnull
-    public CellValueFactory getCellValueFactory() {
+    CellValueFactory getCellValueFactory() {
         return cellValueFactory;
     }
 
-    public RepWorkbookFactory getRepWorkBookFactory() {
+    RepWorkbookFactory getRepWorkBookFactory() {
         return repWorkBookFactory;
     }
 
@@ -56,7 +56,7 @@ public class RepExecutor {
         return this;
     }
 
-    public File getTargetFile() {
+    File getTargetFile() {
         return targetFile;
     }
 
@@ -65,11 +65,11 @@ public class RepExecutor {
         return this;
     }
 
-    public List<Parameter> getParameters() {
+    List<Parameter> getParameters() {
         return parameters;
     }
 
-    public RepExecutor setParameters(List<Parameter> parameters) {
+    RepExecutor setParameters(List<Parameter> parameters) {
         this.parameters = new ArrayList<>(parameters);
         return this;
     }
@@ -113,7 +113,12 @@ public class RepExecutor {
                         , new ContextCoordinates(workbook.getSheet(), 0, 0));
                 Stream<StepProcessor> pipeline
                         = Stream.of(getReport().getRootStep().getProcessor(stepContext));
-                getReport().getRootStep().addStepProcessing(pipeline).forEachOrdered(StepProcessor::execute);
+                // we add necessary number of step processor expansions to pipeline
+                for (int i = getReport().getRootStep().getNeededProcessorApplications(); i > 0; i--) {
+                    pipeline = pipeline.flatMap(StepProcessor::apply);
+                }
+                // and once only terminal steps remain, we execute them
+                pipeline.forEachOrdered(StepProcessor::execute);
                 writeWorkbook(workbook);
             } catch (IOException ex) {
                 LOG.error("Workbook: IO error closing workbook {}", ex);

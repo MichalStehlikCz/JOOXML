@@ -27,12 +27,9 @@ public interface ReportStep {
     String getNameNm();
 
     /**
-     * Add region processing to report pipeline
-     *
-     * @param pipeline ïs report processing pipeline
-     * @return pipeline with added processing for this region
+     * @return number of step processor apply invocations needed to fully expand this step and all its sub-steps.
      */
-    Stream<StepProcessor> addStepProcessing(Stream<StepProcessor> pipeline);
+    int getNeededProcessorApplications();
 
     /**
      * Get step processor for given step and specified context

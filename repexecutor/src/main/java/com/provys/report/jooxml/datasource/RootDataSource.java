@@ -52,7 +52,7 @@ class RootDataSource implements ReportDataSource {
 
     @Nonnull
     @Override
-    public DataContext getDataContext(ReportContext reportContext) {
-        return new RootDataContext(this, reportContext);
+    public DataContext getDataContext() {
+        return new RootDataContext(this);
     }
 }

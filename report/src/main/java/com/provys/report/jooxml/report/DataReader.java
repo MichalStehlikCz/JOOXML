@@ -33,10 +33,8 @@ class DataReader extends Step {
     }
 
     @Override
-    public Stream<StepProcessor> addStepProcessing(Stream<StepProcessor> pipeline) {
-        return pipeline.map(stepProcessor -> ((stepProcessor instanceof DataReaderProcessor)
-                && (((DataReaderProcessor) stepProcessor).getStep() == this))
-                ? ((DataReaderProcessor) stepProcessor).apply() : stepProcessor);
+    public int getNeededProcessorApplications() {
+        return getChild().getNeededProcessorApplications() + 1;
     }
 
     @Override
@@ -56,7 +54,7 @@ class DataReader extends Step {
          * @return stream of step processors for children of given step
          */
         @Nonnull
-        StepProcessor apply() {
+        public Stream<StepProcessor> apply() {
             DataRecord dataRecord = getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
                     execute(getStepContext().getData()).
                     reduce((u, v) -> {
@@ -64,6 +62,6 @@ class DataReader extends Step {
                     }).orElseThrow(() -> new RuntimeException("Dataset did not return any data"));
             StepContext context = new StepContext(getStepContext().getReportContext(), dataRecord,
                     getStepContext().getCoordinates());
-            return getStep().getChild().getProcessor(context);
+            return Stream.of(getStep().getChild().getProcessor(context));
         }
     }}
