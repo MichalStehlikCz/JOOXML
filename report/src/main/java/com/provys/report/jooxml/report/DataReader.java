@@ -10,32 +10,10 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-class DataReader extends Step {
-
-    @Nonnull
-    private final ReportDataSource dataSource;
-    @Nonnull
-    private final ReportStep child;
+class DataReader extends DataStep {
 
     DataReader(String nameNm, ReportDataSource dataSource, ReportStep child) {
-        super(nameNm);
-        this.dataSource = Objects.requireNonNull(dataSource);
-        this.child = Objects.requireNonNull(child);
-    }
-
-    @Nonnull
-    private ReportDataSource getDataSource() {
-        return dataSource;
-    }
-
-    @Nonnull
-    private ReportStep getChild() {
-        return child;
-    }
-
-    @Override
-    public int getNeededProcessorApplications() {
-        return getChild().getNeededProcessorApplications() + 1;
+        super(nameNm, dataSource, child);
     }
 
     @Override

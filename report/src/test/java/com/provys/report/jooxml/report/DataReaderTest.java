@@ -18,23 +18,7 @@ import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class DataReaderTest {
-
-    @Test
-    void getNeededProcessorApplicationsTest() {
-        ReportDataSource dataSource = mock(ReportDataSource.class);
-        ReportStep child1 = mock(ReportStep.class);
-        when(child1.getNeededProcessorApplications()).thenReturn(3);
-        DataReader testStep = new DataReader("TEST", dataSource, child1);
-        // one for its own processing and 3 for child
-        assertThat(testStep.getNeededProcessorApplications()).isEqualTo(4);
-        ReportStep child2 = mock(ReportStep.class);
-        when(child1.getNeededProcessorApplications()).thenReturn(0);
-        DataReader testStep2 = new DataReader("TEST2", dataSource, child2);
-        // one for its own processing and 0 for child
-        assertThat(testStep.getNeededProcessorApplications()).isEqualTo(1);
-    }
 
     @Test
     void getProcessorCorrectTest() {

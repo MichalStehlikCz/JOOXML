@@ -12,32 +12,10 @@ import java.util.stream.Stream;
 /**
  * Step built on data source, repeats child for each row of data
  */
-class DataRepeater extends Step {
-
-    @Nonnull
-    private final ReportDataSource dataSource;
-    @Nonnull
-    private final ReportStep child;
+class DataRepeater extends DataStep {
 
     DataRepeater(String nameNm, ReportDataSource dataSource, ReportStep child) {
-        super(nameNm);
-        this.dataSource = Objects.requireNonNull(dataSource);
-        this.child = Objects.requireNonNull(child);
-    }
-
-    @Nonnull
-    private ReportDataSource getDataSource() {
-        return dataSource;
-    }
-
-    @Nonnull
-    private ReportStep getChild() {
-        return child;
-    }
-
-    @Override
-    public int getNeededProcessorApplications() {
-        return getChild().getNeededProcessorApplications() + 1;
+        super(nameNm, dataSource, child);
     }
 
     @Override
@@ -59,7 +37,7 @@ class DataRepeater extends Step {
         @Nonnull
         @Override
         public Stream<StepProcessor> apply() {
-            return getStep().getDataSource().getDataContext().
+            return getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
                     execute(getStepContext().getData()).
                     map(dataRecord -> getStep().getChild().getProcessor(
                             getStepContext().cloneWithReplaceData(dataRecord)));
