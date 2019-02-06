@@ -2,6 +2,7 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.repexecutor.StepContext;
 import com.provys.report.jooxml.repexecutor.StepProcessor;
 
@@ -14,21 +15,21 @@ class DataReader extends Step {
     @Nonnull
     private final ReportDataSource dataSource;
     @Nonnull
-    private final Step child;
+    private final ReportStep child;
 
-    DataReader(String nameNm, ReportDataSource dataSource, Step child) {
+    DataReader(String nameNm, ReportDataSource dataSource, ReportStep child) {
         super(nameNm);
         this.dataSource = Objects.requireNonNull(dataSource);
         this.child = Objects.requireNonNull(child);
     }
 
     @Nonnull
-    ReportDataSource getDataSource() {
+    private ReportDataSource getDataSource() {
         return dataSource;
     }
 
     @Nonnull
-    Step getChild() {
+    private ReportStep getChild() {
         return child;
     }
 
@@ -60,8 +61,7 @@ class DataReader extends Step {
                     reduce((u, v) -> {
                         throw new RuntimeException("Dataset should only return single row, but returned more");
                     }).orElseThrow(() -> new RuntimeException("Dataset did not return any data"));
-            StepContext context = new StepContext(getStepContext().getReportContext(), dataRecord,
-                    getStepContext().getCoordinates());
+            StepContext context = getStepContext().cloneWithReplaceData(dataRecord);
             return Stream.of(getStep().getChild().getProcessor(context));
         }
     }}

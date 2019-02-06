@@ -26,12 +26,12 @@ class DataRepeater extends Step {
     }
 
     @Nonnull
-    ReportDataSource getDataSource() {
+    private ReportDataSource getDataSource() {
         return dataSource;
     }
 
     @Nonnull
-    ReportStep getChild() {
+    private ReportStep getChild() {
         return child;
     }
 
@@ -62,8 +62,7 @@ class DataRepeater extends Step {
             return getStep().getDataSource().getDataContext().
                     execute(getStepContext().getData()).
                     map(dataRecord -> getStep().getChild().getProcessor(
-                            new StepContext(getStepContext().getReportContext(), dataRecord,
-                                    getStepContext().getCoordinates())));
+                            getStepContext().cloneWithReplaceData(dataRecord)));
         }
 
         @Override

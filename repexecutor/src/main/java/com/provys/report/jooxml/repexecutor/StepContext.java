@@ -29,6 +29,13 @@ public class StepContext {
     }
 
     /**
+     * Creates step context with most properties same, but data replaced with supplied data
+     */
+    public StepContext cloneWithReplaceData(DataRecord data) {
+        return new StepContext(getReportContext(), Objects.requireNonNull(data), getCoordinates());
+    }
+
+    /**
      * @return data record
      */
     public DataRecord getData() {

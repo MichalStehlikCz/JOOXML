@@ -1,7 +1,6 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.CellAddressFactory;
 import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +15,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
@@ -69,8 +67,7 @@ class CellBindParserTest {
                 verify(cellCoordinatesFactory).parse(address);
             }
         } catch (XMLStreamException e) {
-            fail("XMLStreamException " + e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("XML Stream exception", e);
         }
     }
 }
