@@ -83,7 +83,7 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
 
     /**
      * Validate that builder fulfills conditions for building the step.
-     * Base implementation fills in default internal name if one is not specified and calls data set validation.
+     * Base implementation fills in default internal name if one is not specified.
      * Subclasses might add additional validation rules
      *
      * @param dataSources is map of data-sources in report

@@ -9,7 +9,7 @@ public class ContextCoordinates {
     private int rowIndex;
     private int columnIndex;
 
-    ContextCoordinates(RepSheet sheet, int rowIndex, int columnIndex) {
+    public ContextCoordinates(RepSheet sheet, int rowIndex, int columnIndex) {
         this.sheet = Objects.requireNonNull(sheet);
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;

@@ -9,12 +9,9 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class ParentStepTest {
 
     @Test
@@ -34,7 +31,7 @@ class ParentStepTest {
     }
 
     @Test
-    void getProcessor() {
+    void getProcessorApplyTest() {
         StepContext stepContext = mock(StepContext.class);
         ReportStep child1 = mock(ReportStep.class);
         StepProcessor processor1 = mock(StepProcessor.class);
@@ -54,11 +51,19 @@ class ParentStepTest {
     }
 
     @Test
-    void getChildren() {
+    void getProcessorExecuteTest() {
+        StepContext stepContext = mock(StepContext.class);
         ReportStep child1 = mock(ReportStep.class);
+        StepProcessor processor1 = mock(StepProcessor.class);
+        when(child1.getProcessor(stepContext)).thenReturn(processor1);
         ReportStep child2 = mock(ReportStep.class);
+        StepProcessor processor2 = mock(StepProcessor.class);
+        when(child2.getProcessor(stepContext)).thenReturn(processor2);
         ReportStep child3 = mock(ReportStep.class);
+        StepProcessor processor3 = mock(StepProcessor.class);
+        when(child3.getProcessor(stepContext)).thenReturn(processor3);
         ParentStep testStep = new ParentStep("TEST", Arrays.asList(child1, child2, child3));
-        assertThat(testStep.getChildren()).containsExactly(child1, child2, child3);
+        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext)).forEachOrdered(StepProcessor::execute));
     }
+
 }

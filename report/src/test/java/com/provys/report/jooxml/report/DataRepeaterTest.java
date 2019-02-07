@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class DataRepeaterTest {
 
     @Test
-    void getProcessorTest() {
+    void getProcessorApplyTest() {
         StepContext stepContext = mock(StepContext.class);
         ReportContext reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
@@ -51,7 +51,7 @@ class DataRepeaterTest {
     }
 
     @Test
-    void getProcessorNoDataTest() {
+    void getProcessorApplyNoDataTest() {
         StepContext stepContext = mock(StepContext.class);
         ReportContext reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
@@ -66,5 +66,22 @@ class DataRepeaterTest {
         DataRepeater testStep = new DataRepeater("TEST", dataSource, child);
         assertThat(Stream.of(testStep.getProcessor(stepContext)).flatMap(StepProcessor::apply)).
                 isEmpty();
+    }
+
+    @Test
+    void getProcessorExecuteTest() {
+        StepContext stepContext = mock(StepContext.class);
+        ReportContext reportContext = mock(ReportContext.class);
+        when(stepContext.getReportContext()).thenReturn(reportContext);
+        ContextCoordinates coordinates = mock(ContextCoordinates.class);
+        DataRecord dataRecord = mock(DataRecord.class);
+        when(stepContext.getData()).thenReturn(dataRecord);
+        ReportDataSource dataSource = mock(ReportDataSource.class);
+        DataContext dataContext = mock(DataContext.class);
+        when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
+        ReportStep child = mock(ReportStep.class);
+        when(dataContext.execute(dataRecord)).thenReturn(Stream.of());
+        DataRepeater testStep = new DataRepeater("TEST", dataSource, child);
+        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext)).forEachOrdered(StepProcessor::execute));
     }
 }

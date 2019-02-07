@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class DataReaderTest {
 
     @Test
-    void getProcessorCorrectTest() {
+    void getProcessorApplyCorrectTest() {
         // correct (single row dataset)
         StepContext stepContext = mock(StepContext.class);
         ReportContext reportContext = mock(ReportContext.class);
@@ -45,7 +45,7 @@ class DataReaderTest {
     }
 
     @Test
-    void getProcessorNoDataTest() {
+    void getProcessorApplyNoDataTest() {
         StepContext stepContext = mock(StepContext.class);
         ReportContext reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
@@ -64,7 +64,7 @@ class DataReaderTest {
     }
 
     @Test
-    void getProcessorTooManyRowsTest() {
+    void getProcessorApplyTooManyRowsTest() {
         // correct (single row dataset)
         StepContext stepContext = mock(StepContext.class);
         ReportContext reportContext = mock(ReportContext.class);
@@ -83,5 +83,27 @@ class DataReaderTest {
         DataReader testStep = new DataReader("TEST", dataSource, child);
         assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext)).flatMap(StepProcessor::apply).count()).
                 isInstanceOf(RuntimeException.class).hasMessageContaining("returned more");
+    }
+
+    @Test
+    void getProcessorExecuteTest() {
+        StepContext stepContext = mock(StepContext.class);
+        ReportContext reportContext = mock(ReportContext.class);
+        when(stepContext.getReportContext()).thenReturn(reportContext);
+        ContextCoordinates coordinates = mock(ContextCoordinates.class);
+        DataRecord dataRecord = mock(DataRecord.class);
+        when(stepContext.getData()).thenReturn(dataRecord);
+        ReportDataSource dataSource = mock(ReportDataSource.class);
+        DataContext dataContext = mock(DataContext.class);
+        when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
+        DataRecord dataRecord1 = mock(DataRecord.class);
+        when(dataContext.execute(dataRecord)).thenReturn(Stream.of(dataRecord1));
+        StepContext stepContext1 = mock(StepContext.class);
+        when(stepContext.cloneWithReplaceData(dataRecord1)).thenReturn(stepContext1);
+        ReportStep child = mock(ReportStep.class);
+        StepProcessor processor = mock(StepProcessor.class);
+        when(child.getProcessor(stepContext1)).thenReturn(processor);
+        DataReader testStep = new DataReader("TEST", dataSource, child);
+        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext)).forEachOrdered(StepProcessor::execute));
     }
 }

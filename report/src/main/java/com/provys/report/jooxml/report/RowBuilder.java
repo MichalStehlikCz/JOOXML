@@ -3,6 +3,8 @@ package com.provys.report.jooxml.report;
 import com.provys.report.jooxml.workbook.RowProperties;
 import com.provys.report.jooxml.tplworkbook.TplRow;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -11,11 +13,17 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Helper class for collecting rows in RowCellAreaBuilder
+ */
+@SuppressWarnings("UnusedReturnValue")
 class RowBuilder {
 
     private int rowIndex = -1;
+    @Nullable
     private RowProperties rowProperties = null;
-    private List<CellBuilder> cells = new LinkedList<>();
+    @Nonnull
+    private final List<CellBuilder> cells = new LinkedList<>();
 
     /**
      * Default constructor - leaves everything on defaults, usually used from collectors
@@ -63,6 +71,7 @@ class RowBuilder {
     /**
      * @return cells as read-only collection
      */
+    @Nonnull
     private Collection<CellBuilder> getCells() {
         return Collections.unmodifiableCollection(cells);
     }
@@ -88,10 +97,12 @@ class RowBuilder {
         return rowIndex;
     }
 
+    @Nullable
     private RowProperties getRowProperties() {
         return rowProperties;
     }
 
+    @Nonnull
     private RowBuilder setRowProperties(RowProperties rowProperties) {
         this.rowProperties = rowProperties;
         return this;
@@ -100,6 +111,7 @@ class RowBuilder {
     /**
      * Combines two report region builders. Can be used if parallel processing was used on stream.
      */
+    @Nonnull
     private RowBuilder combine(RowBuilder other) {
         if (other.getRowIndex() != -1) {
             if (getRowIndex() == -1) {
@@ -125,6 +137,7 @@ class RowBuilder {
      * @return new report region row
      * @throws IllegalStateException is report region row builder doesn't have valid row coordinate
      */
+    @Nonnull
     private Row build() {
         if (rowIndex < 0) {
             throw new IllegalStateException("Cannot build report region row from builder without valid row coordinate");
@@ -138,26 +151,31 @@ class RowBuilder {
      */
     static class RowBuilderCollector implements Collector<CellBuilder, RowBuilder, RowBuilder> {
 
+        @Nonnull
         @Override
         public Supplier<RowBuilder> supplier() {
             return RowBuilder::new;
         }
 
+        @Nonnull
         @Override
         public BiConsumer<RowBuilder, CellBuilder> accumulator() {
             return RowBuilder::addCell;
         }
 
+        @Nonnull
         @Override
         public BinaryOperator<RowBuilder> combiner() {
             return RowBuilder::combine;
         }
 
+        @Nonnull
         @Override
         public Function<RowBuilder, RowBuilder> finisher() {
             return Function.identity();
         }
 
+        @Nonnull
         @Override
         public Set<Characteristics> characteristics() {
             return new TreeSet<>();
@@ -169,26 +187,31 @@ class RowBuilder {
      */
     static class AreaRowCollector implements Collector<RowBuilder, RowBuilder, Row> {
 
+        @Nonnull
         @Override
         public Supplier<RowBuilder> supplier() {
             return RowBuilder::new;
         }
 
+        @Nonnull
         @Override
         public BiConsumer<RowBuilder, RowBuilder> accumulator() {
             return RowBuilder::combine;
         }
 
+        @Nonnull
         @Override
         public BinaryOperator<RowBuilder> combiner() {
             return RowBuilder::combine;
         }
 
+        @Nonnull
         @Override
         public Function<RowBuilder, Row> finisher() {
             return RowBuilder::build;
         }
 
+        @Nonnull
         @Override
         public Set<Characteristics> characteristics() {
             return new TreeSet<>();

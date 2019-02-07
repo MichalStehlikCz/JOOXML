@@ -28,7 +28,7 @@ class RowCellArea extends Step {
      * @return all rows holding cells ith binding in given area
      */
     @Nonnull
-    public List<Row> getRows() {
+    private List<Row> getRows() {
         return Collections.unmodifiableList(rows);
     }
 
@@ -36,14 +36,14 @@ class RowCellArea extends Step {
      * @return if region is top level region (e.g. it should create rows as there is no parent that can create rows
      * instead)
      */
-    boolean isTopLevel() {
+    private boolean isTopLevel() {
         return topLevel;
     }
 
     /**
      * @return height of given area
      */
-    int getHeight() {
+    private int getHeight() {
         return height;
     }
 
@@ -78,7 +78,7 @@ class RowCellArea extends Step {
                 RepRow targetRow;
                 if (getStep().isTopLevel()) {
                     targetRow = coordinates.getSheet().createRow(coordinates.getRowIndex() + regionRow.getRowIndex()
-                            , regionRow.getRowProperties());
+                            , regionRow.getRowProperties().orElse(null));
                 } else {
                     targetRow = coordinates.getSheet().getOrCreateRow(
                             coordinates.getRowIndex() + regionRow.getRowIndex());

@@ -40,6 +40,7 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
     /**
      * @return list of value rules, applicable on area
      */
+    @Nonnull
     private Map<CellCoordinates, CellBind> getFieldBinds() {
         return Collections.unmodifiableMap(fieldBinds);
     }

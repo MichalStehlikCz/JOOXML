@@ -26,10 +26,6 @@ abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderB
 
     RowRegionBuilder(@Nullable StepBuilder parent) {
         super(parent);
-        if (parent == null) {
-            // root region has some defaults...
-            firstRow = 0;
-        }
     }
 
     /**
@@ -114,7 +110,7 @@ abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderB
      */
     @Override
     public void setEffLastRow(Integer effLastRow) {
-        setFirstRow(effLastRow);
+        setLastRow(effLastRow);
     }
 
     /**
