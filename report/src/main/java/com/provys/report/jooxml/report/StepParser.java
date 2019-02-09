@@ -20,6 +20,8 @@ public class StepParser {
     private final RowCellAreaParser rowCellAreaParser;
     @Nonnull
     private final RowParentAreaParser rowParentAreaParser;
+    @Nonnull
+    private final RowRepeaterParser rowRepeaterParser;
 
     /**
      * Constructor that should be used by dependency injection.
@@ -32,6 +34,7 @@ public class StepParser {
     StepParser(CellBindParser cellBindParser) {
         rowCellAreaParser = new RowCellAreaParser(cellBindParser);
         rowParentAreaParser = new RowParentAreaParser(this);
+        rowRepeaterParser = new RowRepeaterParser(this);
     }
 
     /**
@@ -42,9 +45,11 @@ public class StepParser {
      * @param rowCellAreaParser is parser to be used for ROWCELLAREA steps
      * @param rowParentAreaParser is parser to be used for ROWPARENTAREA steps
      */
-    StepParser(RowCellAreaParser rowCellAreaParser, RowParentAreaParser rowParentAreaParser) {
+    StepParser(RowCellAreaParser rowCellAreaParser, RowParentAreaParser rowParentAreaParser,
+               RowRepeaterParser rowRepeaterParser) {
         this.rowCellAreaParser = rowCellAreaParser;
         this.rowParentAreaParser = rowParentAreaParser;
+        this.rowRepeaterParser = rowRepeaterParser;
     }
 
     /**
@@ -61,6 +66,9 @@ public class StepParser {
                 break;
             case "ROWPARENTAREA":
                 step = rowParentAreaParser.parse(parent, stepReader);
+                break;
+            case "ROWREPEATER":
+                step = rowRepeaterParser.parse(parent, stepReader);
                 break;
             default:
                 throw new RuntimeException("ReadSteps: Unsupported step type " + stepReader.getLocalName());

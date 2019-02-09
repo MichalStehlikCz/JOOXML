@@ -8,14 +8,15 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * Data context for root data source
+ * Data context for root data source.
+ * Keeps reference to report context and passes it to associated root data record
  */
-class RootDataContext extends DataContextAncestor {
+class RootDataContext extends DataContextAncestor<RootDataSource> {
 
     @Nullable
     private ReportContext reportContext;
 
-    RootDataContext(ReportDataSource dataSource) {
+    RootDataContext(RootDataSource dataSource) {
         super(dataSource);
     }
 
@@ -30,7 +31,7 @@ class RootDataContext extends DataContextAncestor {
     @Override
     public Stream<DataRecord> execute(DataRecord master) {
         if (reportContext == null) {
-            throw new IllegalStateException("Cannot retrieve data record - data cntext not prepared");
+            throw new IllegalStateException("Cannot retrieve data record - data context not prepared");
         }
         return Stream.of(new RootDataRecord(reportContext));
     }

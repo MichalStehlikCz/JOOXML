@@ -22,15 +22,15 @@ public class ReportContext implements AutoCloseable {
 
     private boolean isOpen = false;
     @Nonnull
-    private final CellValueFactory cellValueFactory;
-    @Nonnull
     private final Map<ReportDataSource, DataContext> dataContexts = new ConcurrentHashMap<>(3);
     @Nonnull
-    private final Map<String, Connection> connections = new HashMap<>(3);
-    @Nonnull
     private final Map<String, Optional<String>> parameters;
+    @Nonnull
+    private final CellValueFactory cellValueFactory;
     @Nullable
     private RepWorkbook workbook;
+    @Nullable
+    private Connection connection;
 
     /**
      * Creates report context for execution of report with given parameters.
@@ -47,12 +47,24 @@ public class ReportContext implements AutoCloseable {
     }
 
     /**
-     * Starts execution of report. Registers workbook and prepares all data contexts.
+     * Starts execution of report. Registers workbook and connection.
+     * @param workbook is target report workbook
+     * @param connection is connection to PROVYS database used to retrieve data
+     */
+    void open(RepWorkbook workbook, @Nullable Connection connection) {
+        isOpen = true;
+        this.workbook = Objects.requireNonNull(workbook);
+        this.connection = connection;
+    }
+
+    /**
+     * Starts execution of report; variant without connection. Registers workbook, connection will not be available. If
+     * any of the data sources need connection to database for execution, preparation of given data context will fail.
+     *
      * @param workbook is target report workbook
      */
     void open(RepWorkbook workbook) {
-        isOpen = true;
-        this.workbook = Objects.requireNonNull(workbook);
+        open(workbook, null);
     }
 
     @Override
@@ -65,10 +77,10 @@ public class ReportContext implements AutoCloseable {
             }
             dataContexts.clear();
             // close all used connections / return them to pool
-            for (Connection connection : connections.values()) {
+            if (connection != null) {
                 connection.close();
+                connection = null;
             }
-            connections.clear();
             // and close workbook
             if (workbook != null) {
                 workbook.close();
@@ -121,6 +133,23 @@ public class ReportContext implements AutoCloseable {
             throw new IllegalStateException("Method getWorkbook should only be accessed when report context is opened");
         }
         return workbook;
+    }
+
+    /**
+     * @return connection to PROVYS database
+     * @throws IllegalStateException if report context is not opened
+     * @throws RuntimeException when report context was opened without connection (in off-line mode)
+     */
+    @Nonnull
+    public Connection getConnection() {
+        if (connection == null) {
+            if (isOpen) {
+                throw new RuntimeException("Report was run in off-line mode - connection needed but not available");
+            } else {
+                throw new IllegalStateException("Cannot access connection - report context is not opened");
+            }
+        }
+        return connection;
     }
 
 }
