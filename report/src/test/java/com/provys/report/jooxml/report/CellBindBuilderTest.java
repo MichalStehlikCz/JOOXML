@@ -46,19 +46,6 @@ class CellBindBuilderTest {
     }
 
     @Test
-    void getAddressTest() {
-        when(coordinates.getAddress()).thenReturn("A1");
-        when(otherCoordinates.getAddress()).thenReturn("B2");
-        var builder = new CellBindBuilder();
-        assertThat(builder.getAddress()).isEqualTo(Optional.empty());
-        assertThat(builder.setCoordinates(coordinates)).isSameAs(builder);
-        assertThat(builder.getAddress()).isEqualTo(Optional.of("A1"));
-        assertThat(builder.setCoordinates(otherCoordinates)).isSameAs(builder);
-        assertThat(builder.getAddress()).isEqualTo(Optional.of("B2"));
-        assertThat(builder.getSourceColumn()).isEqualTo(Optional.empty());
-    }
-
-    @Test
     void buildTest() {
         var builder = new CellBindBuilder().setSourceColumn("a_b_c").setCoordinates(coordinates);
         assertThat(builder.build()).isEqualTo(new CellBind("a_b_c", coordinates));

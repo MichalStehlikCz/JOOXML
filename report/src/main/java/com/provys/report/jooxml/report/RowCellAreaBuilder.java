@@ -12,6 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Represents area in sheet that is to be placed (potentially multiple times if there is some repeater among parents) to
+ * target sheet. Might contain binds that will read data from supplied data record to sheet.
+ */
 final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
 
     @Nonnull
@@ -34,7 +38,7 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
     @Nonnull
     @Override
     public String proposeChildName(StepBuilder child) {
-        return child.getDefaultNameNmPrefix();
+        throw new RuntimeException("Cell area doesn't have any children");
     }
 
     /**

@@ -3,19 +3,11 @@ package com.provys.report.jooxml.report;
 import com.provys.report.jooxml.repexecutor.Report;
 import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -27,7 +19,7 @@ public class ReportFactory {
     @Nonnull
     private final ReportBodyReader bodyReader;
 
-    @SuppressWarnings("CdiInjectionPointsInspection")
+    @SuppressWarnings({"CdiInjectionPointsInspection", "CdiUnproxyableBeanTypesInspection"})
     @Inject
     ReportFactory(ReportBodyReader bodyReader, TplWorkbookFactory tplWorkbookFactory) {
         this.bodyReader = Objects.requireNonNull(bodyReader);

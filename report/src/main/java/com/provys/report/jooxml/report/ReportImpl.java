@@ -69,22 +69,6 @@ class ReportImpl implements Report {
     }
 
     /**
-     * Retrieve data source specified by internal name
-     *
-     * @param nameNm is internal name of data source to be retrieved
-     * @return data source with given internal name
-     * @throws NullPointerException is supplied internal name is null
-     * @throws IllegalArgumentException in case datasource with such name doesn't exists
-     */
-    ReportDataSource getDataSourceByNameNm(String nameNm) {
-        ReportDataSource result = dataSources.get(Objects.requireNonNull(nameNm));
-        if (result == null) {
-            throw new IllegalArgumentException("Data source not found by nameNm " + nameNm);
-        }
-        return result;
-    }
-
-    /**
      * @return root region
      */
     @Override

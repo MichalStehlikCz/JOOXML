@@ -39,14 +39,6 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
     }
 
     /**
-     * @return sub-regions as collection
-     */
-    @Nonnull
-    Collection<RowStepBuilder> getChildren() {
-        return Collections.unmodifiableCollection(children);
-    }
-
-    /**
      * Add child to list of children
      */
     void addChild(RowStepBuilder child) {
@@ -102,11 +94,13 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
                             orElseThrow(() -> new IllegalStateException("Missing boundary between children "
                                     + previousChild.getNameNm() + " and " + child.getNameNm())) + 1);
         } else {
+            //noinspection OptionalGetWithoutIsPresent isEmpty is present
             int childEffPrevLastRow = child.getEffFirstRow().get() - 1;
             if (previousChild.getEffLastRow().isEmpty()) {
                 // stretch previous child to this
                 previousChild.setEffLastRow(childEffPrevLastRow);
             } else {
+                //noinspection OptionalGetWithoutIsPresent isEmpty is present
                 int previousEffLastRow = previousChild.getEffLastRow().get();
                 if (previousEffLastRow > childEffPrevLastRow) {
                     throw new IllegalStateException("Children cannot overlap " + previousChild.getNameNm()

@@ -7,7 +7,6 @@ import com.provys.report.jooxml.repworkbook.RepRow;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 class RowCellArea extends Step {

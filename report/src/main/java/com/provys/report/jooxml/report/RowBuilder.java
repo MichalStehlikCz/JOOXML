@@ -34,7 +34,7 @@ class RowBuilder {
      * Constructor initializing row values from template row
      */
     RowBuilder(TplRow row, RowStepBuilder region) {
-        this.rowIndex = row.getRowIndex() - (Integer) region.getEffFirstRow().orElseThrow();
+        this.rowIndex = row.getRowIndex() - region.getEffFirstRow().orElseThrow();
         this.rowProperties = row.getProperties();
     }
 

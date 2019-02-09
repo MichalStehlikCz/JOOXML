@@ -1,7 +1,6 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;

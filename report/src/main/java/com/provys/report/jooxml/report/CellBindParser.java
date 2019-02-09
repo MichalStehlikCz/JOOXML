@@ -1,9 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.workbook.CellAddressFactory;
 import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -18,7 +15,6 @@ import javax.xml.stream.XMLStreamReader;
 @Singleton
 class CellBindParser {
 
-    private static final Logger LOG = LogManager.getLogger(CellBindParser.class.getName());
     @Nonnull
     private static final String COLUMN_TAG = "COLUMN";
     @Nonnull

@@ -3,8 +3,8 @@ package com.provys.report.jooxml.report;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -16,7 +16,7 @@ import java.util.Objects;
  * Reads report body XML file. It acts as parser for root region (treated as parent region with some extensional
  * elements). Unlike StepParsers, it accepts file or input stream and opens XML reader on its own
  */
-@Singleton
+@ApplicationScoped
 class ReportBodyReader {
 
     private static final Logger LOG = LogManager.getLogger(ReportBodyReader.class.getName());
@@ -58,6 +58,7 @@ class ReportBodyReader {
         return builder;
     }
 
+    @SuppressWarnings("WeakerAccess")
     StepBuilder read(InputStream reportBodyStream) {
         StepBuilder rootStepBuilder;
         XMLStreamReader stepReader = null;

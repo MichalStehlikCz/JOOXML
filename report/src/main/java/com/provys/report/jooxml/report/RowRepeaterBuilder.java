@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("UnusedReturnValue")
 class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
 
     // setters are used to fill data source name
@@ -62,7 +63,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @param dataSourceName is new value to be set
      * @return self to enable chaining
      */
-    public RowRepeaterBuilder setDataSourceName(String dataSourceName) {
+    RowRepeaterBuilder setDataSourceName(String dataSourceName) {
         if (dataSourceName.isEmpty()) {
             throw new RuntimeException("DataSource name cannot be empty");
         }
@@ -86,7 +87,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @return value of field firstBodyRow
      */
     @Nonnull
-    public Optional<Integer> getFirstBodyRow() {
+    Optional<Integer> getFirstBodyRow() {
         return Optional.ofNullable(firstBodyRow);
     }
 
@@ -97,7 +98,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @return self to enable chaining
      */
     @Nonnull
-    public RowRepeaterBuilder setFirstBodyRow(Integer firstBodyRow) {
+    RowRepeaterBuilder setFirstBodyRow(Integer firstBodyRow) {
         if (firstBodyRow < 0) {
             throw new RuntimeException("First row of body cannot be negative");
         }
@@ -109,7 +110,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @return value of field lastBodyRow
      */
     @Nonnull
-    public Optional<Integer> getLastBodyRow() {
+    Optional<Integer> getLastBodyRow() {
         return Optional.ofNullable(lastBodyRow);
     }
 
@@ -119,7 +120,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @param lastBodyRow is new value to be set
      * @return self to enable chaining
      */
-    public RowRepeaterBuilder setLastBodyRow(Integer lastBodyRow) {
+    RowRepeaterBuilder setLastBodyRow(Integer lastBodyRow) {
         if (lastBodyRow < 0) {
             throw new RuntimeException("Last row of body cannot be negative");
         }
@@ -131,7 +132,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @return value of field child
      */
     @Nonnull
-    public Optional<RowStepBuilder> getChild() {
+    Optional<RowStepBuilder> getChild() {
         return Optional.ofNullable(child);
     }
 
@@ -141,7 +142,8 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @param child is new value to be set
      * @return self to enable chaining
      */
-    public RowRepeaterBuilder setChild(RowStepBuilder child) {
+    @Nonnull
+    RowRepeaterBuilder setChild(RowStepBuilder child) {
         this.child = Objects.requireNonNull(child);
         return this;
     }
@@ -159,7 +161,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
         }
     }
 
-    @SuppressWarnings("squid:S3655") // sonar doesn't underestand isEmpty is sufficient
+    @SuppressWarnings({"squid:S3655", "OptionalGetWithoutIsPresent"}) // analysers do not underestand isEmpty is sufficient
     private void validateChild() {
         if (child == null) {
             throw new RuntimeException("Child must be specified for RowRepeater step");

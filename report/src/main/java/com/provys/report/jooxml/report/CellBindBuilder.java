@@ -1,8 +1,6 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.workbook.CellCoordinates;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,33 +10,31 @@ import java.util.Optional;
 @SuppressWarnings("UnusedReturnValue")
 class CellBindBuilder {
 
-    private static final Logger LOG = LogManager.getLogger(CellBindBuilder.class.getName());
-
     @Nullable
     private String sourceColumn;
     @Nullable
     private CellCoordinates coordinates;
 
+    @Nonnull
     Optional<String> getSourceColumn() {
         return Optional.ofNullable(sourceColumn);
     }
 
+    @Nonnull
     CellBindBuilder setSourceColumn(String sourceColumn) {
         this.sourceColumn = CellBind.validateSourceColumn(sourceColumn);
         return this;
     }
 
+    @Nonnull
     public Optional<CellCoordinates> getCoordinates() {
         return Optional.ofNullable(coordinates);
     }
 
+    @Nonnull
     public CellBindBuilder setCoordinates(CellCoordinates coordinates) {
         this.coordinates = Objects.requireNonNull(coordinates);
         return this;
-    }
-
-    public Optional<String> getAddress() {
-        return (coordinates == null) ? Optional.empty() : Optional.of(coordinates.getAddress());
     }
 
     /**

@@ -13,7 +13,7 @@ interface RowStepBuilder extends StepBuilder {
      * if it is unknown
      */
     @Nonnull
-    abstract Optional<? extends Integer> getEffFirstRow();
+    Optional<? extends Integer> getEffFirstRow();
 
     /**
      * Set the effective first row in template covered by this step.
@@ -24,19 +24,19 @@ interface RowStepBuilder extends StepBuilder {
      * process this command during validation but value might be kept in children and if children are not initialized
      * yet, call to this function might fail
      */
-    abstract void setEffFirstRow(Integer effFirstRow);
+    void setEffFirstRow(Integer effFirstRow);
 
     /**
      * @return last row in template covered by area - effective value, potentially calculated from children; returns
      * empty Optional if it is unknown
      */
     @Nonnull
-    abstract Optional<? extends Integer> getEffLastRow();
+    Optional<? extends Integer> getEffLastRow();
 
     /**
      * Set the effective last row in template covered by step.
      *
      * @param effLastRow is last row in template covered by region
      */
-    abstract void setEffLastRow(Integer effLastRow);
+    void setEffLastRow(Integer effLastRow);
 }

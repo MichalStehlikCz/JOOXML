@@ -83,14 +83,15 @@ class CellBuilder {
      *
      * @param coordinates are coordinates to be set; they should be relative to region cell is part of
      */
-    void setCoordinates(@Nullable CellCoordinates coordinates) {
+    private void setCoordinates(@Nullable CellCoordinates coordinates) {
         this.coordinates = coordinates;
     }
 
     /**
      * @return coordinates of this cell builder, empty Optional if coordinates are not specified
      */
-    Optional<CellCoordinates> getCoordinates() {
+    @Nonnull
+    private Optional<CellCoordinates> getCoordinates() {
         return Optional.ofNullable(coordinates);
     }
 
@@ -107,7 +108,7 @@ class CellBuilder {
     @Nonnull
     private CellBuilder combine(CellBuilder cell) {
         if (getCoordinates().isEmpty()) {
-            cell.getCoordinates().ifPresent(otherCoord -> this.setCoordinates(otherCoord));
+            cell.getCoordinates().ifPresent(this::setCoordinates);
         } else {
             if ((cell.getCoordinates().isPresent()) && (!getCoordinates().equals(cell.getCoordinates()))) {
                 throw new IllegalArgumentException("Cannot merge two combined cells with different coordinates");
@@ -139,11 +140,14 @@ class CellBuilder {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
         if (tplCell != null) {
-            return new TemplateCellWithBind(getCellIndex().get(), tplCell, Optional.ofNullable(bindColumn));
+            return new TemplateCellWithBind(getCellIndex().
+                    orElseThrow(() -> new RuntimeException("Cell index missing")),
+                    tplCell, bindColumn);
         } else if (bindColumn == null) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
-        return new EmptyCellWithBind(getCellIndex().get(), bindColumn);
+        return new EmptyCellWithBind(getCellIndex().
+                orElseThrow(() -> new RuntimeException("Cell index missing")), bindColumn);
     }
 
     /**

@@ -45,7 +45,7 @@ class ParentStep extends Step {
     /**
      * @return stream containing children of this step
      */
-    Stream<ReportStep> getChildren() {
+    private Stream<ReportStep> getChildren() {
         return Collections.unmodifiableList(children).stream();
     }
 

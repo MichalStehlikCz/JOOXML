@@ -8,13 +8,8 @@ import javax.annotation.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.*;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Singleton
 public class StepParser {
@@ -22,9 +17,9 @@ public class StepParser {
     private static final Logger LOG = LogManager.getLogger(StepParser.class.getName());
 
     @Nonnull
-    private RowCellAreaParser rowCellAreaParser;
+    private final RowCellAreaParser rowCellAreaParser;
     @Nonnull
-    private RowParentAreaParser rowParentAreaParser;
+    private final RowParentAreaParser rowParentAreaParser;
 
     /**
      * Constructor that should be used by dependency injection.
