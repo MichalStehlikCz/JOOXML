@@ -43,10 +43,9 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
         }
         Map<String, Param<?>> params = query.getParams();
         for (Param<?> param : params.values()) {
-            if (!master.bindToQuery(query, param.getName())) {
-                query.bind(param.getName(), null);
-            }
+            query.bind(param.getName(), master.getValue(param.getName(), null).orElse(null));
         }
+        return query;
     }
 
     @Override
