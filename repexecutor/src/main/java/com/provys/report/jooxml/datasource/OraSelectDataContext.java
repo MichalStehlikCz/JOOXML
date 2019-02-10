@@ -2,16 +2,17 @@ package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.ReportContext;
 import org.jooq.Param;
-import org.jooq.Query;
+import org.jooq.ResultQuery;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSource> {
 
     @Nullable
-    private Query query;
+    private ResultQuery<?> query;
 
     OraSelectDataContext(OraSelectDataSource dataSource) {
         super(dataSource);
@@ -25,7 +26,7 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
      */
     private synchronized void parse(ReportContext reportContext) {
         if (query == null) {
-            query = reportContext.getDslContext().parser().parseQuery(getDataSource().getSelectStatement());
+            query = reportContext.getDslContext().parser().parseResultQuery(getDataSource().getSelectStatement());
         }
     }
 
@@ -45,7 +46,7 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
         for (Param<?> param : params.values()) {
             query.bind(param.getName(), master.getValue(param.getName(), null).orElse(null));
         }
-        return query;
+        query.fetchLazy().spliterator();
     }
 
     @Override
@@ -53,6 +54,19 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
         if (query != null) {
             query.close();
             query = null;
+        }
+    }
+
+    private class DataRecordCursor implements Iterator<DataRecord> {
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public DataRecord next() {
+            return null;
         }
     }
 }
