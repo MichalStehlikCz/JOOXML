@@ -1,75 +1,59 @@
 package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.ReportContext;
-import oracle.jdbc.OracleParameterMetaData;
+import org.jooq.Param;
+import org.jooq.Query;
 
 import javax.annotation.Nullable;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSource> {
 
     @Nullable
-    private PreparedStatement preparedStatement;
+    private Query query;
 
     OraSelectDataContext(OraSelectDataSource dataSource) {
         super(dataSource);
     }
 
-    private static void parseBinds(PreparedStatement preparedStatement) {
-        try {
-            OracleParameterMetaData metaData = preparedStatement.getParameterMetaData().
-                    unwrap(OracleParameterMetaData.class);
-            for (int i = 0; i < metaData.getParameterCount(); i++) {
-                metaData.
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot parse statement parameters", e);
-        }
-    }
     /**
      * Create prepared statement and parse select text
      *
      * @param reportContext is report context in which this data context will be valid. Used to retrieve connection to
      *                     PROVYS database.
      */
-    private synchronized void prepareStatement(ReportContext reportContext) {
-        PreparedStatement genericPreparedStatement;
-        try {
-            preparedStatement = reportContext.getConnection().prepareStatement(getDataSource().getSelectStatement());
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot parse select statement: " + getDataSource().getSelectStatement(), e);
+    private synchronized void parse(ReportContext reportContext) {
+        if (query == null) {
+            query = reportContext.getDslContext().parser().parseQuery(getDataSource().getSelectStatement());
         }
-        parseBinds();
     }
 
     @Override
     public void prepare(ReportContext reportContext) {
-        if (preparedStatement == null) {
-            prepareStatement(reportContext);
+        if (query == null) {
+            parse(reportContext);
         }
     }
 
     @Override
     public Stream<DataRecord> execute(DataRecord master) {
-        if (preparedStatement == null) {
+        if (query == null) {
             throw new IllegalStateException("Cannot execute data context - context not prepared");
         }
-        try {
-            preparedStatement.clearParameters();
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot clear parameters in prepared statement", e);
+        Map<String, Param<?>> params = query.getParams();
+        for (Param<?> param : params.values()) {
+            if (!master.bindToQuery(query, param.getName())) {
+                query.bind(param.getName(), null);
+            }
         }
-        return null;
     }
 
     @Override
-    public void close() throws Exception {
-        if (preparedStatement != null) {
-            preparedStatement.close();
-            preparedStatement = null;
+    public synchronized void close() throws Exception {
+        if (query != null) {
+            query.close();
+            query = null;
         }
     }
 }

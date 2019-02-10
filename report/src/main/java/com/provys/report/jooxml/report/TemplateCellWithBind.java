@@ -65,7 +65,7 @@ class TemplateCellWithBind implements AreaCell {
     @Nonnull
     @Override
     public CellValue getEffectiveValue(DataRecord data) {
-        return (bindColumn != null) ? data.getValue(bindColumn, getCellType()) : cell.getCellValue();
+        return (bindColumn != null) ? data.getCellValue(bindColumn, getCellType()) : cell.getCellValue();
     }
 
     @Nonnull

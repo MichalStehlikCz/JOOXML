@@ -9,20 +9,17 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
  * Root data record is special kind of data record that supplies parameter values as data
  */
-public class RootDataRecord implements DataRecord {
+public class RootDataRecord extends DataRecordAncestor {
 
     private static final Logger LOG = LogManager.getLogger(RootDataRecord.class.getName());
-    @Nonnull
-    private final ReportContext reportContext;
 
     public RootDataRecord(ReportContext reportContext) {
-        this.reportContext = Objects.requireNonNull(reportContext);
+        super(reportContext);
     }
 
     @Nonnull
@@ -38,7 +35,7 @@ public class RootDataRecord implements DataRecord {
 
     @Nonnull
     @Override
-    public CellValue getValue(String columnName, @Nullable CellType prefType) {
+    public Optional<Object> getValue(String columnName, @Nullable CellType prefType) {
         String value = reportContext.getParameterValue(columnName).orElse(null);
         final CellValueFactory cellValueFactory = reportContext.getCellValueFactory();
         CellValue result;
@@ -91,9 +88,4 @@ public class RootDataRecord implements DataRecord {
         return result;
     }
 
-    @Nonnull
-    @Override
-    public CellValue getValue(String columnName) {
-        return getValue(columnName, null);
-    }
 }

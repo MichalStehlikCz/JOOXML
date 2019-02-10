@@ -3,9 +3,23 @@ package com.provys.report.jooxml.datasource;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public interface DataRecord {
+
+    /**
+     * Get value of column paramName
+     *
+     * @param paramName is name of parameter to be bound
+     * @param prefClass is preferred class of result; if source value can be converted to this type, it is converted,
+     *                  ut method might return other type if conversion is not possible
+     * @return value to be bound; log warning and return empty optional if value is not successfully evaluated
+     */
+    @Nonnull
+    Optional<Object> getValue(String paramName, @Nullable Class<?> prefClass);
+
     /**
      * Get value of specified column from data record.
      *
@@ -14,6 +28,16 @@ public interface DataRecord {
      *                rather than  fail if value cannot be converted to required type
      * @return retrieved value; it can be potentially empty cell value if column is not found or has empty value
      */
-    CellValue getValue(String columnName, @Nullable CellType prefType);
-    CellValue getValue(String columnName);
+    @Nonnull
+    CellValue getCellValue(String columnName, @Nullable CellType prefType);
+
+    /**
+     * Get value of specified column from data record; variant without preferred type
+     *
+     * @param columnName is name of column
+     * @return retrieved value; it can be potentially empty cell value if column is not found or has empty value
+     */
+    @Nonnull
+    CellValue getCellValue(String columnName);
+
 }

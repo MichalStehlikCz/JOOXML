@@ -50,7 +50,7 @@ class EmptyCellWithBind implements AreaCell {
     @Nonnull
     @Override
     public CellValue getEffectiveValue(DataRecord data) {
-        return data.getValue(bindColumn);
+        return data.getCellValue(bindColumn);
     }
 
     @Nonnull

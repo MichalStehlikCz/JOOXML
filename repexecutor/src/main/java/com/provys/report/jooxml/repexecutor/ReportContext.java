@@ -5,6 +5,7 @@ import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jooq.DSLContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +31,7 @@ public class ReportContext implements AutoCloseable {
     @Nullable
     private RepWorkbook workbook;
     @Nullable
-    private Connection connection;
+    private DSLContext dslContext;
 
     /**
      * Creates report context for execution of report with given parameters.
@@ -49,12 +50,12 @@ public class ReportContext implements AutoCloseable {
     /**
      * Starts execution of report. Registers workbook and connection.
      * @param workbook is target report workbook
-     * @param connection is connection to PROVYS database used to retrieve data
+     * @param dslContext represents connection to PROVYS database used to retrieve data
      */
-    void open(RepWorkbook workbook, @Nullable Connection connection) {
+    void open(RepWorkbook workbook, @Nullable DSLContext dslContext) {
         isOpen = true;
         this.workbook = Objects.requireNonNull(workbook);
-        this.connection = connection;
+        this.dslContext = dslContext;
     }
 
     /**
@@ -77,9 +78,9 @@ public class ReportContext implements AutoCloseable {
             }
             dataContexts.clear();
             // close all used connections / return them to pool
-            if (connection != null) {
-                connection.close();
-                connection = null;
+            if (dslContext != null) {
+                dslContext.close();
+                dslContext = null;
             }
             // and close workbook
             if (workbook != null) {
@@ -141,15 +142,15 @@ public class ReportContext implements AutoCloseable {
      * @throws RuntimeException when report context was opened without connection (in off-line mode)
      */
     @Nonnull
-    public Connection getConnection() {
-        if (connection == null) {
+    public DSLContext getDslContext() {
+        if (dslContext == null) {
             if (isOpen) {
                 throw new RuntimeException("Report was run in off-line mode - connection needed but not available");
             } else {
                 throw new IllegalStateException("Cannot access connection - report context is not opened");
             }
         }
-        return connection;
+        return dslContext;
     }
 
 }
