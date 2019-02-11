@@ -10,7 +10,7 @@ import java.util.Optional;
  * RootDataSource is singleton - data source, that has internal name ROOT and no parent. It returns data stream that has
  * single row and contains values of parameters
  */
-class RootDataSource implements ReportDataSource {
+class RootDataSource extends DataSourceRootAncestor {
 
     @Nonnull
     private static final RootDataSource instance = new RootDataSource();
@@ -52,7 +52,7 @@ class RootDataSource implements ReportDataSource {
 
     @Nonnull
     @Override
-    public DataContext getDataContext() {
-        return new RootDataContext(this);
+    public DataContext getDataContext(ReportContext reportContext) {
+        return new RootDataContext(this, reportContext);
     }
 }

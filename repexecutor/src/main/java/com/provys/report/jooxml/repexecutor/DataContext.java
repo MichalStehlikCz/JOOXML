@@ -24,7 +24,7 @@ public interface DataContext extends AutoCloseable {
      * Prepare associated prepared statement etc.
      * Data context should track its state and repeated execution of prepare method should do nothing.
      */
-    void prepare(ReportContext reportContext);
+    void prepare();
 
     /**
      * Retrieves data from data context. Supplies master data that can be bound or otherwise used.

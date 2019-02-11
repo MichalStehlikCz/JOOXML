@@ -109,8 +109,8 @@ public class ReportContext implements AutoCloseable {
     @Nonnull
     public DataContext getDataContext(ReportDataSource dataSource) {
         DataContext dataContext = dataContexts.computeIfAbsent(Objects.requireNonNull(dataSource),
-                ReportDataSource::getDataContext);
-        dataContext.prepare(this);
+                (ds) -> ds.getDataContext(this));
+        dataContext.prepare();
         return dataContext;
     }
 

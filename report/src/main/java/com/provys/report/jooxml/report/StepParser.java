@@ -6,12 +6,12 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-@Singleton
+@ApplicationScoped
 public class StepParser {
 
     private static final Logger LOG = LogManager.getLogger(StepParser.class.getName());

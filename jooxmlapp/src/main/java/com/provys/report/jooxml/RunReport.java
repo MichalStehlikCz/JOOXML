@@ -70,9 +70,7 @@ class RunReport implements Runnable {
     @Override
     public void run() {
         addLoggerShutdownHook();
-        List<ReportDataSource> dataSources = new ArrayList<>(1);
-        dataSources.add(dataSourceFactory.getRootDataSource());
-        Report report = reportFactory.build(dataSources, bodyFile, template);
+        Report report = reportFactory.build(dataSourceFactory.getRootDataSource(), bodyFile, template);
         executor.setReport(report).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).

@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.DataContext;
+import com.provys.report.jooxml.repexecutor.ReportContext;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -14,8 +15,12 @@ abstract class DataContextAncestor<T extends ReportDataSource> implements DataCo
     @Nonnull
     private final T dataSource;
 
-    DataContextAncestor(T dataSource) {
+    @Nonnull
+    private final ReportContext reportContext;
+
+    DataContextAncestor(T dataSource, ReportContext reportContext) {
         this.dataSource = Objects.requireNonNull(dataSource);
+        this.reportContext = Objects.requireNonNull(reportContext);
     }
 
     @Nonnull
@@ -23,4 +28,23 @@ abstract class DataContextAncestor<T extends ReportDataSource> implements DataCo
     public T getDataSource() {
         return dataSource;
     }
+
+    /**
+     * @return value of field reportContext
+     */
+    @Nonnull
+    public ReportContext getReportContext() {
+        return reportContext;
+    }
+
+    @Override
+    public void prepare() {
+        // by default, data context does not need any preparation
+    }
+
+    @Override
+    public void close() throws Exception {
+        // by default, data context has no resources to be closed
+    }
+
 }

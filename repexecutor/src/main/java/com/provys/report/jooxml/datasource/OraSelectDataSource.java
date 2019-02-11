@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.DataContext;
+import com.provys.report.jooxml.repexecutor.ReportContext;
 
 import javax.annotation.Nonnull;
 
@@ -21,13 +22,13 @@ class OraSelectDataSource extends DataSourceAncestor {
      * @return value of field selectStatement
      */
     @Nonnull
-    public String getSelectStatement() {
+    String getSelectStatement() {
         return selectStatement;
     }
 
     @Nonnull
     @Override
-    public DataContext getDataContext() {
-        return null;
+    public DataContext getDataContext(ReportContext reportContext) {
+        return new OraSelectDataContext(this, reportContext);
     }
 }

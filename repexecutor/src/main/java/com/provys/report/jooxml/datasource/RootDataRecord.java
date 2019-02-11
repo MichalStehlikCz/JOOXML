@@ -20,6 +20,11 @@ public class RootDataRecord extends DataRecordAncestor {
         super(reportContext);
     }
 
+    @Override
+    public int getRowNumber() {
+        return 0;
+    }
+
     @Nonnull
     private static Boolean convertStringToBoolean(String value) {
         if (value.equals("Y")) {

@@ -1,39 +1,37 @@
 package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.ReportContext;
+import org.jooq.Cursor;
 import org.jooq.Param;
 import org.jooq.ResultQuery;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSource> {
 
     @Nullable
     private ResultQuery<?> query;
 
-    OraSelectDataContext(OraSelectDataSource dataSource) {
-        super(dataSource);
+    OraSelectDataContext(OraSelectDataSource dataSource, ReportContext reportContext) {
+        super(dataSource, reportContext);
     }
 
     /**
      * Create prepared statement and parse select text
-     *
-     * @param reportContext is report context in which this data context will be valid. Used to retrieve connection to
-     *                     PROVYS database.
      */
-    private synchronized void parse(ReportContext reportContext) {
+    private synchronized void parse() {
         if (query == null) {
-            query = reportContext.getDslContext().parser().parseResultQuery(getDataSource().getSelectStatement());
+            query = getReportContext().getDslContext().parser().parseResultQuery(getDataSource().getSelectStatement());
         }
     }
 
     @Override
-    public void prepare(ReportContext reportContext) {
+    public void prepare() {
         if (query == null) {
-            parse(reportContext);
+            parse();
         }
     }
 
@@ -46,7 +44,8 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
         for (Param<?> param : params.values()) {
             query.bind(param.getName(), master.getValue(param.getName(), null).orElse(null));
         }
-        query.fetchLazy().spliterator();
+        DataRecordCursor cursor = new DataRecordCursor(getReportContext(), query.fetchLazy());
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(cursor, Spliterator.ORDERED), false);
     }
 
     @Override
@@ -57,16 +56,28 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
         }
     }
 
-    private class DataRecordCursor implements Iterator<DataRecord> {
+    private static class DataRecordCursor implements Iterator<DataRecord> {
+
+        private final ReportContext reportContext;
+        private final Cursor<?> cursor;
+        int rowNumber = 0;
+
+        DataRecordCursor(ReportContext reportContext, Cursor<?> cursor) {
+            this.reportContext = reportContext;
+            this.cursor = cursor;
+        }
 
         @Override
         public boolean hasNext() {
-            return false;
+            return cursor.hasNext();
         }
 
         @Override
         public DataRecord next() {
-            return null;
+            if (!cursor.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return new OraDataRecord(reportContext, rowNumber++, cursor.fetchNext());
         }
     }
 }

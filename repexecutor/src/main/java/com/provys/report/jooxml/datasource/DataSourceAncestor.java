@@ -1,10 +1,13 @@
 package com.provys.report.jooxml.datasource;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-abstract class DataSourceAncestor implements ReportDataSource {
+/**
+ * Generic ancestor for {@code DataSource} classes. Adds support for parent and internal name to child support of
+ * {@code DataSourceRootAncestor}
+ */
+abstract class DataSourceAncestor extends DataSourceRootAncestor {
 
     @Nonnull
     private final ReportDataSource parent;

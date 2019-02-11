@@ -5,13 +5,12 @@ import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
-import java.util.Collection;
 import java.util.Objects;
 
-@Singleton
+@ApplicationScoped
 public class ReportFactory {
 
     @Nonnull
@@ -26,13 +25,13 @@ public class ReportFactory {
         this.tplWorkbookFactory = Objects.requireNonNull(tplWorkbookFactory);
     }
 
-    public Report build(Collection<ReportDataSource> dataSources, StepBuilder rootStepBuilder, File template) {
-        return new ReportImpl(dataSources, rootStepBuilder, template, tplWorkbookFactory);
+    public Report build(ReportDataSource rootDataSource, StepBuilder rootStepBuilder, File template) {
+        return new ReportImpl(rootDataSource, rootStepBuilder, template, tplWorkbookFactory);
     }
 
-    public Report build(Collection<ReportDataSource> dataSources, File bodyFile, File template) {
+    public Report build(ReportDataSource rootDataSource, File bodyFile, File template) {
         StepBuilder rootStepBuilder = bodyReader.read(bodyFile);
-        return new ReportImpl(dataSources, rootStepBuilder, template, tplWorkbookFactory);
+        return new ReportImpl(rootDataSource, rootStepBuilder, template, tplWorkbookFactory);
     }
 
 }

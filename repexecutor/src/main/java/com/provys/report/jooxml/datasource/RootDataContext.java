@@ -13,31 +13,13 @@ import java.util.stream.Stream;
  */
 class RootDataContext extends DataContextAncestor<RootDataSource> {
 
-    @Nullable
-    private ReportContext reportContext;
-
-    RootDataContext(RootDataSource dataSource) {
-        super(dataSource);
-    }
-
-    @Override
-    public void prepare(ReportContext reportContext) {
-        if (this.reportContext == null) {
-            this.reportContext = Objects.requireNonNull(reportContext);
-        }
+    RootDataContext(RootDataSource dataSource, ReportContext reportContext) {
+        super(dataSource, reportContext);
     }
 
     @Nonnull
     @Override
     public Stream<DataRecord> execute(DataRecord master) {
-        if (reportContext == null) {
-            throw new IllegalStateException("Cannot retrieve data record - data context not prepared");
-        }
-        return Stream.of(new RootDataRecord(reportContext));
-    }
-
-    @Override
-    public void close() throws Exception {
-        reportContext = null;
+        return Stream.of(new RootDataRecord(getReportContext()));
     }
 }

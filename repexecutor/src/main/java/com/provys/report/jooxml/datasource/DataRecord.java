@@ -10,6 +10,11 @@ import java.util.Optional;
 public interface DataRecord {
 
     /**
+     * @return row number of record within data context
+     */
+    int getRowNumber();
+
+    /**
      * Get value of specified column
      *
      * @param columnName is name of column to be bound
