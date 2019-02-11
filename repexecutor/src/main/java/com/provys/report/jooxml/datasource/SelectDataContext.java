@@ -10,12 +10,12 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSource> {
+public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
 
     @Nullable
     private ResultQuery<?> query;
 
-    OraSelectDataContext(OraSelectDataSource dataSource, ReportContext reportContext) {
+    SelectDataContext(SelectDataSource dataSource, ReportContext reportContext) {
         super(dataSource, reportContext);
     }
 
@@ -49,7 +49,7 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
     }
 
     @Override
-    public synchronized void close() throws Exception {
+    public synchronized void close() {
         if (query != null) {
             query.close();
             query = null;
@@ -77,7 +77,7 @@ public class OraSelectDataContext extends DataContextAncestor<OraSelectDataSourc
             if (!cursor.hasNext()) {
                 throw new NoSuchElementException();
             }
-            return new OraDataRecord(reportContext, rowNumber++, cursor.fetchNext());
+            return new SelectDataRecord(reportContext, rowNumber++, cursor.fetchNext());
         }
     }
 }

@@ -43,7 +43,7 @@ abstract class DataContextAncestor<T extends ReportDataSource> implements DataCo
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         // by default, data context has no resources to be closed
     }
 

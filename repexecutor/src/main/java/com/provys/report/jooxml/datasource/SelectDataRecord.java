@@ -7,12 +7,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class OraDataRecord extends DataRecordAncestor {
+public class SelectDataRecord extends DataRecordAncestor {
 
     private final int rowNumber;
     Record data;
 
-    OraDataRecord(ReportContext reportContext, int rowNumber, Record data) {
+    SelectDataRecord(ReportContext reportContext, int rowNumber, Record data) {
         super(reportContext);
         this.rowNumber = rowNumber;
         this.data = data;

@@ -34,4 +34,10 @@ public interface DataContext extends AutoCloseable {
      * safely reused util all data are read
      */
     Stream<DataRecord> execute(DataRecord master);
+
+    /**
+     * Close resources associated with data context. Unlike AutoCloseable, this method close does not throw Exception
+     */
+    @Override
+    void close();
 }

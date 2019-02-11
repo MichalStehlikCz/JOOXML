@@ -5,12 +5,12 @@ import com.provys.report.jooxml.repexecutor.ReportContext;
 
 import javax.annotation.Nonnull;
 
-class OraSelectDataSource extends DataSourceAncestor {
+class SelectDataSource extends DataSourceAncestor {
 
     @Nonnull
     private final String selectStatement;
 
-    OraSelectDataSource(ReportDataSource parent, String nameNm, String selectStatement) {
+    SelectDataSource(ReportDataSource parent, String nameNm, String selectStatement) {
         super(parent, nameNm);
         if (selectStatement.isEmpty()) {
             throw new IllegalArgumentException("Select statement in select data source cannot be empty");
@@ -29,6 +29,6 @@ class OraSelectDataSource extends DataSourceAncestor {
     @Nonnull
     @Override
     public DataContext getDataContext(ReportContext reportContext) {
-        return new OraSelectDataContext(this, reportContext);
+        return new SelectDataContext(this, reportContext);
     }
 }
