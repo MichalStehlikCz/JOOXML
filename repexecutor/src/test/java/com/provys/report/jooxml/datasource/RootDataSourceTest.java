@@ -13,18 +13,18 @@ class RootDataSourceTest {
 
     @Test
     void getParentTest() {
-        assertThat(RootDataSource.getInstance().getParent()).isEqualTo(Optional.empty());
+        assertThat(new RootDataSource().getParent()).isEqualTo(Optional.empty());
     }
 
     @Test
     void getNameNmTest() {
-        assertThat(RootDataSource.getInstance().getNameNm()).isEqualTo("ROOT");
+        assertThat(new RootDataSource().getNameNm()).isEqualTo("ROOT");
     }
 
     @Test
     void getDataContextTest() {
         var reportContext = mock(ReportContext.class);
-        DataContext dataContext = RootDataSource.getInstance().getDataContext(reportContext);
+        DataContext dataContext = new RootDataSource().getDataContext(reportContext);
         dataContext.prepare();
         assertThat(dataContext.getClass()).isEqualTo(RootDataContext.class);
         dataContext.close();

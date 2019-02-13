@@ -7,8 +7,8 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
- * RootDataSource is singleton - data source, that has internal name ROOT and no parent. It returns data stream that has
- * single row and contains values of parameters
+ * RootDataSource is data source, that has internal name ROOT and no parent. It returns data stream that has
+ * single row and contains values of report parameters
  */
 class RootDataSource extends DataSourceRootAncestor {
 
@@ -16,17 +16,9 @@ class RootDataSource extends DataSourceRootAncestor {
     private static final RootDataSource instance = new RootDataSource();
 
     /**
-     * @return the only instance of root data executor there is
-     */
-    @Nonnull
-    public static RootDataSource getInstance() {
-        return instance;
-    }
-
-    /**
      * Creates root data source
      */
-    private RootDataSource() {}
+    RootDataSource() {}
 
     /**
      * Root data source has no parent

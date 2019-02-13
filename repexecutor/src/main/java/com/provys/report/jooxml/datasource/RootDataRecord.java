@@ -26,17 +26,6 @@ public class RootDataRecord extends DataRecordAncestor {
     }
 
     @Nonnull
-    private static Boolean convertStringToBoolean(String value) {
-        if (value.equals("Y")) {
-            return true;
-        }
-        if (value.equals("N")) {
-            return false;
-        }
-        throw new RuntimeException("Invalid boolean value, Y or N expected, " + value + " found");
-    }
-
-    @Nonnull
     @Override
     public Optional<Object> getValue(String paramName, @Nullable Class<?> prefClass) {
         String value = getReportContext().getParameterValue(paramName).orElse(null);
@@ -63,12 +52,15 @@ public class RootDataRecord extends DataRecordAncestor {
                         }
                     break;
                 case "Boolean":
-                    if (value.equals("Y")) {
-                        result = Boolean.TRUE;
-                    } else if (value.equals("N")) {
-                        result = Boolean.FALSE;
-                    } else {
-                        result = value;
+                    switch (value) {
+                        case "Y":
+                            result = Boolean.TRUE;
+                            break;
+                        case "N":
+                            result = Boolean.FALSE;
+                            break;
+                        default:
+                            result = value;
                     }
                     break;
                 default:

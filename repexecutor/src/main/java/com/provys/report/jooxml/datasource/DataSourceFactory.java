@@ -14,7 +14,7 @@ public class DataSourceFactory {
      */
     @Nonnull
     public ReportDataSource getRootDataSource() {
-        return RootDataSource.getInstance();
+        return new RootDataSource();
     }
 
 }
