@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public class SelectDataRecord extends DataRecordAncestor {
 
-    private final int rowNumber;
-    Record data;
+    private final long rowNumber;
+    private final Record data;
 
     SelectDataRecord(ReportContext reportContext, int rowNumber, Record data) {
         super(reportContext);
@@ -20,7 +20,7 @@ public class SelectDataRecord extends DataRecordAncestor {
 
 
     @Override
-    public int getRowNumber() {
+    public long getRowNumber() {
         return rowNumber;
     }
 

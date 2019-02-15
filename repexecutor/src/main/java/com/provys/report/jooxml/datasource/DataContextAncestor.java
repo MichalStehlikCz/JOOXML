@@ -33,7 +33,7 @@ abstract class DataContextAncestor<T extends ReportDataSource> implements DataCo
      * @return value of field reportContext
      */
     @Nonnull
-    public ReportContext getReportContext() {
+    ReportContext getReportContext() {
         return reportContext;
     }
 

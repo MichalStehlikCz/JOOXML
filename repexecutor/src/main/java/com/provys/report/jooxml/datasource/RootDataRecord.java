@@ -21,8 +21,8 @@ public class RootDataRecord extends DataRecordAncestor {
     }
 
     @Override
-    public int getRowNumber() {
-        return 0;
+    public long getRowNumber() {
+        return 0L;
     }
 
     @Nonnull

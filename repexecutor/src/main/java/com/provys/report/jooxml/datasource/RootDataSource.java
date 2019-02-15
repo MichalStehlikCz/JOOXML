@@ -12,8 +12,7 @@ import java.util.Optional;
  */
 class RootDataSource extends DataSourceRootAncestor {
 
-    @Nonnull
-    private static final RootDataSource instance = new RootDataSource();
+    static final String NAME_NM = "ROOT";
 
     /**
      * Creates root data source
@@ -39,7 +38,7 @@ class RootDataSource extends DataSourceRootAncestor {
     @Nonnull
     @Override
     public String getNameNm() {
-        return "ROOT";
+        return NAME_NM;
     }
 
     @Nonnull

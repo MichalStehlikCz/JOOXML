@@ -12,7 +12,7 @@ public interface DataRecord {
     /**
      * @return row number of record within data context
      */
-    int getRowNumber();
+    long getRowNumber();
 
     /**
      * Get value of specified column

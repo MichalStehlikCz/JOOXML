@@ -31,7 +31,7 @@ public interface ReportDataSource {
     String getNameNm();
 
     /**
-     * Retrieve data context for execution of given dataset within report execution.
+     * Retrieve data context for execution of given datasource within report execution.
      * Note that direct use of this method is not recommended, as it bypasses caching of data context in report context;
      * callers should call ReportContext's getDataContext method and it will invoke this method if data context is not
      * opened for given report execution / data source yet.

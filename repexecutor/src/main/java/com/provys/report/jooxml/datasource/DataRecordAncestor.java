@@ -82,6 +82,7 @@ abstract class DataRecordAncestor implements DataRecord {
                 }
             }
         } else {
+            //noinspection OptionalGetWithoutIsPresent isEmpty in if
             @SuppressWarnings("squid:S3655") // sonar doesn't recognise isEmpty yet...
             Object value = optValue.get();
             switch (value.getClass().getName()) {
