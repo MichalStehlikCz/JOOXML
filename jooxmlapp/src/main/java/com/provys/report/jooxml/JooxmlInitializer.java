@@ -12,6 +12,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import picocli.CommandLine;
 
+import javax.annotation.Nullable;
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.se.SeContainerInitializer;
 import java.io.File;
@@ -21,6 +22,10 @@ class JooxmlInitializer implements Runnable {
 
     @CommandLine.Option(names = {"-t", "--template"}, required = true, description = "Template xlsx file")
     private File template;
+
+    @CommandLine.Option(names = {"-d", "--datasource"}, description = "Report datasource definition xml file")
+    @Nullable
+    private File dataSourceFile;
 
     @CommandLine.Option(names = {"-b", "--body"}, required = true, description = "Report body xml file")
     private File bodyFile;
@@ -33,6 +38,14 @@ class JooxmlInitializer implements Runnable {
 
     @CommandLine.Option(names = {"-p", "--paramfile"}, description = "Parameter XML file")
     private File paramFile;
+
+    @CommandLine.Option(names = {"-c", "--connectstring"}, required = true,
+            description = "jdbc connect string to PROVYS Oracle database")
+    private String connectString;
+
+    @CommandLine.Option(names = {"-k", "--token"}, required = true,
+            description = "token for connection to PROVYS database")
+    private String dbToken;
 
     @CommandLine.Parameters(description = "Output file to be generated")
     private File targetFile;

@@ -2,20 +2,16 @@ package com.provys.report.jooxml.report;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Objects;
 
-@ApplicationScoped
 class RowParentAreaParser {
 
     @Nonnull
     private final StepParser stepParser;
 
-    @Inject
     RowParentAreaParser(StepParser stepParser) {
         this.stepParser = Objects.requireNonNull(stepParser);
     }

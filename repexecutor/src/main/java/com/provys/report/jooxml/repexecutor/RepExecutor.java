@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.Files;
@@ -15,6 +16,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Stream;
 
+@RequestScoped
 public class RepExecutor {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
@@ -130,3 +132,4 @@ public class RepExecutor {
         }
     }
 }
+

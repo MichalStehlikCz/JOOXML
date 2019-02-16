@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.File;
@@ -21,13 +22,18 @@ import java.util.Objects;
 class RunReport implements Runnable {
 
     private File template;
+    @Nullable
+    private File dataSourceFile;
     private File bodyFile;
     private File paramFile;
     private File targetFile;
+    private String connectString;
+    private String dbToken;
     private final RepExecutor executor;
     private final ReportFactory reportFactory;
     private final DataSourceFactory dataSourceFactory;
 
+    @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
     @Inject
     RunReport(RepExecutor executor, ReportFactory reportFactory, DataSourceFactory dataSourceFactory) {
         this.executor = Objects.requireNonNull(executor);
@@ -37,6 +43,11 @@ class RunReport implements Runnable {
 
     RunReport setTemplate(File template) {
         this.template = template;
+        return this;
+    }
+
+    RunReport setDataSourceFile(@Nullable File dataSourceFile) {
+        this.dataSourceFile = dataSourceFile;
         return this;
     }
 
@@ -55,6 +66,16 @@ class RunReport implements Runnable {
         return this;
     }
 
+    RunReport setConnectString(String connectString) {
+        this.connectString = connectString;
+        return this;
+    }
+
+    RunReport setDbToken(String dbToken) {
+        this.dbToken = dbToken;
+        return this;
+    }
+
     private static void addLoggerShutdownHook() {
         Logger logger = LogManager.getRootLogger();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -70,7 +91,12 @@ class RunReport implements Runnable {
     @Override
     public void run() {
         addLoggerShutdownHook();
-        Report report = reportFactory.build(dataSourceFactory.getRootDataSource(), bodyFile, template);
+        Report report;
+        if (dataSourceFile != null) {
+            report = reportFactory.build(dataSourceFile, bodyFile, template);
+        } else {
+            report = reportFactory.build(dataSourceFactory.getRootDataSource(), bodyFile, template);
+        }
         executor.setReport(report).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).
