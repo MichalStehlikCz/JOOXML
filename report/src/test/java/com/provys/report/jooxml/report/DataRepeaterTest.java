@@ -19,69 +19,79 @@ class DataRepeaterTest {
 
     @Test
     void getProcessorApplyTest() {
-        StepContext stepContext = mock(StepContext.class);
-        ReportContext reportContext = mock(ReportContext.class);
+        var stepContext = mock(StepContext.class);
+        var parentRegion = mock(ExecRegion.class);
+        var reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
-        ContextCoordinates coordinates = mock(ContextCoordinates.class);
-        DataRecord dataRecord = mock(DataRecord.class);
+        var coordinates = mock(ContextCoordinates.class);
+        var dataRecord = mock(DataRecord.class);
         when(stepContext.getData()).thenReturn(dataRecord);
-        ReportDataSource dataSource = mock(ReportDataSource.class);
-        DataContext dataContext = mock(DataContext.class);
+        var dataSource = mock(ReportDataSource.class);
+        var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
-        DataRecord dataRecord1 = mock(DataRecord.class);
-        DataRecord dataRecord2 = mock(DataRecord.class);
-        DataRecord dataRecord3 = mock(DataRecord.class);
+        var dataRecord1 = mock(DataRecord.class);
+        var dataRecord2 = mock(DataRecord.class);
+        var dataRecord3 = mock(DataRecord.class);
         when(dataContext.execute(dataRecord)).thenReturn(Stream.of(dataRecord1, dataRecord2, dataRecord3));
-        StepContext stepContext1 = mock(StepContext.class);
+        var stepContext1 = mock(StepContext.class);
         when(stepContext.cloneWithReplaceData(dataRecord1)).thenReturn(stepContext1);
-        StepContext stepContext2 = mock(StepContext.class);
+        var stepContext2 = mock(StepContext.class);
         when(stepContext.cloneWithReplaceData(dataRecord2)).thenReturn(stepContext2);
-        StepContext stepContext3 = mock(StepContext.class);
+        var stepContext3 = mock(StepContext.class);
         when(stepContext.cloneWithReplaceData(dataRecord3)).thenReturn(stepContext3);
-        ReportStep child = mock(ReportStep.class);
-        StepProcessor processor1 = mock(StepProcessor.class);
-        when(child.getProcessor(stepContext1)).thenReturn(processor1);
-        StepProcessor processor2 = mock(StepProcessor.class);
-        when(child.getProcessor(stepContext2)).thenReturn(processor2);
-        StepProcessor processor3 = mock(StepProcessor.class);
-        when(child.getProcessor(stepContext3)).thenReturn(processor3);
-        DataRepeater testStep = new DataRepeater("TEST", dataSource, child);
-        assertThat(Stream.of(testStep.getProcessor(stepContext)).flatMap(StepProcessor::apply)).
+        var execRegion = mock(ExecRegion.class);
+        when(parentRegion.addTable("TEST")).thenReturn(execRegion);
+        var child = mock(ReportStep.class);
+        var processor1 = mock(StepProcessor.class);
+        when(child.getProcessor(stepContext1, execRegion)).thenReturn(processor1);
+        var processor2 = mock(StepProcessor.class);
+        when(child.getProcessor(stepContext2, execRegion)).thenReturn(processor2);
+        var processor3 = mock(StepProcessor.class);
+        when(child.getProcessor(stepContext3, execRegion)).thenReturn(processor3);
+        var testStep = new DataRepeater("TEST", dataSource, child);
+        assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
                 containsExactly(processor1, processor2, processor3);
     }
 
     @Test
     void getProcessorApplyNoDataTest() {
-        StepContext stepContext = mock(StepContext.class);
-        ReportContext reportContext = mock(ReportContext.class);
+        var stepContext = mock(StepContext.class);
+        var parentRegion = mock(ExecRegion.class);
+        var reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
-        ContextCoordinates coordinates = mock(ContextCoordinates.class);
-        DataRecord dataRecord = mock(DataRecord.class);
+        var coordinates = mock(ContextCoordinates.class);
+        var dataRecord = mock(DataRecord.class);
         when(stepContext.getData()).thenReturn(dataRecord);
-        ReportDataSource dataSource = mock(ReportDataSource.class);
-        DataContext dataContext = mock(DataContext.class);
+        var dataSource = mock(ReportDataSource.class);
+        var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
-        ReportStep child = mock(ReportStep.class);
+        var execRegion = mock(ExecRegion.class);
+        when(parentRegion.addTable("TEST")).thenReturn(execRegion);
+        var child = mock(ReportStep.class);
         when(dataContext.execute(dataRecord)).thenReturn(Stream.of());
-        DataRepeater testStep = new DataRepeater("TEST", dataSource, child);
-        assertThat(Stream.of(testStep.getProcessor(stepContext)).flatMap(StepProcessor::apply)).
+        var testStep = new DataRepeater("TEST", dataSource, child);
+        assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
                 isEmpty();
     }
 
     @Test
     void getProcessorExecuteTest() {
-        StepContext stepContext = mock(StepContext.class);
-        ReportContext reportContext = mock(ReportContext.class);
+        var stepContext = mock(StepContext.class);
+        var parentRegion = mock(ExecRegion.class);
+        var reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
-        ContextCoordinates coordinates = mock(ContextCoordinates.class);
-        DataRecord dataRecord = mock(DataRecord.class);
+        var coordinates = mock(ContextCoordinates.class);
+        var dataRecord = mock(DataRecord.class);
         when(stepContext.getData()).thenReturn(dataRecord);
-        ReportDataSource dataSource = mock(ReportDataSource.class);
-        DataContext dataContext = mock(DataContext.class);
+        var dataSource = mock(ReportDataSource.class);
+        var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
-        ReportStep child = mock(ReportStep.class);
+        var execRegion = mock(ExecRegion.class);
+        when(parentRegion.addTable("TEST")).thenReturn(execRegion);
+        var child = mock(ReportStep.class);
         when(dataContext.execute(dataRecord)).thenReturn(Stream.of());
-        DataRepeater testStep = new DataRepeater("TEST", dataSource, child);
-        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext)).forEachOrdered(StepProcessor::execute));
+        var testStep = new DataRepeater("TEST", dataSource, child);
+        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext, parentRegion)).
+                forEachOrdered(StepProcessor::execute));
     }
 }

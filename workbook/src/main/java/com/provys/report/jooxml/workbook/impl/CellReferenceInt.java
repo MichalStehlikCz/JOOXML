@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import com.provys.report.jooxml.repexecutor.ContextCoordinates;
 import com.provys.report.jooxml.workbook.CellCoordinates;
 import com.provys.report.jooxml.workbook.CellReference;
 
@@ -160,6 +161,21 @@ class CellReferenceInt extends CellAddressInt implements CellReference {
     @Nonnull
     public CellReferenceInt shiftBy(CellCoordinates shift) {
         return shiftBy(shift.getRow(), shift.getCol());
+    }
+
+    @Override
+    @Nonnull
+    public CellReference shiftBy(ContextCoordinates shift) {
+        if (((this.getSheetName().isEmpty())
+                || (this.getSheetName().orElseThrow(/* should be covered by isEmpty */).
+                equals(shift.getSheet().getSheetName())))
+                && (shift.getRowIndex() == 0) && (shift.getColumnIndex() == 0)) {
+            // no move -> we can return this
+            return this;
+        }
+        return of(this.getSheetName().isPresent() ? shift.getSheet().getSheetName() : null,
+                getRow() + shift.getRowIndex(), getCol() + shift.getColumnIndex(),
+                isRowAbsolute(), isColAbsolute());
     }
 
     @Override

@@ -27,8 +27,6 @@ class RunReport implements Runnable {
     private File bodyFile;
     private File paramFile;
     private File targetFile;
-    private String connectString;
-    private String dbToken;
     private final RepExecutor executor;
     private final ReportFactory reportFactory;
     private final DataSourceFactory dataSourceFactory;
@@ -63,16 +61,6 @@ class RunReport implements Runnable {
 
     RunReport setTargetFile(File targetFile) {
         this.targetFile = targetFile;
-        return this;
-    }
-
-    RunReport setConnectString(String connectString) {
-        this.connectString = connectString;
-        return this;
-    }
-
-    RunReport setDbToken(String dbToken) {
-        this.dbToken = dbToken;
         return this;
     }
 

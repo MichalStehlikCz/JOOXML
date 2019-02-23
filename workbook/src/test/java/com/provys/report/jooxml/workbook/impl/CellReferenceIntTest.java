@@ -1,17 +1,24 @@
 package com.provys.report.jooxml.workbook.impl;
 
+import com.provys.report.jooxml.repexecutor.ContextCoordinates;
+import com.provys.report.jooxml.repworkbook.RepSheet;
 import com.provys.report.jooxml.workbook.CellCoordinates;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class CellReferenceIntTest {
 
+    @Nonnull
     static Stream<Object[]> getREGEXPTest() {
         return Stream.of(
                 new Object[]{"A1", true}
@@ -43,6 +50,7 @@ class CellReferenceIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> parseTest() {
         return Stream.of(
                 new Object[]{"A1", CellReferenceInt.of(0, 0), null, null}
@@ -68,7 +76,7 @@ class CellReferenceIntTest {
 
     @ParameterizedTest
     @MethodSource
-    void parseTest(String reference, CellReferenceInt result, Class<Throwable>  exception, String message) {
+    void parseTest(String reference, @Nullable CellReferenceInt result, @Nullable Class<Throwable>  exception, @Nullable String message) {
         if (exception == null) {
             assertThat(CellReferenceInt.parse(reference)).isEqualTo(result);
         } else {
@@ -79,6 +87,7 @@ class CellReferenceIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> propertiesTest() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), null,
@@ -142,6 +151,7 @@ class CellReferenceIntTest {
         assertThat(reference.isColAbsolute()).isEqualTo(colAbsolute);
     }
 
+    @Nonnull
     static Stream<Object[]> appendAddressTest() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), "A1"}
@@ -166,6 +176,7 @@ class CellReferenceIntTest {
         assertThat(builder.toString()).isEqualTo("Prefix" + result);
     }
 
+    @Nonnull
     static Stream<Object[]> shiftByTest() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(0, 0), 0, 0, CellReferenceInt.of(0, 0)}
@@ -194,7 +205,7 @@ class CellReferenceIntTest {
 
     @ParameterizedTest
     @MethodSource("shiftByTest")
-    void shiftBy(CellReferenceInt reference, int rowShift, int colShift, CellReferenceInt result) {
+    void shiftBy(CellReferenceInt reference, int rowShift, int colShift, @Nullable CellReferenceInt result) {
         if (result != null) {
             assertThat(reference.shiftBy(rowShift, colShift)).isEqualTo(result);
         } else {
@@ -202,6 +213,7 @@ class CellReferenceIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> shiftBy1Test() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(0, 0), CellCoordinatesInt.of(0, 0),
@@ -225,6 +237,37 @@ class CellReferenceIntTest {
         assertThat(reference.shiftBy(shiftBy)).isEqualTo(result);
     }
 
+    private static RepSheet repSheet = mock(RepSheet.class);
+
+    @Nonnull
+    static Stream<Object[]> shiftBy2Test() {
+        return Stream.of(
+                new Object[]{CellReferenceInt.of(0, 0),
+                        new ContextCoordinates(repSheet, 0, 0),
+                        CellReferenceInt.of(0, 0)}
+                , new Object[]{CellReferenceInt.of("My_Sheet", 5, 10),
+                        new ContextCoordinates(repSheet, 0, 0),
+                        CellReferenceInt.of("My_Sheet", 5, 10)}
+                , new Object[]{CellReferenceInt.of("SheetName", 5, 10, true,
+                        false), new ContextCoordinates(repSheet, 0, 0),
+                        CellReferenceInt.of("My_Sheet", 5, 10, true, false)}
+                , new Object[]{CellReferenceInt.of("My_Sheet", 5, 10, false,
+                        true), new ContextCoordinates(repSheet, 1, 2),
+                        CellReferenceInt.of("My_Sheet", 6, 12,
+                                false, true)}
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void shiftBy2Test(CellReferenceInt reference, ContextCoordinates shiftBy, CellReferenceInt result) {
+        if (reference.getSheetName().isPresent()) {
+            when(repSheet.getSheetName()).thenReturn("My_Sheet");
+        }
+        assertThat(reference.shiftBy(shiftBy)).isEqualTo(result);
+    }
+
+    @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)), null, false}
@@ -262,10 +305,11 @@ class CellReferenceIntTest {
 
     @ParameterizedTest
     @MethodSource
-    void equalsTest(CellReferenceInt reference, Object other, boolean result) {
+    void equalsTest(CellReferenceInt reference, @Nullable Object other, boolean result) {
         assertThat(reference.equals(other)).isEqualTo(result);
     }
 
+    @Nonnull
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(CellCoordinatesInt.of(0, 0)),
@@ -286,6 +330,7 @@ class CellReferenceIntTest {
         }
     }
 
+    @Nonnull
     static Stream<Object[]> toStringTest() {
         return Stream.of(
                 new Object[]{CellReferenceInt.of(0, 0),

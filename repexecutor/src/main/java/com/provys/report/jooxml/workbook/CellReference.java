@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.workbook;
 
+import com.provys.report.jooxml.repexecutor.ContextCoordinates;
+
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
@@ -53,4 +55,15 @@ public interface CellReference extends CellAddress {
     @Override
     @Nonnull
     CellReference shiftBy(CellCoordinates shift);
+
+    /**
+     * Get cell reference, shifted bz offset, defined by {@code ContextCoordinates}
+     *
+     * @param shift is coordinate defining upper left corner of area being filled in, where cell reference is considered
+     *              to be filled. Sheet is either ignored (if it is not present in this reference) as reference within
+     *              sheet is shifted to reference within sheet, or sheet from shift parameter is used as target
+     * @return cell reference corresponding to position with coordinate this relative to area start shift
+     */
+    @Nonnull
+    CellReference shiftBy(ContextCoordinates shift);
 }

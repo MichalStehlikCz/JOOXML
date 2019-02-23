@@ -2,10 +2,12 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.workbook.CellProperties;
+import com.provys.report.jooxml.workbook.CellReference;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface AreaCell {
@@ -48,4 +50,10 @@ public interface AreaCell {
      */
     @Nonnull
     Optional<String> getBindColumn();
+
+    /**
+     * @return list of cell references used in cell formula
+     */
+    @Nonnull
+    Collection<CellReference> getCellReferences();
 }

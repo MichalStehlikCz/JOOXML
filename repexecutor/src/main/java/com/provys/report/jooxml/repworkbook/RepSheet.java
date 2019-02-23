@@ -2,12 +2,19 @@ package com.provys.report.jooxml.repworkbook;
 
 import com.provys.report.jooxml.workbook.RowProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * Interface represents sheet in xlsx workbook where report writes its content
  */
 public interface RepSheet {
+
+    /**
+     * @return sheet name
+     */
+    @Nonnull
+    String getSheetName();
 
     /**
      * Return row with given row index. If row does not exist yet, create it.

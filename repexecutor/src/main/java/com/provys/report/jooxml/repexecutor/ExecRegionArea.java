@@ -1,35 +1,43 @@
 package com.provys.report.jooxml.repexecutor;
 
-import com.provys.report.jooxml.workbook.CellAddress;
 import com.provys.report.jooxml.workbook.CellReference;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class ExecRegionArea implements ExecRegion {
+public class ExecRegionArea extends ExecRegionBase {
 
-    private final int firstRow;
-    private final int firstColumn;
+    private final ContextCoordinates coordinates;
 
-    ExecRegionArea(int firstRow, int firstColumn) {
-        if (firstRow < 0) {
-            throw new IllegalArgumentException("First row coordinate cannot be negative");
-        }
-        this.firstRow = firstRow;
-        if (firstColumn < 0) {
-            throw new IllegalArgumentException("First column coordinte cannot be negative");
-        }
-        this.firstColumn = firstColumn;
+    ExecRegionArea(String nameNm, ContextCoordinates coordinates) {
+        super(nameNm);
+        this.coordinates = coordinates;
     }
 
-    CellAddress getCell(CellAddress relativeAddress) {
-        return relativeAddress.shiftBy(firstRow, firstColumn);
-    }
-
+    @Nonnull
     @Override
     public Optional<CellReference> getCell(CellPath path) {
         if (!(path instanceof CellPathCell)) {
             throw new IllegalArgumentException("Cannot evaluate CellPath - Cell expected in lowest level region");
         }
-        return Optional.of(((CellPathCell) path).getCellReference().shiftBy(firstColumn, firstRow));
+        return Optional.of(((CellPathCell) path).getCellReference().shiftBy(coordinates));
+    }
+
+    @Nonnull
+    @Override
+    public ExecRegion addArea(String nameNm, ContextCoordinates coordinates) {
+        throw new RuntimeException("Cannot add sub-area to execution area");
+    }
+
+    @Nonnull
+    @Override
+    public ExecRegion addRegion(String nameNm, int subRegions) {
+        throw new RuntimeException("Cannot add sub-region to execution area");
+    }
+
+    @Nonnull
+    @Override
+    public ExecRegion addTable(String nameNm) {
+        throw new RuntimeException("Cannot add sub-table to execution area");
     }
 }

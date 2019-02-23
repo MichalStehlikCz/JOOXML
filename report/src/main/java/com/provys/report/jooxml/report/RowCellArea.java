@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.ContextCoordinates;
+import com.provys.report.jooxml.repexecutor.ExecRegion;
 import com.provys.report.jooxml.repexecutor.StepContext;
 import com.provys.report.jooxml.repexecutor.StepProcessor;
 import com.provys.report.jooxml.repworkbook.RepRow;
@@ -54,14 +55,19 @@ class RowCellArea extends Step {
 
     @Nonnull
     @Override
-    public StepProcessor getProcessor(StepContext stepContext) {
-        return new RowCellAreaProcessor(this, stepContext);
+    public StepProcessor getProcessor(StepContext stepContext, ExecRegion execRegion) {
+        return new RowCellAreaProcessor(this, stepContext, execRegion);
     }
 
     private static class RowCellAreaProcessor extends StepProcessorAncestor<RowCellArea> {
 
-        RowCellAreaProcessor(RowCellArea step, StepContext stepContext) {
-            super(step, stepContext);
+        RowCellAreaProcessor(RowCellArea step, StepContext stepContext, ExecRegion parentRegion) {
+            // unlike other step processors that append their region to parentRegion immediately, are processor keeps
+            // parent region and only attaches child region on execution
+            // it might mess up order in which sub-regions are added, but it shouldn't matter as regions are identified
+            // by internal names in parent region (no order) and order only matters in table, but table only has single
+            // child and if it is area, all rows will be processed in execution phase
+            super(step, stepContext, parentRegion);
         }
 
         @Override
@@ -72,6 +78,7 @@ class RowCellArea extends Step {
         @Override
         public void execute() {
             ContextCoordinates coordinates = getStepContext().getCoordinates();
+            getExecRegion().addArea(getStep().getNameNm(), coordinates);
             // populate cells in sheet with cells from region
             for (Row regionRow : getStep().getRows()) {
                 RepRow targetRow;

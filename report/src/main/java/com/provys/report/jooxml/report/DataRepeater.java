@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.ExecRegion;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.repexecutor.StepContext;
 import com.provys.report.jooxml.repexecutor.StepProcessor;
@@ -18,14 +19,14 @@ class DataRepeater extends DataStep {
     }
 
     @Override
-    public StepProcessor getProcessor(StepContext stepContext) {
-        return new DataRepeaterProcessor(this, stepContext);
+    public StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion) {
+        return new DataRepeaterProcessor(this, stepContext, parentRegion);
     }
 
     private static class DataRepeaterProcessor extends StepProcessorAncestor<DataRepeater> {
 
-        DataRepeaterProcessor(DataRepeater step, StepContext stepContext) {
-            super(step, stepContext);
+        DataRepeaterProcessor(DataRepeater step, StepContext stepContext, ExecRegion parentRegion) {
+            super(step, stepContext, parentRegion.addTable(step.getNameNm()));
         }
 
         /**
@@ -39,7 +40,7 @@ class DataRepeater extends DataStep {
             return getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
                     execute(getStepContext().getData()).
                     map(dataRecord -> getStep().getChild().getProcessor(
-                            getStepContext().cloneWithReplaceData(dataRecord)));
+                            getStepContext().cloneWithReplaceData(dataRecord), getExecRegion()));
         }
 
         @Override

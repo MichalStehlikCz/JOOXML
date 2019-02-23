@@ -2,6 +2,7 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.ExecRegion;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.repexecutor.StepContext;
 import com.provys.report.jooxml.repexecutor.StepProcessor;
@@ -16,14 +17,14 @@ class DataReader extends DataStep {
     }
 
     @Override
-    public StepProcessor getProcessor(StepContext stepContext) {
-        return new DataReaderProcessor(this, stepContext);
+    public StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion) {
+        return new DataReaderProcessor(this, stepContext, parentRegion);
     }
 
     private static class DataReaderProcessor extends StepProcessorAncestor<DataReader> {
 
-        DataReaderProcessor(DataReader step, StepContext stepContext) {
-            super(step, stepContext);
+        DataReaderProcessor(DataReader step, StepContext stepContext, ExecRegion parentRegion) {
+            super(step, stepContext, parentRegion.addRegion(step.getNameNm(), 1));
         }
 
         /**
@@ -39,6 +40,6 @@ class DataReader extends DataStep {
                         throw new RuntimeException("Dataset should only return single row, but returned more");
                     }).orElseThrow(() -> new RuntimeException("Dataset did not return any data"));
             StepContext context = getStepContext().cloneWithReplaceData(dataRecord);
-            return Stream.of(getStep().getChild().getProcessor(context));
+            return Stream.of(getStep().getChild().getProcessor(context, getExecRegion()));
         }
     }}

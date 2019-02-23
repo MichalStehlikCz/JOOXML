@@ -113,8 +113,9 @@ public class RepExecutor {
                 reportContext.open(workbook);
                 StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)
                         , new ContextCoordinates(workbook.getSheet(), 0, 0));
+                var execRegion = new ExecRegionRoot();
                 Stream<StepProcessor> pipeline
-                        = Stream.of(getReport().getRootStep().getProcessor(stepContext));
+                        = Stream.of(getReport().getRootStep().getProcessor(stepContext, execRegion));
                 // we add necessary number of step processor expansions to pipeline
                 for (int i = getReport().getRootStep().getNeededProcessorApplications(); i > 0; i--) {
                     pipeline = pipeline.flatMap(StepProcessor::apply);

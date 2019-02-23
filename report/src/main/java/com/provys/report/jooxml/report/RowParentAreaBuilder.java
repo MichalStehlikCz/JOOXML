@@ -120,7 +120,9 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
             lastChild.setEffLastRow(getLastRow().orElseThrow()); // should not fail as we verified last row in validate
         } else if (getLastRow().isPresent()) {
             //noinspection OptionalGetWithoutIsPresent - was verified by isEmpty in first branch of if
+            @SuppressWarnings("squid:S3655")
             int lastChildLastRow = lastChild.getEffLastRow().get();
+            @SuppressWarnings("squid:S3655") // isPresent in if statement
             int lastRow = getLastRow().get();
             if (lastChildLastRow < lastRow) {
                 throw new IllegalStateException("Last sub-region must stretch to end of parent");
@@ -129,7 +131,6 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
                 throw new IllegalStateException("Last sub-region must not go beyond end of parent");
             }
         }
-
     }
 
     /**

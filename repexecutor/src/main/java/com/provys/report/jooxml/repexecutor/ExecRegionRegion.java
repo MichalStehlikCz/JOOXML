@@ -7,15 +7,17 @@ import java.util.*;
 /**
  * Holds data about area populated by report region iteration
  */
-public class ExecRegionRegion implements ExecRegion {
+public class ExecRegionRegion extends ExecRegionBase {
+
     private final Map<String, ExecRegion> subRegions;
 
-    public ExecRegionRegion(int subRegions) {
+    public ExecRegionRegion(String nameNm, int subRegions) {
+        super(nameNm);
         this.subRegions = new HashMap<>(subRegions);
     }
 
-    public void addSubRegion(String nameNm, ExecRegion subRegion) {
-        if (subRegions.put(Objects.requireNonNull(nameNm), Objects.requireNonNull(subRegion)) != null) {
+    private void addSubRegion(ExecRegion subRegion) {
+        if (subRegions.put(subRegion.getNameNm(), subRegion) != null) {
             throw new IllegalArgumentException("Duplicate subregion detected during execution");
         }
     }
@@ -26,5 +28,26 @@ public class ExecRegionRegion implements ExecRegion {
             throw new IllegalArgumentException("Region path expected");
         }
         return subRegions.get(((CellPathRegion) path).getRegion()).getCell(((CellPathRegion) path).getChildPath());
+    }
+
+    @Override
+    public ExecRegion addArea(String nameNm, ContextCoordinates coordinates) {
+        var area = new ExecRegionArea(nameNm, coordinates);
+        addSubRegion(area);
+        return area;
+    }
+
+    @Override
+    public ExecRegion addRegion(String nameNm, int subRegions) {
+        var region = new ExecRegionRegion(nameNm, subRegions);
+        addSubRegion(region);
+        return region;
+    }
+
+    @Override
+    public ExecRegion addTable(String nameNm) {
+        var table = new ExecRegionTable(nameNm);
+        addSubRegion(table);
+        return table;
     }
 }

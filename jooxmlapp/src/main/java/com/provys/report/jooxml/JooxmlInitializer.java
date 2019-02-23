@@ -9,7 +9,6 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.jboss.weld.environment.se.events.ContainerInitialized;
 import picocli.CommandLine;
 
 import javax.annotation.Nullable;
@@ -83,6 +82,7 @@ class JooxmlInitializer implements Runnable {
         configureLogger();
         SeContainer container = SeContainerInitializer.newInstance()
                 .addProperty("org.jboss.weld.se.archive.isolation", false).initialize();
+
         RunReport runner = container.select(RunReport.class).get();
         runner.setTemplate(template).
                 setBodyFile(bodyFile).

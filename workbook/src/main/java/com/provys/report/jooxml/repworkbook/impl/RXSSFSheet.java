@@ -63,6 +63,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetProtection;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -1752,6 +1753,7 @@ public class RXSSFSheet implements Sheet, RepSheet
      *
      * @return the name of this sheet
      */
+    @Nonnull
     @Override
     public String getSheetName()
     {
