@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.tplworkbook;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ public interface TplSheet extends Iterable<TplRow> {
      *              by Excel)
      * @return specified row if it exists, empty optional if such row does not exist on given sheet
      */
+    @Nonnull
     Optional<TplRow> getRow(int rowIndex);
 
     /**
@@ -25,5 +27,6 @@ public interface TplSheet extends Iterable<TplRow> {
      * @param lastRow index of last row to be returned
      * @return collection containing rows in given range
      */
+    @Nonnull
     Collection<TplRow> getRows(int firstRow, int lastRow);
 }

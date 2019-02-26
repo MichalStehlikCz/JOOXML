@@ -1,10 +1,9 @@
 package com.provys.report.jooxml.tplworkbook;
 
-import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.CellProperties;
-import com.provys.report.jooxml.workbook.CellType;
-import com.provys.report.jooxml.workbook.CellValue;
+import com.provys.report.jooxml.workbook.*;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface TplCell {
@@ -22,21 +21,31 @@ public interface TplCell {
     /**
      * @return coordinates of given cell
      */
+    @Nonnull
     CellCoordinates getCoordinates();
 
     /**
      * @return type of cell
      */
+    @Nonnull
     CellType getCellType();
 
     /**
      * @return value present in given cell
      */
+    @Nonnull
     CellValue getCellValue();
 
     /**
-     * @return proeprties (style, comment, hyperlink) of given cell
+     * @return properties (style, comment, hyperlink) of given cell
      */
+    @Nonnull
     Optional<CellProperties> getCellProperties();
 
+    /**
+     * @return list of cell references; returns empty list for anything else than formula cell, list of cell references
+     * that are used in formula for formula cell
+     */
+    @Nonnull
+    Collection<CellReference> getCellReferences();
 }

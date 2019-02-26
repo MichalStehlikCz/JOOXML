@@ -2,10 +2,7 @@ package com.provys.report.jooxml.tplworkbook.impl;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.tplworkbook.TplRow;
-import com.provys.report.jooxml.workbook.CellCoordinates;
-import com.provys.report.jooxml.workbook.CellValue;
-import com.provys.report.jooxml.workbook.CellProperties;
-import com.provys.report.jooxml.workbook.CellType;
+import com.provys.report.jooxml.workbook.*;
 import com.provys.report.jooxml.workbook.impl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +10,8 @@ import org.apache.poi.ss.usermodel.Cell;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 class TXSSFCell implements TplCell {
@@ -93,6 +92,12 @@ class TXSSFCell implements TplCell {
     @Nonnull
     public Optional<CellProperties> getCellProperties() {
         return Optional.ofNullable(properties);
+    }
+
+    @Nonnull
+    @Override
+    public Collection<CellReference> getCellReferences() {
+        return Collections.emptySet();
     }
 
 }

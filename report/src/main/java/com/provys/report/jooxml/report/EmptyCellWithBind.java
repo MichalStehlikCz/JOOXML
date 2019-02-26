@@ -2,10 +2,13 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.workbook.CellProperties;
+import com.provys.report.jooxml.workbook.CellReference;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -68,5 +71,11 @@ class EmptyCellWithBind implements AreaCell {
     @Override
     public Optional<String> getBindColumn() {
         return Optional.of(bindColumn);
+    }
+
+    @Nonnull
+    @Override
+    public Collection<CellReference> getCellReferences() {
+        return Collections.emptyList();
     }
 }
