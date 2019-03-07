@@ -27,7 +27,7 @@ public class ExecRegionRegion extends ExecRegionBase {
         if (!(path instanceof CellPathRegion)) {
             throw new IllegalArgumentException("Region path expected");
         }
-        return subRegions.get(((CellPathRegion) path).getRegion()).getCell(((CellPathRegion) path).getChildPath());
+        return subRegions.get(((CellPathRegion) path).getRegionNm()).getCell(((CellPathRegion) path).getChildPath());
     }
 
     @Override

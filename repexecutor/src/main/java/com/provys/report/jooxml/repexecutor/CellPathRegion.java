@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.repexecutor;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -7,22 +8,23 @@ import java.util.Objects;
  * populates cell with record number in each region
  */
 public class CellPathRegion implements CellPath {
+    @Nonnull
     private final CellPath childPath;
-    private final String region;
+    @Nonnull
+    private final String regionNm;
 
-    public CellPathRegion(CellPath childPath, ReportStep region, int recordNr) {
+    public CellPathRegion(CellPath childPath, String regionNm) {
         this.childPath = Objects.requireNonNull(childPath);
-        this.region = region.getNameNm();
-        if (recordNr < 0) {
-            throw new IllegalArgumentException("Record number cannot be negative");
-        }
+        this.regionNm = Objects.requireNonNull(regionNm);
     }
 
-    public CellPath getChildPath() {
+    @Nonnull
+    CellPath getChildPath() {
         return childPath;
     }
 
-    public String getRegion() {
-        return region;
+    @Nonnull
+    String getRegionNm() {
+        return regionNm;
     }
 }
