@@ -23,8 +23,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.*;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.provys.report.jooxml.repworkbook.RepSheet;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
@@ -39,13 +47,23 @@ import org.apache.poi.openxml4j.util.ZipFileZipEntrySource;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.udf.UDFFinder;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.SheetVisibility;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.*;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFChartSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import javax.annotation.Nullable;
 
 /**
  * Streaming version of XSSFWorkbook implementing the "BigGridDemo" strategy.
@@ -104,22 +122,52 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
     private Zip64Mode zip64Mode = Zip64Mode.AsNeeded;
 
     /**
-     * <p>Construct a workbook from a template.</p>
-     *
-     * Basic scenario is to use template for all formatting and stuff, but throw away existing content and replace it
-     * with our own content generated from data source. For this reason, we have to use our specialisation of
-     * XSSFWorkbook, that allows us to throw away CalcChain to avoid generating invalid Excel file
-     *
-     * @param template the template xlsx file
+     * Construct a new workbook with default row window size
+     */
+    public RXSSFWorkbook(){
+    	this((XSSFWorkbook) null /*workbook*/);
+    }
+
+    /**
+     * Construct a new workbook based on template file
      */
     public RXSSFWorkbook(File template) throws IOException, InvalidFormatException {
         this(new XSSFWorkbookNoCalc(template));
     }
 
     /**
-     * Construct a workbook from a template. Note that using XSSFWorksheet with CalcChain might lead to invalid
-     * xlsx file; that is why default constructor uses specialisation instead...
+     * <p>Construct a workbook from a template.</p>
      * 
+     * There are three use-cases to use SXSSFWorkbook(XSSFWorkbook) :
+     * <ol>
+     *   <li>
+     *       Append new sheets to existing workbooks. You can open existing
+     *       workbook from a file or create on the fly with XSSF.
+     *   </li>
+     *   <li>
+     *       Append rows to existing sheets. The row number MUST be greater
+     *       than {@code max(rownum)} in the template sheet.
+     *   </li>
+     *   <li>
+     *       Use existing workbook as a template and re-use global objects such
+     *       as cell styles, formats, images, etc.
+     *   </li>
+     * </ol>
+     * All three use cases can work in a combination.
+     * 
+     * What is not supported:
+     * <ul>
+     *   <li>
+     *   Access initial cells and rows in the template. After constructing
+     *   all internal windows are empty and {@code SXSSFSheet.getRow} and
+     *   {@code SXSSFRow.getCell} return <code>null</code>.
+     *   </li>
+     *   <li>
+     *    Override existing cells and rows. The API silently allows that but
+     *    the output file is invalid and Excel cannot read it.
+     *   </li>
+     * </ul>
+     *
      * @param workbook  the template workbook
      */
     RXSSFWorkbook(XSSFWorkbook workbook){
@@ -147,7 +195,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      *
      * @param rowAccessWindowSize the number of rows that are kept in memory until flushed out, see above.
      */
-    RXSSFWorkbook(XSSFWorkbook workbook, int rowAccessWindowSize){
+    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize){
     	this(workbook,rowAccessWindowSize, false);
     }
 
@@ -172,7 +220,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @param rowAccessWindowSize the number of rows that are kept in memory until flushed out, see above.
      * @param compressTmpFiles whether to use gzip compression for temporary files
      */
-    RXSSFWorkbook(XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles){
+    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles){
     	this(workbook,rowAccessWindowSize, compressTmpFiles, false);
     }
 
@@ -199,7 +247,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @param compressTmpFiles whether to use gzip compression for temporary files
      * @param useSharedStringsTable whether to use a shared strings table
      */
-    RXSSFWorkbook(XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable){
+    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable){
         setRandomAccessWindowSize(rowAccessWindowSize);
         setCompressTempFiles(compressTmpFiles);
         if (workbook == null) {
@@ -212,6 +260,30 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
                 createAndRegisterSXSSFSheet( (XSSFSheet)sheet );
             }
         }
+    }
+
+    /**
+     * Construct an empty workbook and specify the window for row access.
+     * <p>
+     * When a new node is created via {@code SXSSFSheet.createRow} and the total number
+     * of unflushed records would exceed the specified value, then the
+     * row with the lowest index value is flushed and cannot be accessed
+     * via {@code SXSSFSheet.getRow} anymore.
+     * </p>
+     * <p>
+     * A value of <code>-1</code> indicates unlimited access. In this case all
+     * records that have not been flushed by a call to <code>flush()</code> are available
+     * for random access.
+     * </p>
+     * <p>
+     * A value of <code>0</code> is not allowed because it would flush any newly created row
+     * without having a chance to specify any cells.
+     * </p>
+     *
+     * @param rowAccessWindowSize the number of rows that are kept in memory until flushed out, see above.
+     */
+    public RXSSFWorkbook(int rowAccessWindowSize){
+    	this(null /*workbook*/, rowAccessWindowSize);
     }
 
     /**
@@ -233,7 +305,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
     /**
      * @param zip64Mode {@link Zip64Mode}
      *
-     * @since 4.0.3
+     * @since 4.1.0
      */
     @Beta
     public void setZip64Mode(Zip64Mode zip64Mode) {
@@ -791,17 +863,6 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
         boolean deleted;
         try {
             try (FileOutputStream os = new FileOutputStream(tmplFile)) {
-                // we have to iterate through _wb and remove all cells - otherwise, we might have dangling references
-                // to cells in CalculationChain...
-                for (Sheet sheet : _wb) {
-                    for (Row row : sheet) {
-                        List<Cell> cells = new ArrayList<>();
-                        for (Cell cell : row){
-                            cells.add(cell);
-                        }
-
-                    }
-                }
                 _wb.write(os);
             }
 
@@ -927,8 +988,8 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @param sheetIndex Zero-based sheet index (0 = First Sheet)
      * @param startColumn Column to begin printarea
      * @param endColumn Column to end the printarea
-     * @param startRow RowImpl to begin the printarea
-     * @param endRow RowImpl to end the printarea
+     * @param startRow Row to begin the printarea
+     * @param endRow Row to end the printarea
      */
     @Override
     public void setPrintArea(int sheetIndex, int startColumn, int endColumn, int startRow, int endRow)

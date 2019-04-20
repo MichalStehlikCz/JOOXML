@@ -29,11 +29,9 @@ import org.apache.poi.util.Internal;
 @Internal
 final class RXSSFEvaluationSheet implements EvaluationSheet {
     private final RXSSFSheet _xs;
-    private int _lastDefinedRow = -1;
 
     public RXSSFEvaluationSheet(RXSSFSheet sheet) {
         _xs = sheet;
-        _lastDefinedRow = _xs.getLastRowNum();
     }
 
     public RXSSFSheet getSXSSFSheet() {
@@ -46,9 +44,19 @@ final class RXSSFEvaluationSheet implements EvaluationSheet {
      */
     @Override
     public int getLastRowNum() {
-        return _lastDefinedRow;
+        return _xs.getLastRowNum();
     }
     
+    /* (non-Javadoc)
+     * @see org.apache.poi.ss.formula.EvaluationSheet#isRowHidden(int)
+     * @since POI 4.1.0
+     */
+    public boolean isRowHidden(int rowIndex) {
+        RXSSFRow row = _xs.getRow(rowIndex);
+        if (row == null) return false;
+        return row.getZeroHeight();
+    }
+
     @Override
     public EvaluationCell getCell(int rowIndex, int columnIndex) {
         RXSSFRow row = _xs.getRow(rowIndex);
@@ -70,6 +78,5 @@ final class RXSSFEvaluationSheet implements EvaluationSheet {
      */
     @Override
     public void clearAllCachedResultValues() {
-        _lastDefinedRow = _xs.getLastRowNum();
     }
 }

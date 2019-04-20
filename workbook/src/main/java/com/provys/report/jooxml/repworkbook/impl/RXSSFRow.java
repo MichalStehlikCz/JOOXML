@@ -475,7 +475,9 @@ public class RXSSFRow implements Row, RepRow, Comparable<RXSSFRow>
                 cell = createCell(colIndex);
         }
         if (properties != null) {
-            properties.getStyleIndex().ifPresent(cell::setCellStyle);
+            cell.setCellStyle(properties.getStyleIndex().orElse(null));
+        } else {
+            cell.setCellStyle((Integer) null);
         }
     }
 

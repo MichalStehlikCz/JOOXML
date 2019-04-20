@@ -21,7 +21,7 @@ public class AreaCellPathRegion implements AreaCellPath {
     public Optional<CellPath> getCellPath(ExecRegion execRegion) {
         ExecRegion childRegion;
         if (execRegion instanceof ExecRegionRegion) {
-            childRegion = ((ExecRegionRegion) execRegion).
+//            childRegion = ((ExecRegionRegion) execRegion).
 
         }
         var childPath = child.getCellPath(execRegion);
