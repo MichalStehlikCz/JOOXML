@@ -1,6 +1,0 @@
-<DATASOURCE>
-  <SELECTDATASOURCE>
-    <NAME_NM>ENTITY</NAME_NM>
-    <SELECT>select name_nm, (select COUNT(*) from ker_attr_tb attr where (attr.entity_id=entity.entity_id)) attrcnt from ker_entity_tb entity where name_nm like 'PROG%';</SELECT>
-  </SELECTDATASOURCE>
-</DATASOURCE>
