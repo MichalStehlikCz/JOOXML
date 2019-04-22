@@ -1,5 +1,5 @@
 /*/*/target/
 /*/target/
-/testdata/testresult/
+/testdata/*/testresult/
 /.idea/workspace.xml
 /.idea/sonarlint/
