@@ -5,7 +5,7 @@ import com.provys.report.jooxml.repworkbook.RepSheet;
 import java.util.Objects;
 
 public class ContextCoordinates {
-    private RepSheet sheet;
+    private final RepSheet sheet;
     private int rowIndex;
     private int columnIndex;
 
@@ -20,11 +20,15 @@ public class ContextCoordinates {
     }
 
     public void incRowBy(int height) {
-        rowIndex = rowIndex + height;
+        rowIndex += height;
     }
 
     public int getRowIndex() {
         return rowIndex;
+    }
+
+    public void incColumnBy(int width) {
+        columnIndex += width;
     }
 
     public int getColumnIndex() {

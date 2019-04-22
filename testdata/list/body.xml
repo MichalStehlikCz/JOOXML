@@ -5,4 +5,19 @@
 		    <COLUMN>REPORTNAME</COLUMN>
 	    </BIND>
     </ROWCELLAREA>
+    <ROWREPEATER>
+        <ROWS>3:5</ROWS>
+        <BODY>4:4</BODY>
+        <DATASOURCE>ENTITY</DATASOURCE>
+        <ROWCELLAREA>
+            <BIND>
+                <CELL>A4</CELL>
+                <COLUMN>NAME_NM</COLUMN>
+            </BIND>
+            <BIND>
+                <CELL>B4</CELL>
+                <COLUMN>ATTRCNT</COLUMN>
+            </BIND>
+        </ROWCELLAREA>
+    </ROWREPEATER>
 </JOOXMLBODY>

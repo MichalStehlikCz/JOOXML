@@ -61,13 +61,13 @@ public class StepParser {
     StepBuilder parse(@Nullable StepBuilder parent, XMLStreamReader stepReader) throws XMLStreamException {
         StepBuilder step;
         switch (stepReader.getLocalName()) {
-            case "ROWCELLAREA":
+            case RowCellAreaParser.TAG:
                 step = rowCellAreaParser.parse(parent, stepReader);
                 break;
-            case "ROWPARENTAREA":
+            case RowParentAreaParser.TAG:
                 step = rowParentAreaParser.parse(parent, stepReader);
                 break;
-            case "ROWREPEATER":
+            case RowRepeaterParser.TAG:
                 step = rowRepeaterParser.parse(parent, stepReader);
                 break;
             default:

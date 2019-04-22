@@ -24,6 +24,7 @@ class ReportBodyReader {
 
     private final StepParser stepParser;
 
+    @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
     @Inject
     ReportBodyReader(StepParser stepParser) {
         this.stepParser = Objects.requireNonNull(stepParser);

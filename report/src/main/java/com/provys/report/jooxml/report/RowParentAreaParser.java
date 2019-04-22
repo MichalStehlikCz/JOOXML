@@ -9,6 +9,8 @@ import java.util.Objects;
 
 class RowParentAreaParser {
 
+    static final String TAG = "ROWPARENTAREA";
+
     @Nonnull
     private final StepParser stepParser;
 

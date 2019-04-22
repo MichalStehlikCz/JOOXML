@@ -11,8 +11,9 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
-public class RowRepeaterParser {
+class RowRepeaterParser {
 
+    static final String TAG = "ROWREPEATER";
     private static final String ROWS_TAG = "ROWS";
     private static final String BODY_TAG = "BODY";
     private static final String DATASOURCE_TAG = "DATASOURCE";
@@ -22,6 +23,7 @@ public class RowRepeaterParser {
     @Nonnull
     private final StepParser stepParser;
 
+    @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
     @Inject
     RowRepeaterParser(StepParser stepParser) {
         this.stepParser = Objects.requireNonNull(stepParser);
@@ -42,8 +44,8 @@ public class RowRepeaterParser {
                         if (builder.getFirstRow().isPresent()) {
                             throw new RuntimeException("Duplicate row span specification");
                         }
-                        builder.setFirstRow(Integer.valueOf(rowsMatcher.group(0)));
-                        builder.setLastRow(Integer.valueOf(rowsMatcher.group(1)));
+                        builder.setFirstRow(Integer.valueOf(rowsMatcher.group(1)));
+                        builder.setLastRow(Integer.valueOf(rowsMatcher.group(2)));
                         break;
                     case BODY_TAG:
                         var bodyMatcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
@@ -53,8 +55,8 @@ public class RowRepeaterParser {
                         if (builder.getFirstBodyRow().isPresent()) {
                             throw new RuntimeException("Duplicate body span specification");
                         }
-                        builder.setFirstBodyRow(Integer.valueOf(bodyMatcher.group(0)));
-                        builder.setLastBodyRow(Integer.valueOf(bodyMatcher.group(1)));
+                        builder.setFirstBodyRow(Integer.valueOf(bodyMatcher.group(1)));
+                        builder.setLastBodyRow(Integer.valueOf(bodyMatcher.group(2)));
                         break;
                     case DATASOURCE_TAG:
                         if (builder.getDataSourceName().isPresent()) {

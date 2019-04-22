@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 @ApplicationScoped
 class RowCellAreaParser {
 
+    static final String TAG = "ROWCELLAREA";
     private static final String ROW_SPAN_TAG = "ROWS";
     private static final String BIND_TAG = "BIND";
     private static final String ROW_SPAN_REGEXP = "([0-9]+):([0-9]+)";

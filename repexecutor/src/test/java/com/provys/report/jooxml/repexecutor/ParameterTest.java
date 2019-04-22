@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -20,7 +21,7 @@ class ParameterTest {
 
     @ParameterizedTest
     @MethodSource
-    void newTest(String name, String value, Class<Throwable> exception) {
+    void newTest(String name, String value, @Nullable Class<Throwable> exception) {
         if (exception == null) {
             assertThatCode(() -> new Parameter(name, value)).doesNotThrowAnyException();
         } else {
@@ -42,14 +43,14 @@ class ParameterTest {
 
     static Stream<Object[]> getValue() {
         return Stream.of(
-                new Object[] {new Parameter("NAME", "value"), Optional.of("value")}
-                , new Object[] {new Parameter("name", (String) null), Optional.empty()});
+                new Object[] {new Parameter("NAME", "value"), "value"}
+                , new Object[] {new Parameter("name", (String) null), null});
     }
 
     @ParameterizedTest
     @MethodSource
-    void getValue(Parameter parameter, Optional<String> value) {
-        assertThat(parameter.getValue()).isEqualTo(value);
+    void getValue(Parameter parameter, @Nullable String value) {
+        assertThat(parameter.getValue().orElse(null)).isEqualTo(value);
     }
 
     static Stream<Object[]> equals() {

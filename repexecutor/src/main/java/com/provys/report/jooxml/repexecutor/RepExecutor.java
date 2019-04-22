@@ -45,6 +45,7 @@ public class RepExecutor {
         return cellValueFactory;
     }
 
+    @Nonnull
     RepWorkbookFactory getRepWorkBookFactory() {
         return repWorkBookFactory;
     }
@@ -53,6 +54,7 @@ public class RepExecutor {
         return report;
     }
 
+    @Nonnull
     public RepExecutor setReport(Report report) {
         this.report = report;
         return this;
@@ -62,6 +64,7 @@ public class RepExecutor {
         return targetFile;
     }
 
+    @Nonnull
     public RepExecutor setTargetFile(File targetFile) {
         this.targetFile = targetFile;
         return this;
@@ -71,11 +74,13 @@ public class RepExecutor {
         return parameters;
     }
 
+    @Nonnull
     RepExecutor setParameters(List<Parameter> parameters) {
         this.parameters = new ArrayList<>(parameters);
         return this;
     }
 
+    @Nonnull
     public RepExecutor setParamFile(File paramFile) {
         try (ParameterReader reader = new ParameterReader(paramFile)) {
             setParameters(reader.getParameters());
@@ -86,6 +91,7 @@ public class RepExecutor {
         return this;
     }
 
+    @Nonnull
     private RepWorkbook readWorkbook() {
         try {
             LOG.info("ReadWorkbook: Read template workbook from file {}", getReport().getTemplate());
@@ -96,6 +102,7 @@ public class RepExecutor {
         }
     }
 
+    @Nonnull
     private void writeWorkbook(RepWorkbook workbook) {
         LOG.info("WriteWorkbook: Write workbook to file {}", getTargetFile());
         try (OutputStream stream = Files.newOutputStream(getTargetFile().toPath(),

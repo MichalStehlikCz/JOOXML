@@ -2,6 +2,7 @@ package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.workbook.CellReference;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -23,6 +24,7 @@ public class ExecRegionRegion extends ExecRegionBase {
     }
 
     @Override
+    @Nonnull
     public Optional<CellReference> getCell(CellPath path) {
         if (!(path instanceof CellPathRegion)) {
             throw new IllegalArgumentException("Region path expected");
@@ -31,6 +33,7 @@ public class ExecRegionRegion extends ExecRegionBase {
     }
 
     @Override
+    @Nonnull
     public ExecRegion addArea(String nameNm, ContextCoordinates coordinates) {
         var area = new ExecRegionArea(nameNm, coordinates);
         addSubRegion(area);
@@ -38,6 +41,7 @@ public class ExecRegionRegion extends ExecRegionBase {
     }
 
     @Override
+    @Nonnull
     public ExecRegion addRegion(String nameNm, int subRegions) {
         var region = new ExecRegionRegion(nameNm, subRegions);
         addSubRegion(region);
@@ -45,6 +49,7 @@ public class ExecRegionRegion extends ExecRegionBase {
     }
 
     @Override
+    @Nonnull
     public ExecRegion addTable(String nameNm) {
         var table = new ExecRegionTable(nameNm);
         addSubRegion(table);
