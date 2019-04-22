@@ -85,6 +85,7 @@ class JooxmlInitializer implements Runnable {
 
         RunReport runner = container.select(RunReport.class).get();
         runner.setTemplate(template).
+                setDataSourceFile(dataSourceFile).
                 setBodyFile(bodyFile).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).

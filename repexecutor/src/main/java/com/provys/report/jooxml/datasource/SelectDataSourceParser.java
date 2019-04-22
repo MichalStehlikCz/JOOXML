@@ -1,5 +1,8 @@
 package com.provys.report.jooxml.datasource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamConstants;
@@ -8,6 +11,8 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.Objects;
 
 class SelectDataSourceParser {
+
+    private static final Logger LOG = LogManager.getLogger(SelectDataSourceParser.class);
     static final String TAG = "SELECTDATASOURCE";
     private static final String NAME_NM_TAG = "NAME_NM";
     private static final String SELECT_TAG = "SELECT";
@@ -49,6 +54,7 @@ class SelectDataSourceParser {
                 break;
             }
         }
+        LOG.debug("Parsed select datasource {}", () -> builder.getNameNm().orElse(null));
         return builder;
     }
 

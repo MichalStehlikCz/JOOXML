@@ -3,7 +3,6 @@ package com.provys.report.jooxml;
 import com.provys.report.jooxml.datasource.DataSourceFactory;
 import com.provys.report.jooxml.repexecutor.RepExecutor;
 import com.provys.report.jooxml.repexecutor.Report;
-import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.report.ReportFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +14,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Inject;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
