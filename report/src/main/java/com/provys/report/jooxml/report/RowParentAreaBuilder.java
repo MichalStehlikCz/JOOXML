@@ -73,11 +73,12 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
     private void validateFirstRowOfFirstChild(RowStepBuilder child) {
         if (child.getEffFirstRow().isEmpty()) {
             // first child will inherit start from us
-            child.setEffFirstRow(getFirstRow().orElseThrow()); // should not fail as we already passed validation...
+            child.setEffFirstRow(getEffFirstRow().orElseThrow()); // should not fail as we already passed validation...
         } else if (getFirstRow().isPresent()) {
             //noinspection OptionalGetWithoutIsPresent - we verified it is not empty in the first branch of if
+            @SuppressWarnings("squid:S3655") // redundant due to check in if
             int childEffFirstRow = child.getEffFirstRow().get();
-            int firstRow = getFirstRow().get();
+            int firstRow = getEffFirstRow().orElseThrow(); // we validated eff first row evaluates to value
             if (childEffFirstRow < firstRow) {
                 throw new IllegalStateException("Child validity has to be inside parent validity " + child.getNameNm());
             } else if (childEffFirstRow > firstRow) {
@@ -94,13 +95,13 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
                             orElseThrow(() -> new IllegalStateException("Missing boundary between children "
                                     + previousChild.getNameNm() + " and " + child.getNameNm())) + 1);
         } else {
-            //noinspection OptionalGetWithoutIsPresent isEmpty is present
+            @SuppressWarnings("squid:S3655") // redundant due to check in if
             int childEffPrevLastRow = child.getEffFirstRow().get() - 1;
             if (previousChild.getEffLastRow().isEmpty()) {
                 // stretch previous child to this
                 previousChild.setEffLastRow(childEffPrevLastRow);
             } else {
-                //noinspection OptionalGetWithoutIsPresent isEmpty is present
+                @SuppressWarnings("squid:S3655") // redundant due to check in if
                 int previousEffLastRow = previousChild.getEffLastRow().get();
                 if (previousEffLastRow > childEffPrevLastRow) {
                     throw new IllegalStateException("Children cannot overlap " + previousChild.getNameNm()
@@ -117,13 +118,12 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
         // verify that last child covers end of this region
         if (lastChild.getEffLastRow().isEmpty()) {
             // stretch last child to end of region
-            lastChild.setEffLastRow(getLastRow().orElseThrow()); // should not fail as we verified last row in validate
+            lastChild.setEffLastRow(getEffLastRow().orElseThrow()); // should not fail as we verified last row in validate
         } else if (getLastRow().isPresent()) {
             //noinspection OptionalGetWithoutIsPresent - was verified by isEmpty in first branch of if
             @SuppressWarnings("squid:S3655")
             int lastChildLastRow = lastChild.getEffLastRow().get();
-            @SuppressWarnings("squid:S3655") // isPresent in if statement
-            int lastRow = getLastRow().get();
+            int lastRow = getEffLastRow().orElseThrow(); // should not fail as we already passed validation
             if (lastChildLastRow < lastRow) {
                 throw new IllegalStateException("Last sub-region must stretch to end of parent");
             }

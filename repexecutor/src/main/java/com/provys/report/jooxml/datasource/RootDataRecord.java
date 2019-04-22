@@ -36,10 +36,10 @@ public class RootDataRecord extends DataRecordAncestor {
             result = value;
         } else {
             switch (prefClass.getName()) {
-                case "String":
+                case "java.lang.String":
                     result = value;
                     break;
-                case "Double":
+                case "java.lang.Double":
                     final String fpRegex =
                                 "[\\x00-\\x20]*" +                          // Optional leading "whitespace"
                                         "[+-]?" +                          // Optional sign character
@@ -51,7 +51,7 @@ public class RootDataRecord extends DataRecordAncestor {
                             result = value;
                         }
                     break;
-                case "Boolean":
+                case "java.lang.Boolean":
                     switch (value) {
                         case "Y":
                             result = Boolean.TRUE;

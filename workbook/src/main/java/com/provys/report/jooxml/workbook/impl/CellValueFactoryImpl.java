@@ -5,10 +5,12 @@ import com.provys.report.jooxml.workbook.CellValueFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Implementation of CellValueFactory interface, gives access to new instances of CellValues of various types
  */
+@ApplicationScoped
 public class CellValueFactoryImpl implements CellValueFactory {
 
     @Nonnull

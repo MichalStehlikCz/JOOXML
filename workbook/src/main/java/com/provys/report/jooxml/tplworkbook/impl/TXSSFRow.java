@@ -14,10 +14,15 @@ import java.util.*;
 
 class TXSSFRow implements TplRow {
 
+    @Nonnull
+    private final TXSSFSheet sheet;
     private final int rowIndex;
+    @Nonnull
     private final RowProperties properties;
+    @Nonnull
     private final SortedMap<Integer, TplCell> cells;
 
+    @Nonnull
     private static RowProperties initRowProperties(Row row) {
         // problem is that underlying XSSFRow does not give access to explicitly set row height - it returns default
         // sheet row height if no row height is set on row level. To circumvent this behaviour, we will discard row
@@ -30,6 +35,14 @@ class TXSSFRow implements TplRow {
         return RowPropertiesInt.of(heightInPoints, row.getZeroHeight(), styleIndex);
     }
 
+    TXSSFRow(TXSSFSheet sheet, Row row) {
+        this.sheet = Objects.requireNonNull(sheet);
+        this.rowIndex = row.getRowNum();
+        this.properties = initRowProperties(row);
+        this.cells = initCells(row);
+    }
+
+    @Nonnull
     private SortedMap<Integer, TplCell> initCells(Row row) {
         var result = new TreeMap<Integer, TplCell>();
         for (Cell cell : row) {
@@ -40,10 +53,11 @@ class TXSSFRow implements TplRow {
         return result;
     }
 
-    TXSSFRow(Row row) {
-        this.rowIndex = row.getRowNum();
-        this.properties = initRowProperties(row);
-        this.cells = initCells(row);
+    /**
+     * @return value of field sheet
+     */
+    TXSSFSheet getSheet() {
+        return sheet;
     }
 
     @Override
@@ -52,21 +66,25 @@ class TXSSFRow implements TplRow {
     }
 
     @Override
+    @Nonnull
     public Optional<TplCell> getCell(int i) {
         return Optional.ofNullable(cells.get(i));
     }
 
     @Override
-    public @Nonnull Iterator<TplCell> iterator() {
+    @Nonnull
+    public Iterator<TplCell> iterator() {
         return cells.values().iterator();
     }
 
     @Override
+    @Nonnull
     public Collection<TplCell> getCells() {
         return Collections.unmodifiableCollection(cells.values());
     }
 
     @Override
+    @Nonnull
     public RowProperties getProperties() {
         return properties;
     }

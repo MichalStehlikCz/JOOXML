@@ -18,16 +18,29 @@ package com.provys.report.jooxml.tplworkbook.impl;
 
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
+import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
 @Singleton
 public class TXSSFWorkbookFactory implements TplWorkbookFactory {
+
+    @Nonnull
+    private final CellCoordinatesFactory cellCoordinatesFactory;
+
+    @Inject
+    TXSSFWorkbookFactory(CellCoordinatesFactory cellCoordinatesFactory) {
+        this.cellCoordinatesFactory = Objects.requireNonNull(cellCoordinatesFactory);
+    }
+
     @Override
     public TplWorkbook get(File template) throws IOException {
-        return new TXSSFWorkbook(template);
+        return new TXSSFWorkbook(template, cellCoordinatesFactory);
     }
 }

@@ -12,21 +12,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 class TXSSFCell implements TplCell {
 
     private static final Logger LOG = LogManager.getLogger(TXSSFCell.class.getName());
     @Nonnull
-    private final TplRow row;
+    private final TXSSFRow row;
     private final int colIndex;
     @Nonnull
     private final CellValue value;
     @Nullable
     private final CellProperties properties;
 
-    TXSSFCell(TplRow row, Cell cell) {
-        this.row = row;
+    TXSSFCell(TXSSFRow row, Cell cell) {
+        this.row = Objects.requireNonNull(row);
         this.colIndex = cell.getColumnIndex();
         switch (cell.getCellType()) {
             case FORMULA:
@@ -73,7 +74,7 @@ class TXSSFCell implements TplCell {
     @Nonnull
     @Override
     public CellCoordinates getCoordinates() {
-        return CellCoordinatesFactoryImpl.getInstance().of(getRowIndex(), getColIndex());
+        return row.getSheet().getWorkbook().getCellCoordinatesFactory().of(getRowIndex(), getColIndex());
     }
 
     @Override

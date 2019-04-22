@@ -12,6 +12,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ class RunReport implements Runnable {
     }
 
     @Override
+    @ActivateRequestContext
     public void run() {
         addLoggerShutdownHook();
         Report report;
