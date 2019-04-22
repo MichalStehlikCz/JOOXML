@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,14 +34,9 @@ class TXSSFWorkbook implements TplWorkbook {
     private final Workbook workbook;
     private final List<TplSheet> sheets;
 
-    TXSSFWorkbook(File file, CellCoordinatesFactory cellCoordinatesFactory) throws IOException {
+    TXSSFWorkbook(InputStream stream, CellCoordinatesFactory cellCoordinatesFactory) throws IOException {
         this.cellCoordinatesFactory = Objects.requireNonNull(cellCoordinatesFactory);
-        try {
-            this.workbook = new XSSFWorkbook(file);
-        } catch (InvalidFormatException e) {
-            LOG.error("OpenTemplate: invalid format exception opening template {} {}", file.getPath(), e);
-            throw new RuntimeException("OpenTemplate: invalid format exception opening template", e);
-        }
+        this.workbook = new XSSFWorkbook(stream);
         this.sheets = initSheets(this.workbook);
     }
 

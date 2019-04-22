@@ -24,6 +24,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import javax.inject.Singleton;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 @Singleton
@@ -32,8 +33,8 @@ public class RXSSWorkbookFactory implements RepWorkbookFactory {
 
     @Override
     public RepWorkbook get(File template) throws IOException {
-        try {
-            return new RXSSFWorkbook(template);
+        try (var templateStream = new FileInputStream(template)) {
+            return new RXSSFWorkbook(templateStream);
         } catch (InvalidFormatException e) {
             LOG.error("Supplied template is not valid workbook {} {}", template, e);
             throw new RuntimeException("Supplied template is not valid workbook " + template, e);

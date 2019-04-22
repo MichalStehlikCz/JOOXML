@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -34,13 +35,17 @@ public class TXSSFWorkbookFactory implements TplWorkbookFactory {
     @Nonnull
     private final CellCoordinatesFactory cellCoordinatesFactory;
 
+    @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
     @Inject
     TXSSFWorkbookFactory(CellCoordinatesFactory cellCoordinatesFactory) {
         this.cellCoordinatesFactory = Objects.requireNonNull(cellCoordinatesFactory);
     }
 
     @Override
+    @Nonnull
     public TplWorkbook get(File template) throws IOException {
-        return new TXSSFWorkbook(template, cellCoordinatesFactory);
+        try (var templateStream = new FileInputStream(template)) {
+            return new TXSSFWorkbook(templateStream, cellCoordinatesFactory);
+        }
     }
 }
