@@ -69,8 +69,11 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
      */
     @Override
     @Nonnull
-    public Optional<ReportDataSource> getDataSource() {
-        return getParent().flatMap(StepBuilder::getDataSource);
+    public ReportDataSource getDataSource() {
+        if (parent == null) {
+            throw new RuntimeException("Cannot retrieve datasource - parent not set");
+        }
+        return parent.getDataSource();
     }
 
     /**
@@ -82,17 +85,46 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
     protected abstract T self();
 
     /**
-     * Validate that builder fulfills conditions for building the step.
+     * Validates that parent is specified.
+     * Must be overriden in root step builder as root step doesn't have parent
+     */
+    protected void validateParent() {
+        if (getParent().isEmpty()) {
+            throw new RuntimeException("Step other than root should have parent");
+        }
+    }
+
+    /**
+     * Procedure does actual validation of object itself.
      * Base implementation fills in default internal name if one is not specified.
      * Subclasses might add additional validation rules
      *
      * @param dataSources is map of data-sources in report
      */
-    @Override
-    public void validate(Map<String, ReportDataSource> dataSources) {
+    protected void doValidate(Map<String, ReportDataSource> dataSources) {
         if (getNameNm().isEmpty()) {
             setNameNm(getDefaultNameNm());
         }
+        validateParent();
+    }
+
+    /**
+     * Procedure is called once validtion of object itself was successful.
+     * Can validate children or other outside objects connected to step builder
+     */
+    protected void afterValidate(Map<String, ReportDataSource> dataSources) {}
+
+    /**
+     * Validate that builder fulfills conditions for building the step.
+     * Actual validation should be part of doValidate; if completed successfully, afterValidate is invoked - this can be
+     * used e.g. to validate children once object itself has been found valid.
+     *
+     * @param dataSources is map of data-sources in report
+     */
+    @Override
+    public void validate(Map<String, ReportDataSource> dataSources) {
+        doValidate(dataSources);
+        afterValidate(dataSources);
     }
 
     @Nonnull

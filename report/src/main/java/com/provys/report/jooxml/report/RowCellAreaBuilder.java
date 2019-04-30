@@ -75,11 +75,11 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
      */
     private void validateFieldBind(CellBind cellBind) {
         Objects.requireNonNull(cellBind);
-        if (cellBind.getCoordinates().getRow() < getFirstRow().orElseThrow()) {
+        if (cellBind.getCoordinates().getRow() < getEffFirstRow().orElseThrow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
                     + getFirstRow() + ", bind row " + cellBind.getCoordinates().getRow());
         }
-        if (cellBind.getCoordinates().getRow() > getLastRow().orElseThrow()) {
+        if (cellBind.getCoordinates().getRow() > getEffLastRow().orElseThrow()) {
             throw new IllegalArgumentException("Data bind outside region validity (region first row "
                     + getLastRow() + ", bind row " + cellBind.getCoordinates().getRow());
         }
@@ -95,8 +95,8 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
     }
 
     @Override
-    public void validate(Map<String, ReportDataSource> dataSources) {
-        super.validate(dataSources);
+    public void doValidate(Map<String, ReportDataSource> dataSources) {
+        super.doValidate(dataSources);
         validateFieldBinds();
     }
 

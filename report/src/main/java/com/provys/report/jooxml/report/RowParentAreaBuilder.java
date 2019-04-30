@@ -165,9 +165,9 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
     }
 
     @Override
-    public void validate(Map<String, ReportDataSource> dataSources) {
-        super.validate(dataSources);
+    protected void afterValidate(Map<String, ReportDataSource> dataSources) {
         validateChildren(dataSources);
+        super.afterValidate(dataSources);
     }
 
     /**

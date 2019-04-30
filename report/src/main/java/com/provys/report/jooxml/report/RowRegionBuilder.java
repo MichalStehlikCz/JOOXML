@@ -129,6 +129,8 @@ abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderB
                 () -> new IllegalStateException("Last row of covered area has not been initialized"))) {
             throw new IllegalStateException("First row of region has to be above last row");
         }
+        setFirstRow(getEffFirstRow().orElseThrow());
+        setLastRow(getEffLastRow().orElseThrow());
     }
 
     /**
@@ -137,8 +139,8 @@ abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderB
      * row being before last.
      */
     @Override
-    public void validate(Map<String, ReportDataSource> dataSources) {
-        super.validate(dataSources);
+    protected void doValidate(Map<String, ReportDataSource> dataSources) {
+        super.doValidate(dataSources);
         validateEffRows();
     }
 }

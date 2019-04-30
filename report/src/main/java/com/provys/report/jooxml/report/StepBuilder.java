@@ -46,8 +46,13 @@ interface StepBuilder {
     @Nonnull
     String proposeChildName(StepBuilder child);
 
+    /**
+     * Retrieve data source associated with step. Might not be known until validation and if unknown, throws exception.
+     *
+     * @return data source used for given step. This can be taken from parent step.
+     */
     @Nonnull
-    Optional<ReportDataSource> getDataSource();
+    ReportDataSource getDataSource();
 
     /**
      * @return indication if region is top level region (e.g. no region above will initialize rows and region should

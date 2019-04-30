@@ -20,19 +20,7 @@ class RowParentAreaParser {
 
     RowParentAreaBuilder parse(@Nullable StepBuilder parent, XMLStreamReader reader) throws XMLStreamException {
         RowParentAreaBuilder builder = new RowParentAreaBuilder(parent);
-        while (reader.hasNext()) {
-            int eventType = reader.next();
-            if (eventType == XMLStreamConstants.START_ELEMENT) {
-                String name = reader.getLocalName();
-                StepBuilder child = stepParser.parse(builder, reader);
-                if (!(child instanceof RowRegionBuilder)) {
-                    throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
-                }
-                builder.addChild((RowStepBuilder) child);
-            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
-                break;
-            }
-        }
+        stepParser.parseRowChildren(builder, reader);
         return builder;
     }
 

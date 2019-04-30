@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -50,6 +51,22 @@ public class StepParser {
         this.rowCellAreaParser = rowCellAreaParser;
         this.rowParentAreaParser = rowParentAreaParser;
         this.rowRepeaterParser = rowRepeaterParser;
+    }
+
+    void parseRowChildren(RowParentAreaBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            if (eventType == XMLStreamConstants.START_ELEMENT) {
+                String name = reader.getLocalName();
+                StepBuilder child = parse(builder, reader);
+                if (!(child instanceof RowRegionBuilder)) {
+                    throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
+                }
+                builder.addChild((RowStepBuilder) child);
+            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
+                break;
+            }
+        }
     }
 
     /**

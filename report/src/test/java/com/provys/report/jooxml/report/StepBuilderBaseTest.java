@@ -53,6 +53,12 @@ class StepBuilderBaseTest {
         public ReportStep doBuild(TplWorkbook template) {
             throw new RuntimeException("Not implemented");
         }
+
+        /**
+         * We do not want exception thrown when parent is missing, even though it is default behaviour of stepbuilder
+         */
+        @Override
+        protected void validateParent() {}
     }
 
     @Test
@@ -81,9 +87,9 @@ class StepBuilderBaseTest {
     void getDataSourceTest() {
         var parent = mock(StepBuilder.class);
         var dataSource = mock(ReportDataSource.class);
-        when(parent.getDataSource()).thenReturn(Optional.of(dataSource));
+        when(parent.getDataSource()).thenReturn(dataSource);
         var builder = new StepBuilderBaseImpl(parent);
-        assertThat(builder.getDataSource()).isEqualTo(Optional.of(dataSource));
+        assertThat(builder.getDataSource()).isEqualTo(dataSource);
     }
 
     @Test

@@ -103,7 +103,10 @@ class RowRegionBuilderTest {
     @Test
     void validateTest() {
         Map<String, ReportDataSource> dataSources = Collections.emptyMap();
-        var builder = new RowRegionBuilderImpl(null);
+        var parent = mock(StepBuilder.class);
+        var builder = new RowRegionBuilderImpl(parent);
+        // child name is evaluated during validation
+        when(parent.proposeChildName(builder)).thenReturn("CHILD");
         assertThatThrownBy(() -> builder.validate(dataSources)).hasMessageContaining("First row");
         builder.setFirstRow(5);
         assertThatThrownBy(() -> builder.validate(dataSources)).hasMessageContaining("Last row");

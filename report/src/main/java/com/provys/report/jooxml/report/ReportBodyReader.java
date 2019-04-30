@@ -3,6 +3,7 @@ package com.provys.report.jooxml.report;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.stream.XMLInputFactory;
@@ -22,6 +23,7 @@ class ReportBodyReader {
     private static final Logger LOG = LogManager.getLogger(ReportBodyReader.class.getName());
     private static final String rootElement = "JOOXMLBODY";
 
+    @Nonnull
     private final StepParser stepParser;
 
     @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
@@ -38,24 +40,8 @@ class ReportBodyReader {
             throw new RuntimeException("Root elements in JOOXML report body should be " + rootElement + ", not " +
                     reader.getLocalName());
         }
-        // read content
-        while (reader.hasNext()) {
-            int eventType = reader.next();
-            if (eventType == XMLStreamConstants.START_ELEMENT) {
-                String name = reader.getLocalName();
-                if (name.equals("DATASOURCE")) {
-                    builder.setDataSource(reader.getElementText());
-                } else {
-                    StepBuilder child = stepParser.parse(builder, reader);
-                    if (!(child instanceof RowRegionBuilder)) {
-                        throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
-                    }
-                    builder.addChild((RowStepBuilder) child);
-                }
-            } else if (eventType == XMLStreamConstants.END_ELEMENT) {
-                break;
-            }
-        }
+        // read children
+        stepParser.parseRowChildren(builder, reader);
         return builder;
     }
 

@@ -79,8 +79,11 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      */
     @Nonnull
     @Override
-    public Optional<ReportDataSource> getDataSource() {
-        return Optional.ofNullable(dataSource);
+    public ReportDataSource getDataSource() {
+        if (dataSource == null) {
+            throw new RuntimeException("Root region cannot be queried for datasource until validation");
+        }
+        return dataSource;
     }
 
     /**
@@ -156,7 +159,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
         if (dataSource == null) {
             throw new RuntimeException("DataSource not found in report using name " + dataSourceName);
         }
-        if (!dataSource.getParent().equals(getDataSource())) {
+        if (!dataSource.getParent().equals(getParent().map(StepBuilder::getDataSource))) {
             throw new RuntimeException("DataSource parent does not match master step datasource");
         }
     }
@@ -209,17 +212,22 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
     }
 
     @Override
-    public void validate(Map<String, ReportDataSource> dataSources) {
-        super.validate(dataSources);
+    protected void doValidate(Map<String, ReportDataSource> dataSources) {
+        super.doValidate(dataSources);
         validateDataSource(dataSources);
+    }
+
+    @Override
+    protected void afterValidate(Map<String, ReportDataSource> dataSources) {
         validateChild();
         validateBody();
+        super.afterValidate(dataSources);
     }
 
     @Nonnull
     @Override
     public ReportStep doBuild(TplWorkbook template) {
-        return new DataRepeater(getNameNm().orElseThrow(), getDataSource().orElseThrow(),
+        return new DataRepeater(getNameNm().orElseThrow(), getDataSource(),
                 getChild().orElseThrow().doBuild(template)); // orElseThrow should be pre-verified
     }
 
