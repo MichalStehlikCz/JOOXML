@@ -42,8 +42,8 @@ class RowCellAreaParser {
                             throw new RuntimeException("Duplicate row span specification");
                         }
                         // -1 is for translation from excel rows to zero-based row index
-                        builder.setFirstRow(Integer.valueOf(matcher.group(0)) - 1);
-                        builder.setLastRow(Integer.valueOf(matcher.group(1)) - 1);
+                        builder.setFirstRow(Integer.valueOf(matcher.group(1)) - 1);
+                        builder.setLastRow(Integer.valueOf(matcher.group(2)) - 1);
                         break;
                     case BIND_TAG:
                         builder.addFieldBind(cellBindParser.parse(reader));

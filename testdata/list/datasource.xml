@@ -1,6 +1,10 @@
 <DATASOURCE>
   <SELECTDATASOURCE>
     <NAME_NM>ENTITY</NAME_NM>
-    <SELECT>select name_nm, (select COUNT(*) from cat_attr_vw attr where (attr.entity_id=entity.entity_id)) attrcnt from cat_entity_vw entity where (name_nm like 'PROG%')</SELECT>
+    <SELECT>select ENTITY_ID, NAME_NM, (select COUNT(*) from cat_attr_vw attr where (attr.entity_id=entity.entity_id)) ATTRCNT from cat_entity_vw entity where (name_nm like :entity_nm)</SELECT>
+    <SELECTDATASOURCE>
+      <NAME_NM>ATTR</NAME_NM>
+      <SELECT>select NAME_NM from cat_attr_vw attr WHERE (attr.entity_id=:ENTITY_ID)</SELECT>
+    </SELECTDATASOURCE>
   </SELECTDATASOURCE>
 </DATASOURCE>

@@ -18,9 +18,9 @@ class RowRepeaterParserTest {
     @Nonnull
     static Stream<Object[]> parseTest() {
         return Stream.of(new Object[]{"<ROWREPEATER><BODY>2:4</BODY></ROWREPEATER>",
-                        null, null, null, 2, 4, Boolean.FALSE}
-                , new Object[]{"<ROWREPEATER><ROWS>1:3</ROWS></ROWREPEATER>",
-                        null, 1, 3, null, null, Boolean.FALSE}
+                        null, null, null, 1, 3, Boolean.FALSE}
+                , new Object[]{"<ROWREPEATER><ROWS>1:6</ROWS></ROWREPEATER>",
+                        null, 0, 5, null, null, Boolean.FALSE}
         );
     }
 

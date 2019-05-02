@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -85,18 +87,31 @@ abstract class DataRecordAncestor implements DataRecord {
             //noinspection OptionalGetWithoutIsPresent isEmpty in if
             @SuppressWarnings("squid:S3655") // sonar doesn't recognise isEmpty yet...
             Object value = optValue.get();
-            switch (value.getClass().getName()) {
-                case "String":
-                    result = cellValueFactory.ofString((String) value);
-                    break;
-                case "Double":
-                    result = cellValueFactory.ofNumeric((Double) value);
-                    break;
-                case "Boolean":
-                    result = cellValueFactory.ofBoolean((Boolean) value);
-                    break;
-                default:
-                    result = cellValueFactory.ofString(value.toString());
+            if (prefClass == String.class) {
+                result = cellValueFactory.ofString(value.toString());
+            } else {
+                switch (value.getClass().getName()) {
+                    case "java.lang.String":
+                        result = cellValueFactory.ofString((String) value);
+                        break;
+                    case "java.lang.Double":
+                        result = cellValueFactory.ofNumeric((Double) value);
+                        break;
+                    case "java.lang.Integer":
+                        result = cellValueFactory.ofNumeric(((Integer) value).doubleValue());
+                        break;
+                    case "java.math.BigDecimal":
+                        result = cellValueFactory.ofNumeric(((BigDecimal) value).doubleValue());
+                        break;
+                    case "java.math.BigInteger":
+                        result = cellValueFactory.ofNumeric(((BigInteger) value).doubleValue());
+                        break;
+                    case "java.lang.Boolean":
+                        result = cellValueFactory.ofBoolean((Boolean) value);
+                        break;
+                    default:
+                        result = cellValueFactory.ofString(value.toString());
+                }
             }
         }
         return result;

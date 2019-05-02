@@ -150,7 +150,7 @@
             <dependency>
                 <groupId>com.provys</groupId>
                 <artifactId>provysdb</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

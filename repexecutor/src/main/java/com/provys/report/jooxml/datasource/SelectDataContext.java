@@ -44,7 +44,7 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
         for (Param<?> param : params.values()) {
             var paramName = param.getParamName();
             if (paramName != null) {
-                query.bind(paramName, master.getValue(paramName, null).orElse(null));
+                query.bind(paramName, master.getValue(paramName.toUpperCase(), null).orElse(null));
             }
         }
         DataRecordCursor cursor = new DataRecordCursor(getReportContext(), query.fetchLazy());
