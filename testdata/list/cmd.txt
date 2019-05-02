@@ -1,0 +1,2 @@
+working directory C:\Java\JOOXML\testdata\list
+-t=TestSheet.xlsx -b=body.xml -l=TestResult/run.log --loglevel=DEBUG -p=parameters.xml -d=datasource.xml -c=localhost:1521:PVYS -u=REP -w=REP -k=zZITYobxbDzZgVwpcnPnjGgujMDyQX TestResult/ResultSheet.xlsx
