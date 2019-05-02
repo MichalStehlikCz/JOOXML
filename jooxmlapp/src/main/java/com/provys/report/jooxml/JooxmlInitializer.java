@@ -38,9 +38,15 @@ class JooxmlInitializer implements Runnable {
     @CommandLine.Option(names = {"-p", "--paramfile"}, description = "Parameter XML file")
     private File paramFile;
 
-    @CommandLine.Option(names = {"-c", "--connectstring"}, required = true,
-            description = "jdbc connect string to PROVYS Oracle database")
-    private String connectString;
+    @CommandLine.Option(names = {"-c", "--connectstring"},
+            description = "Provys database connect string (localhost:1521:PVYS)", defaultValue = "localhost:1521:PVYS")
+    private String provysAddress;
+
+    @CommandLine.Option(names = {"-u", "--user"}, description = "Provys DB user", defaultValue = "REP")
+    private String provysUser;
+
+    @CommandLine.Option(names = {"-w", "--pwd"}, description = "Provys DB user password", defaultValue = "REP")
+    private String provysPwd;
 
     @CommandLine.Option(names = {"-k", "--token"}, required = true,
             description = "token for connection to PROVYS database")
@@ -89,6 +95,10 @@ class JooxmlInitializer implements Runnable {
                 setBodyFile(bodyFile).
                 setParamFile(paramFile).
                 setTargetFile(targetFile).
+                setProvysAddress(provysAddress).
+                setProvysUser(provysUser).
+                setProvysPwd(provysPwd).
+                setDbToken(dbToken).
                 run();
     }
 }

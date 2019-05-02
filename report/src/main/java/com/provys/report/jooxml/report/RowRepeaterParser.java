@@ -29,50 +29,67 @@ class RowRepeaterParser {
         this.stepParser = Objects.requireNonNull(stepParser);
     }
 
+    private void parseRows(RowRepeaterBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        var rowsMatcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
+        if (!rowsMatcher.matches()) {
+            throw new RuntimeException("Row span does not match pattern minrow:maxrow");
+        }
+        if (builder.getFirstRow().isPresent()) {
+            throw new RuntimeException("Duplicate row span specification");
+        }
+        // -1 is translation from excel coordinates to zero-based row indices
+        builder.setFirstRow(Integer.valueOf(rowsMatcher.group(1)) - 1);
+        builder.setLastRow(Integer.valueOf(rowsMatcher.group(2)) - 1);
+    }
+
+    private void parseBody(RowRepeaterBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        var bodyMatcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
+        if (!bodyMatcher.matches()) {
+            throw new RuntimeException("Row span does not match pattern minrow:maxrow");
+        }
+        if (builder.getFirstBodyRow().isPresent()) {
+            throw new RuntimeException("Duplicate body span specification");
+        }
+        // -1 is translation from excel coordinates to zero-based row indices
+        builder.setFirstBodyRow(Integer.valueOf(bodyMatcher.group(1)) - 1);
+        builder.setLastBodyRow(Integer.valueOf(bodyMatcher.group(2)) - 1);
+    }
+
+    private void parseDataSource(RowRepeaterBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        if (builder.getDataSourceName().isPresent()) {
+            throw new RuntimeException("Duplicate datasource specification");
+        }
+        builder.setDataSourceName(reader.getElementText());
+    }
+
+    private void parseChild(RowRepeaterBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        StepBuilder child = stepParser.parse(builder, reader);
+        if (!(child instanceof RowRegionBuilder)) {
+            throw new RuntimeException("Only row areas allowed in row parent area, not " + reader.getLocalName());
+        }
+        if (builder.getChild().isPresent()) {
+            throw new RuntimeException("Only one child region allowed in RowRepeater");
+        }
+        builder.setChild((RowStepBuilder) child);
+    }
+
     RowRepeaterBuilder parse(@Nullable StepBuilder parent, XMLStreamReader reader) throws XMLStreamException {
         var builder = new RowRepeaterBuilder(parent);
         while (reader.hasNext()) {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
-                String name = reader.getLocalName();
-                switch (name) {
+                switch (reader.getLocalName()) {
                     case ROWS_TAG:
-                        var rowsMatcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
-                        if (!rowsMatcher.matches()) {
-                            throw new RuntimeException("Row span does not match pattern minrow:maxrow");
-                        }
-                        if (builder.getFirstRow().isPresent()) {
-                            throw new RuntimeException("Duplicate row span specification");
-                        }
-                        builder.setFirstRow(Integer.valueOf(rowsMatcher.group(1)));
-                        builder.setLastRow(Integer.valueOf(rowsMatcher.group(2)));
+                        parseRows(builder, reader);
                         break;
                     case BODY_TAG:
-                        var bodyMatcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
-                        if (!bodyMatcher.matches()) {
-                            throw new RuntimeException("Row span does not match pattern minrow:maxrow");
-                        }
-                        if (builder.getFirstBodyRow().isPresent()) {
-                            throw new RuntimeException("Duplicate body span specification");
-                        }
-                        builder.setFirstBodyRow(Integer.valueOf(bodyMatcher.group(1)));
-                        builder.setLastBodyRow(Integer.valueOf(bodyMatcher.group(2)));
+                        parseBody(builder, reader);
                         break;
                     case DATASOURCE_TAG:
-                        if (builder.getDataSourceName().isPresent()) {
-                            throw new RuntimeException("Duplicate datasource specification");
-                        }
-                        builder.setDataSourceName(reader.getElementText());
+                        parseDataSource(builder, reader);
                         break;
                     default:
-                        StepBuilder child = stepParser.parse(builder, reader);
-                        if (!(child instanceof RowRegionBuilder)) {
-                            throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
-                        }
-                        if (builder.getChild().isPresent()) {
-                            throw new RuntimeException("Only one child region allowed in RowRepeater");
-                        }
-                        builder.setChild((RowStepBuilder) child);
+                        parseChild(builder, reader);
                 }
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;

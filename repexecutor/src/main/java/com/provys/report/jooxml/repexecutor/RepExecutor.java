@@ -1,13 +1,16 @@
 package com.provys.report.jooxml.repexecutor;
 
+import com.provys.provysdb.ProvysDbContext;
 import com.provys.report.jooxml.datasource.RootDataRecord;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
 import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jooq.DSLContext;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.*;
@@ -26,15 +29,20 @@ public class RepExecutor {
     /** Cell value factory used to create cell values during report execution */
     @Nonnull
     private final CellValueFactory cellValueFactory;
+    @Nonnull
+    private final ProvysDbContext dbContext;
     private Report report;
     private File targetFile;
     private List<Parameter> parameters = new ArrayList<>(0);
+    private String dbToken;
 
     @SuppressWarnings("CdiInjectionPointsInspection") // implementations are supplied from libraries
     @Inject
-    public RepExecutor(RepWorkbookFactory repWorkBookFactory, CellValueFactory cellValueFactory) {
+    public RepExecutor(RepWorkbookFactory repWorkBookFactory, CellValueFactory cellValueFactory,
+                       ProvysDbContext dbContext) {
         this.repWorkBookFactory = Objects.requireNonNull(repWorkBookFactory);
         this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+        this.dbContext = Objects.requireNonNull(dbContext);
     }
 
     /**
@@ -91,6 +99,25 @@ public class RepExecutor {
         return this;
     }
 
+    /**
+     * @return value of field dbToken
+     */
+    @Nonnull
+    public Optional<String> getDbToken() {
+        return Optional.ofNullable(dbToken);
+    }
+
+    /**
+     * Set value of field dbToken
+     *
+     * @param dbToken is new value to be set
+     * @return self to enable chaining
+     */
+    public RepExecutor setDbToken(@Nullable String dbToken) {
+        this.dbToken = dbToken;
+        return this;
+    }
+
     @Nonnull
     private RepWorkbook readWorkbook() {
         try {
@@ -115,28 +142,28 @@ public class RepExecutor {
     }
 
     public void run() {
-        try (ReportContext reportContext = new ReportContext(getParameters(), getCellValueFactory())) {
-            try (RepWorkbook workbook = readWorkbook()) {
-                reportContext.open(workbook);
-                StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)
-                        , new ContextCoordinates(workbook.getSheet(), 0, 0));
-                var execRegion = new ExecRegionRoot();
-                Stream<StepProcessor> pipeline
-                        = Stream.of(getReport().getRootStep().getProcessor(stepContext, execRegion));
-                // we add necessary number of step processor expansions to pipeline
-                for (int i = getReport().getRootStep().getNeededProcessorApplications(); i > 0; i--) {
-                    pipeline = pipeline.flatMap(StepProcessor::apply);
-                }
-                // and once only terminal steps remain, we execute them
-                pipeline.forEachOrdered(StepProcessor::execute);
-                writeWorkbook(workbook);
-            } catch (IOException ex) {
-                LOG.error("Workbook: IO error closing workbook {}", ex);
-                throw new RuntimeException("IO error closing workbook", ex);
+        try (ReportContext reportContext = new ReportContext(getParameters(), getCellValueFactory());
+             RepWorkbook workbook = readWorkbook();
+             DSLContext dslContext = dbContext.createDSL(dbToken)) {
+            reportContext.open(workbook, dslContext);
+            StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)
+                    , new ContextCoordinates(workbook.getSheet(), 0, 0));
+            var execRegion = new ExecRegionRoot();
+            Stream<StepProcessor> pipeline
+                    = Stream.of(getReport().getRootStep().getProcessor(stepContext, execRegion));
+            // we add necessary number of step processor expansions to pipeline
+            for (int i = getReport().getRootStep().getNeededProcessorApplications(); i > 0; i--) {
+                pipeline = pipeline.flatMap(StepProcessor::apply);
             }
+            // and once only terminal steps remain, we execute them
+            pipeline.forEachOrdered(StepProcessor::execute);
+            writeWorkbook(workbook);
+        } catch (IOException ex) {
+            LOG.error("Workbook: IO error running report {}", ex);
+            throw new RuntimeException("IO error running report", ex);
         } catch (Exception ex) {
-            LOG.error("Report Context: error closing report context {}", ex);
-            throw new RuntimeException("Error closing context", ex);
+            LOG.error("Report Context: error running report {}", ex);
+            throw new RuntimeException("Error running report", ex);
         }
     }
 }

@@ -43,8 +43,8 @@
             <artifactId>ojdbc8</artifactId>
         </dependency>
         <dependency>
-            <groupId>${jooqGroupId}</groupId>
-            <artifactId>jooq</artifactId>
+            <groupId>io.smallrye</groupId>
+            <artifactId>smallrye-config</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

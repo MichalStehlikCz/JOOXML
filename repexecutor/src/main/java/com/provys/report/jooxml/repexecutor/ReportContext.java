@@ -65,7 +65,7 @@ public class ReportContext implements AutoCloseable {
      * @param workbook is target report workbook
      */
     void open(RepWorkbook workbook) {
-        open(workbook, null);
+        open(workbook, dslContext);
     }
 
     @Override
@@ -118,11 +118,11 @@ public class ReportContext implements AutoCloseable {
      * @return value of specified parameter
      */
     public Optional<String> getParameterValue(String name) {
-        Optional<String> value = parameters.get(name);
-        if (value.isEmpty()) {
+        if (!parameters.containsKey(name)) {
             LOG.warn("ReportContext: Trying to access non-existent parameter " + name);
+            return Optional.empty();
         }
-        return value;
+        return parameters.get(name);
     }
 
     /**

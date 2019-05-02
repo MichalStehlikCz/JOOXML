@@ -42,7 +42,10 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
         }
         Map<String, Param<?>> params = query.getParams();
         for (Param<?> param : params.values()) {
-            query.bind(param.getName(), master.getValue(param.getName(), null).orElse(null));
+            var paramName = param.getParamName();
+            if (paramName != null) {
+                query.bind(paramName, master.getValue(paramName, null).orElse(null));
+            }
         }
         DataRecordCursor cursor = new DataRecordCursor(getReportContext(), query.fetchLazy());
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(cursor, Spliterator.ORDERED), false);

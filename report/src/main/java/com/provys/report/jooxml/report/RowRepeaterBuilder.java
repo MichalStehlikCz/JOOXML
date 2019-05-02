@@ -165,7 +165,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
     }
 
     @SuppressWarnings({"squid:S3655", "OptionalGetWithoutIsPresent"}) // analysers do not underestand isEmpty is sufficient
-    private void validateChild() {
+    private void validateChild(Map<String, ReportDataSource> dataSources) {
         if (child == null) {
             throw new RuntimeException("Child must be specified for RowRepeater step");
         }
@@ -191,6 +191,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
                 throw new RuntimeException("Mismatch between last body row and last child row in RowRepeater");
             }
         }
+        child.validate(dataSources);
     }
 
     private void validateBody() {
@@ -219,7 +220,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
 
     @Override
     protected void afterValidate(Map<String, ReportDataSource> dataSources) {
-        validateChild();
+        validateChild(dataSources);
         validateBody();
         super.afterValidate(dataSources);
     }

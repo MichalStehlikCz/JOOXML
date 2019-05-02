@@ -28,7 +28,7 @@
             <artifactId>cdi-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>${jooqGroupId}</groupId>
+            <groupId>org.jooq.pro</groupId>
             <artifactId>jooq</artifactId>
         </dependency>
         <dependency>
@@ -58,6 +58,10 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.provys</groupId>
+            <artifactId>provysdb</artifactId>
         </dependency>
     </dependencies>
 
