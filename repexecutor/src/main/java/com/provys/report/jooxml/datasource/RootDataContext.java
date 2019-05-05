@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.datasource;
 
+import com.provys.report.jooxml.repexecutor.DataCursor;
 import com.provys.report.jooxml.repexecutor.ReportContext;
 
 import javax.annotation.Nonnull;
@@ -17,7 +18,9 @@ class RootDataContext extends DataContextAncestor<RootDataSource> {
 
     @Nonnull
     @Override
-    public Stream<DataRecord> execute(DataRecord master) {
-        return Stream.of(new RootDataRecord(getReportContext()));
+    public DataCursor execute(DataRecord master) {
+        var cursor = new SimpleDataCursor(this, Stream.of(new RootDataRecord(getReportContext())));
+
+        return cursor;
     }
 }

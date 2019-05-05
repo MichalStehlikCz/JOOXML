@@ -4,11 +4,12 @@ import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.datasource.ReportDataSource;
 
 import javax.annotation.Nonnull;
-import java.util.stream.Stream;
 
 /**
- * Represents data context associated with RegionProcessor.
- * Binds RegionProcessor to DataSource, holds resources needed to access data and can return actual data stream.
+ * Keeps resources needed to retrieve data for ReportDataSource.
+ * Represents ReportDataSource in context of report execution, represented by ReportContext. DataContext is created and
+ * its lifecycle is fully controlled by ReportContext. It holds resources needed to access data - like parsed prepared
+ * statement - and can return stream of DataRecord objects.
  * Constructor should not be too slow, preparation should be deferred to prepare method and prepare method must be
  * called before data context usage
  */
@@ -27,16 +28,18 @@ public interface DataContext extends AutoCloseable {
     void prepare();
 
     /**
-     * Retrieves data from data context. Supplies master data that can be bound or otherwise used.
+     * Retrieves data from data context. Supplies master data that can be bound or otherwise used. DataContext keeps
+     * track of open cursors and closes remaining ones on its closure
      *
      * @param master is master data record
-     * @return stream of data records read from this data source; note that given it is stream, data context cannot be
-     * safely reused util all data are read
+     * @return stream of data records read from this data source
      */
-    Stream<DataRecord> execute(DataRecord master);
+    DataCursor execute(DataRecord master);
 
     /**
-     * Close resources associated with data context. Unlike AutoCloseable, this method close does not throw Exception
+     * Close resources associated with data context. Unlike AutoCloseable, this method close does not throw Exception.
+     * Apart from context itself, it also closes any cursors retrieved from this data context that has not been closed
+     * yet.
      */
     @Override
     void close();

@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.datasource;
 
+import com.provys.report.jooxml.repexecutor.DataCursor;
 import com.provys.report.jooxml.repexecutor.ReportContext;
 import org.jooq.Cursor;
 import org.jooq.Param;
@@ -36,7 +37,7 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
     }
 
     @Override
-    public Stream<DataRecord> execute(DataRecord master) {
+    public DataCursor execute(DataRecord master) {
         if (query == null) {
             throw new IllegalStateException("Cannot execute data context - context not prepared");
         }
@@ -47,8 +48,7 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
                 query.bind(paramName, master.getValue(paramName.toUpperCase(), null).orElse(null));
             }
         }
-        DataRecordCursor cursor = new DataRecordCursor(getReportContext(), query.fetchLazy());
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(cursor, Spliterator.ORDERED), false);
+        return new SelectDataCursor(this, query.fetchLazy());
     }
 
     @Override
@@ -56,31 +56,6 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
         if (query != null) {
             query.close();
             query = null;
-        }
-    }
-
-    private static class DataRecordCursor implements Iterator<DataRecord> {
-
-        private final ReportContext reportContext;
-        private final Cursor<?> cursor;
-        int rowNumber = 0;
-
-        DataRecordCursor(ReportContext reportContext, Cursor<?> cursor) {
-            this.reportContext = reportContext;
-            this.cursor = cursor;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return cursor.hasNext();
-        }
-
-        @Override
-        public DataRecord next() {
-            if (!cursor.hasNext()) {
-                throw new NoSuchElementException();
-            }
-            return new SelectDataRecord(reportContext, rowNumber++, cursor.fetchNext());
         }
     }
 }

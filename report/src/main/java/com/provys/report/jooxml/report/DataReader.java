@@ -2,10 +2,7 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.datasource.ReportDataSource;
-import com.provys.report.jooxml.repexecutor.ExecRegion;
-import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.repexecutor.StepContext;
-import com.provys.report.jooxml.repexecutor.StepProcessor;
+import com.provys.report.jooxml.repexecutor.*;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Stream;
@@ -34,12 +31,15 @@ class DataReader extends DataStep {
          */
         @Nonnull
         public Stream<StepProcessor> apply() {
-            DataRecord dataRecord = getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
-                    execute(getStepContext().getData()).
-                    reduce((u, v) -> {
-                        throw new RuntimeException("Dataset should only return single row, but returned more");
-                    }).orElseThrow(() -> new RuntimeException("Dataset did not return any data"));
-            StepContext context = getStepContext().cloneWithReplaceData(dataRecord);
+            DataRecord dataRecord;
+            try (var dataCursor = getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
+                    execute(getStepContext().getData())) {
+                dataRecord = dataCursor.getData().
+                        reduce((u, v) -> {
+                            throw new RuntimeException("Dataset should only return single row, but returned more");
+                        }).orElseThrow(() -> new RuntimeException("Dataset did not return any data"));
+            }
+            var context = getStepContext().cloneWithReplaceData(dataRecord);
             return Stream.of(getStep().getChild().getProcessor(context, getExecRegion()));
         }
     }}

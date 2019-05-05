@@ -33,8 +33,10 @@ class DataReaderTest {
         var dataSource = mock(ReportDataSource.class);
         var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
         var dataRecord1 = mock(DataRecord.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of(dataRecord1));
+        when(dataCursor.getData()).thenReturn(Stream.of(dataRecord1));
         var stepContext1 = mock(StepContext.class);
         when(stepContext.cloneWithReplaceData(dataRecord1)).thenReturn(stepContext1);
         var execRegion = mock(ExecRegion.class);
@@ -61,7 +63,9 @@ class DataReaderTest {
         var execRegion = mock(ExecRegion.class);
         when(parentRegion.addRegion("TEST", 1)).thenReturn(execRegion);
         var child = mock(ReportStep.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of());
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
+        when(dataCursor.getData()).thenReturn(Stream.of());
         var testStep = new DataReader("TEST", dataSource, child);
         //noinspection ResultOfMethodCallIgnored - we need aggregator to execute stream, not to get result
         assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply).
@@ -82,9 +86,11 @@ class DataReaderTest {
         var dataSource = mock(ReportDataSource.class);
         var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
         var dataRecord1 = mock(DataRecord.class);
         var dataRecord2 = mock(DataRecord.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of(dataRecord1, dataRecord2));
+        when(dataCursor.getData()).thenReturn(Stream.of(dataRecord1, dataRecord2));
         var execRegion = mock(ExecRegion.class);
         when(parentRegion.addRegion("TEST", 1)).thenReturn(execRegion);
         var child = mock(ReportStep.class);
@@ -108,8 +114,10 @@ class DataReaderTest {
         var dataSource = mock(ReportDataSource.class);
         var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
         var dataRecord1 = mock(DataRecord.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of(dataRecord1));
+        when(dataCursor.getData()).thenReturn(Stream.of(dataRecord1));
         var stepContext1 = mock(StepContext.class);
         when(stepContext.cloneWithReplaceData(dataRecord1)).thenReturn(stepContext1);
         var execRegion = mock(ExecRegion.class);

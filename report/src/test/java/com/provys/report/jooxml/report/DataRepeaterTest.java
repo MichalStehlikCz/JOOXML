@@ -29,10 +29,12 @@ class DataRepeaterTest {
         var dataSource = mock(ReportDataSource.class);
         var dataContext = mock(DataContext.class);
         when(reportContext.getDataContext(dataSource)).thenReturn(dataContext);
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
         var dataRecord1 = mock(DataRecord.class);
         var dataRecord2 = mock(DataRecord.class);
         var dataRecord3 = mock(DataRecord.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of(dataRecord1, dataRecord2, dataRecord3));
+        when(dataCursor.getData()).thenReturn(Stream.of(dataRecord1, dataRecord2, dataRecord3));
         var stepContext1 = mock(StepContext.class);
         when(stepContext.cloneWithReplaceData(dataRecord1)).thenReturn(stepContext1);
         var stepContext2 = mock(StepContext.class);
@@ -68,7 +70,9 @@ class DataRepeaterTest {
         var execRegion = mock(ExecRegion.class);
         when(parentRegion.addTable("TEST")).thenReturn(execRegion);
         var child = mock(ReportStep.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of());
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
+        when(dataCursor.getData()).thenReturn(Stream.of());
         var testStep = new DataRepeater("TEST", dataSource, child);
         assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
                 isEmpty();
@@ -89,7 +93,9 @@ class DataRepeaterTest {
         var execRegion = mock(ExecRegion.class);
         when(parentRegion.addTable("TEST")).thenReturn(execRegion);
         var child = mock(ReportStep.class);
-        when(dataContext.execute(dataRecord)).thenReturn(Stream.of());
+        var dataCursor = mock(DataCursor.class);
+        when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
+        when(dataCursor.getData()).thenReturn(Stream.of());
         var testStep = new DataRepeater("TEST", dataSource, child);
         assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext, parentRegion)).
                 forEachOrdered(StepProcessor::execute));

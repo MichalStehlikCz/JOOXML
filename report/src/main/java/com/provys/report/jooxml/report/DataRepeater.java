@@ -1,10 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
-import com.provys.report.jooxml.repexecutor.ExecRegion;
-import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.repexecutor.StepContext;
-import com.provys.report.jooxml.repexecutor.StepProcessor;
+import com.provys.report.jooxml.repexecutor.*;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Stream;
@@ -37,10 +34,11 @@ class DataRepeater extends DataStep {
         @Nonnull
         @Override
         public Stream<StepProcessor> apply() {
-            return getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
-                    execute(getStepContext().getData()).
-                    map(dataRecord -> getStep().getChild().getProcessor(
-                            getStepContext().cloneWithReplaceData(dataRecord), getExecRegion()));
+            DataCursor dataCursor = getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
+                    execute(getStepContext().getData());
+            return Stream.concat(dataCursor.getData().map(dataRecord -> getStep().getChild().getProcessor(
+                            getStepContext().cloneWithReplaceData(dataRecord), getExecRegion())),
+                    Stream.of(new CloseDataCursorProcessor(getStep(), dataCursor)));
         }
 
         @Override
