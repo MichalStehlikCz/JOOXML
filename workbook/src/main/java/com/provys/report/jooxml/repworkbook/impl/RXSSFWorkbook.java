@@ -52,6 +52,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetVisibility;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.*;
+import org.apache.poi.xssf.model.CalculationChain;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFChartSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -253,6 +254,11 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
             _sharedStringSource = useSharedStringsTable ? _wb.getSharedStringSource() : null;
             for ( Sheet sheet : _wb ) {
                 createAndRegisterSXSSFSheet( (XSSFSheet)sheet );
+            }
+            // We do not use data from template... making calculation chain invalid; we might as well remove it now
+            CalculationChain calcChain = _wb.getCalculationChain();
+            if (calcChain != null) {
+                calcChain.getCTCalcChain().setCArray(null);
             }
         }
     }
