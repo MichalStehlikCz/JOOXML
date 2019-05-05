@@ -51,8 +51,9 @@ class DataRepeaterTest {
         var processor3 = mock(StepProcessor.class);
         when(child.getProcessor(stepContext3, execRegion)).thenReturn(processor3);
         var testStep = new DataRepeater("TEST", dataSource, child);
+        var closeProcessor = new CloseDataCursorProcessor(testStep, dataCursor);
         assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
-                containsExactly(processor1, processor2, processor3);
+                containsExactly(processor1, processor2, processor3, closeProcessor);
     }
 
     @Test
@@ -74,8 +75,9 @@ class DataRepeaterTest {
         when(dataContext.execute(dataRecord)).thenReturn(dataCursor);
         when(dataCursor.getData()).thenReturn(Stream.of());
         var testStep = new DataRepeater("TEST", dataSource, child);
+        var closeProcessor = new CloseDataCursorProcessor(testStep, dataCursor);
         assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
-                isEmpty();
+                containsExactly(closeProcessor);
     }
 
     @Test

@@ -36,4 +36,20 @@ public class CloseDataCursorProcessor implements StepProcessor {
     public void execute() {
         dataCursor.close();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CloseDataCursorProcessor that = (CloseDataCursorProcessor) o;
+        if (!getStep().equals(that.getStep())) return false;
+        return dataCursor.equals(that.dataCursor);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getStep().hashCode();
+        result = 31 * result + dataCursor.hashCode();
+        return result;
+    }
 }
