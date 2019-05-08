@@ -1,5 +1,6 @@
 package com.provys.report.jooxml.report;
 
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.CellPath;
 import com.provys.report.jooxml.repexecutor.CellPathCell;
 import com.provys.report.jooxml.repexecutor.ExecRegion;
