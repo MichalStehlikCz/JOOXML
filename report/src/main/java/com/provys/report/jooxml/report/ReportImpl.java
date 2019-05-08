@@ -18,7 +18,7 @@ import java.util.*;
 class ReportImpl implements Report {
 
     private final Map<String, ReportDataSource> dataSources;
-    private ReportStep rootStep;
+    private final ReportStep rootStep;
     private File template;
 
     private void addDataSource(ReportDataSource dataSource) {
