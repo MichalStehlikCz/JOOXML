@@ -1,6 +1,5 @@
 package com.provys.report.jooxml.workbook.impl;
 
-import com.provys.report.jooxml.workbook.impl.ColumnFormatter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -33,7 +32,7 @@ class ColumnFormatterTest {
     @ParameterizedTest
     @MethodSource
     void getREGEXPTest(String colString, boolean match) {
-        Matcher matcher = Pattern.compile(ColumnFormatter.REGEXP).matcher(colString);
+        Matcher matcher = Pattern.compile(ColumnFormatter.REGEX).matcher(colString);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
             assertThat(matcher.groupCount()).isEqualTo(0);

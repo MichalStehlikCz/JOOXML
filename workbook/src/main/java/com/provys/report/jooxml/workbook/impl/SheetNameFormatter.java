@@ -24,8 +24,8 @@ public class SheetNameFormatter {
     private static final Pattern NO_ESCAPE_PATTERN = Pattern.compile(NO_ESCAPE_REGEXP);
     /** Pattern for matching cell address - used to decide if escaping is to be used */
     @Nonnull
-    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("[$]?" + ColumnFormatter.REGEXP + "[$]?" +
-            RowFormatter.REGEXP);
+    private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("[$]?" + ColumnFormatter.REGEX + "[$]?" +
+            RowFormatter.REGEX);
     /**
      * String that corresponds to sheet specification pattern; it is either valid unescaped sheet name or escaped sheet
      * string
@@ -42,7 +42,7 @@ public class SheetNameFormatter {
      *
      * @param sheetString is character sheet reference, excluding final !
      * @param validate defines if validation of supplied string as sheet name should be performed. It an be turned off
-     *                 if sheet name has been already parsed using supplied REGEXP
+     *                 if sheet name has been already parsed using supplied REGEX
      * @return non-escaped sheet name
      * @throws IllegalArgumentException if supplied string is empty or does not contain valid sheet representation
      */

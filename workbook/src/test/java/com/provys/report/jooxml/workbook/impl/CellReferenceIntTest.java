@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class CellReferenceIntTest {
 
     @Nonnull
-    static Stream<Object[]> getREGEXPTest() {
+    static Stream<Object[]> getREGEXTest() {
         return Stream.of(
                 new Object[]{"A1", true}
                 , new Object[]{"AA7", true}
@@ -34,6 +34,8 @@ class CellReferenceIntTest {
                 , new Object[]{"My_Sheet!$A$1", true}
                 , new Object[]{"'xx''!ab'!A1", true}
                 , new Object[]{"A0", false}
+                , new Object[]{"A1b", false}
+                , new Object[]{"1A1", false}
                 , new Object[]{"0", false}
                 , new Object[]{"A", false}
                 , new Object[]{"11", false}
@@ -42,8 +44,8 @@ class CellReferenceIntTest {
 
     @ParameterizedTest
     @MethodSource
-    void getREGEXPTest(String address, boolean match) {
-        var matcher = Pattern.compile(CellReferenceInt.REGEXP).matcher(address);
+    void getREGEXTest(String address, boolean match) {
+        var matcher = Pattern.compile(CellReferenceInt.REGEX).matcher(address);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
             assertThat(matcher.groupCount()).isEqualTo(0);

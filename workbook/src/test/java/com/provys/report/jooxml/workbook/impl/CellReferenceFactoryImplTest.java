@@ -97,6 +97,12 @@ class CellReferenceFactoryImplTest {
     }
 
     @Test
+    void getRegexTest() {
+        var factory = new CellReferenceFactoryImpl();
+        assertThat(factory.getRegex()).isEqualTo(CellReferenceInt.REGEX);
+    }
+
+    @Test
     void parse() {
         var factory = new CellReferenceFactoryImpl();
         var cellReference = factory.parse("Sheet!$B$7");

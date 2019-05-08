@@ -27,7 +27,7 @@ class RowFormatterTest {
     @ParameterizedTest
     @MethodSource
     void getREGEXPTest(String rowString, boolean match) {
-        Matcher matcher = Pattern.compile(RowFormatter.REGEXP).matcher(rowString);
+        Matcher matcher = Pattern.compile(RowFormatter.REGEX).matcher(rowString);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
             assertThat(matcher.groupCount()).isEqualTo(0);

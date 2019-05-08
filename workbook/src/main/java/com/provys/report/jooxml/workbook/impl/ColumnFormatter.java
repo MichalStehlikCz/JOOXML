@@ -13,7 +13,7 @@ public class ColumnFormatter {
      * String that corresponds to column definition pattern
      */
     @Nonnull
-    public static final String REGEXP = "[a-zA-Z]{1,3}";
+    public static final String REGEX = "[a-zA-Z]{1,3}";
 
     /**
      * Takes in a column reference and converts it from ALPHA-26 number format to 0-based column index.

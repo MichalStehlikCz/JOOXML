@@ -38,7 +38,7 @@ class CellAddressIntTest {
     @ParameterizedTest
     @MethodSource
     void getREGEXPTest(String address, boolean match) {
-        var matcher = Pattern.compile(CellAddressInt.REGEXP).matcher(address);
+        var matcher = Pattern.compile(CellAddressInt.REGEX).matcher(address);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {
             assertThat(matcher.groupCount()).isEqualTo(0);

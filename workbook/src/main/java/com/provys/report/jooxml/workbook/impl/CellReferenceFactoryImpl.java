@@ -62,6 +62,12 @@ class CellReferenceFactoryImpl implements CellReferenceFactory {
 
     @Nonnull
     @Override
+    public String getRegex() {
+        return CellReferenceInt.REGEX;
+    }
+
+    @Nonnull
+    @Override
     public CellReference parse(String address) {
         return CellReferenceInt.parse(address);
     }

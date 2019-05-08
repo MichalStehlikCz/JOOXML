@@ -20,21 +20,21 @@ public class CellCoordinatesInt implements CellCoordinates {
      * plus one or more numbers representing row coordinate
      */
     @Nonnull
-    public static final String REGEXP = ColumnFormatter.REGEXP + RowFormatter.REGEXP;
+    static final String REGEX = ColumnFormatter.REGEX + RowFormatter.REGEX;
 
     /**
      * Regular expression for matching coordinates - one or more letters representing column coordinate
      * plus one or more numbers representing row coordinate
      */
     @Nonnull
-    private static final String PARSE_REGEXP = "(" + ColumnFormatter.REGEXP + ")(" + RowFormatter.REGEXP + ")";
+    private static final String PARSE_REGEX = "(" + ColumnFormatter.REGEX + ")(" + RowFormatter.REGEX + ")";
 
     /**
      * Matches a run of one or more letters followed by a run of one or more digits.
      * The run of letters is group 1 and the run of digits is group 2.
      */
     @Nonnull
-    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
+    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEX);
 
     /**
      * Coordinates 0, 0 are often referenced, thus it makes sense to cache them

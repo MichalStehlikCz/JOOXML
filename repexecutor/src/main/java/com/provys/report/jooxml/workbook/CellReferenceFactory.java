@@ -23,6 +23,19 @@ public interface CellReferenceFactory {
     CellReference of(@Nullable String sheetName, CellCoordinates coordinates);
     @Nonnull
     CellReference of(CellCoordinates coordinates);
+
+    /**
+     * @return regular expression matching cell reference
+     */
+    @Nonnull
+    String getRegex();
+
+    /**
+     * Parse supplied address into cell reference
+     *
+     * @param address is string representing cell reference
+     * @return parsed cell reference
+     */
     @Nonnull
     CellReference parse(String address);
 }

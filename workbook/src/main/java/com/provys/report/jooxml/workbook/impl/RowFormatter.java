@@ -8,7 +8,7 @@ public class RowFormatter {
      * String that corresponds to column definition pattern
      */
     @Nonnull
-    public static final String REGEXP = "[1-9][0-9]{0,5}";
+    public static final String REGEX = "[1-9][0-9]{0,5}";
 
     /**
      * Takes in a column reference and converts it to row index. Uses int-to-string conversion and subtracts 1 as rows

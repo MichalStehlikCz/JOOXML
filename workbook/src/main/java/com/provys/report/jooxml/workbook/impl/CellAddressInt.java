@@ -18,17 +18,17 @@ public class CellAddressInt implements CellAddress {
      * Sheet reference is optional, column and row references are mandatory.
      */
     @Nonnull
-    public static final String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')' + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?"
-            + ColumnFormatter.REGEXP + RowFormatter.REGEXP;
+    static final String REGEX = "(?:(?:" + SheetNameFormatter.REGEXP + ')' + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?"
+            + ColumnFormatter.REGEX + RowFormatter.REGEX;
 
     /**
      * Matches cell address as used in Excel, but without absolute position modifiers ($).
      *
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
-    private static final @Nonnull String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
-            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?(" + ColumnFormatter.REGEXP + ")(" + RowFormatter.REGEXP + ')';
-    private static final @Nonnull Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
+    private static final @Nonnull String PARSE_REGEX = "(?:(" + SheetNameFormatter.REGEXP + ")" +
+            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?(" + ColumnFormatter.REGEX + ")(" + RowFormatter.REGEX + ')';
+    private static final @Nonnull Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEX);
 
     private static final @Nonnull
     CellAddressInt A1 = new CellAddressInt(null,

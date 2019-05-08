@@ -20,19 +20,19 @@ class CellReferenceInt extends CellAddressInt implements CellReference {
      * Sheet reference is optional, column and row references are mandatory.
      */
     @Nonnull
-    public static final String REGEXP = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
-            + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + "[$]?" + ColumnFormatter.REGEXP + "[$]?"
-            + RowFormatter.REGEXP;
+    static final String REGEX = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
+            + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + "[$]?" + ColumnFormatter.REGEX + "[$]?"
+            + RowFormatter.REGEX;
 
     /**
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
     @Nonnull
-    private static final String PARSE_REGEXP = "(?:(" + SheetNameFormatter.REGEXP + ")" +
-            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?([$])?(" + ColumnFormatter.REGEXP + ")([$])?(" +
-            RowFormatter.REGEXP + ')';
+    private static final String PARSE_REGEX = "(?:(" + SheetNameFormatter.REGEXP + ")" +
+            SheetNameFormatter.SHEET_NAME_DELIMITER + ")?([$])?(" + ColumnFormatter.REGEX + ")([$])?(" +
+            RowFormatter.REGEX + ')';
     @Nonnull
-    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEXP);
+    private static final Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEX);
 
     private final boolean rowAbsolute;
     private final boolean colAbsolute;
