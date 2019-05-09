@@ -1,16 +1,13 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
-import com.provys.report.jooxml.workbook.CellProperties;
-import com.provys.report.jooxml.workbook.CellReference;
-import com.provys.report.jooxml.workbook.CellType;
-import com.provys.report.jooxml.workbook.CellValue;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
+import com.provys.report.jooxml.repexecutor.CellPathReplacer;
+import com.provys.report.jooxml.repexecutor.ExecRegionContext;
+import com.provys.report.jooxml.workbook.*;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Represents cell created because of binding. Cell was not present in template sheet, but there is data binding
@@ -52,7 +49,9 @@ class EmptyCellWithBind implements AreaCell {
 
     @Nonnull
     @Override
-    public CellValue getEffectiveValue(DataRecord data) {
+    public CellValue getEffectiveValue(DataRecord data, ExecRegionContext execRegionContext,
+                                       CellPathReplacer cellPathReplacer) {
+        // empty cell cannot be formula, so we do not have to bother with replacing cell value
         return data.getCellValue(bindColumn);
     }
 
@@ -75,7 +74,7 @@ class EmptyCellWithBind implements AreaCell {
 
     @Nonnull
     @Override
-    public Collection<CellReference> getCellReferences() {
-        return Collections.emptyList();
+    public Map<String, AreaCellPath> getReferenceMap() {
+        return Collections.emptyMap();
     }
 }

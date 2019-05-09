@@ -28,6 +28,8 @@ public class ReportContext implements AutoCloseable {
     private final Map<String, Optional<String>> parameters;
     @Nonnull
     private final CellValueFactory cellValueFactory;
+    @Nonnull
+    private final CellPathReplacer cellPathReplacer;
     @Nullable
     private RepWorkbook workbook;
     @Nullable
@@ -38,13 +40,15 @@ public class ReportContext implements AutoCloseable {
      *
      * @param parameters parameters report is to be executed with
      */
-    ReportContext(@Nullable Collection<Parameter> parameters, CellValueFactory cellValueFactory) {
+    ReportContext(@Nullable Collection<Parameter> parameters, CellValueFactory cellValueFactory,
+                  CellPathReplacer cellPathReplacer) {
         if (parameters == null) {
             this.parameters = new HashMap<>(0);
         } else {
             this.parameters = parameters.stream().collect(Collectors.toMap(Parameter::getName, Parameter::getValue));
         }
-        this.cellValueFactory = cellValueFactory;
+        this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+        this.cellPathReplacer = Objects.requireNonNull(cellPathReplacer);
     }
 
     /**
@@ -96,6 +100,14 @@ public class ReportContext implements AutoCloseable {
     @Nonnull
     public CellValueFactory getCellValueFactory() {
         return cellValueFactory;
+    }
+
+    /**
+     * @return value of field cellPathReplacer
+     */
+    @Nonnull
+    public CellPathReplacer getCellPathReplacer() {
+        return cellPathReplacer;
     }
 
     /**

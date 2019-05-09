@@ -14,14 +14,14 @@ class DataReader extends DataStep {
     }
 
     @Override
-    public StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion) {
-        return new DataReaderProcessor(this, stepContext, parentRegion);
+    public StepProcessor getProcessor(StepContext stepContext, ExecRegionContext parentRegionContext) {
+        return new DataReaderProcessor(this, stepContext, parentRegionContext);
     }
 
     private static class DataReaderProcessor extends StepProcessorAncestor<DataReader> {
 
-        DataReaderProcessor(DataReader step, StepContext stepContext, ExecRegion parentRegion) {
-            super(step, stepContext, parentRegion.addRegion(step.getNameNm(), 1));
+        DataReaderProcessor(DataReader step, StepContext stepContext, ExecRegionContext parentRegionContext) {
+            super(step, stepContext, parentRegionContext.addRegion(step.getNameNm(), 1));
         }
 
         /**
@@ -40,6 +40,6 @@ class DataReader extends DataStep {
                         }).orElseThrow(() -> new RuntimeException("Dataset did not return any data"));
             }
             var context = getStepContext().cloneWithReplaceData(dataRecord);
-            return Stream.of(getStep().getChild().getProcessor(context, getExecRegion()));
+            return Stream.of(getStep().getChild().getProcessor(context, getExecRegionContext()));
         }
     }}

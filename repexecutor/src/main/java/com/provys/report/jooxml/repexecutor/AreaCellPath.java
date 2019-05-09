@@ -21,13 +21,13 @@ public interface AreaCellPath {
      * numbers for areas that are ahead of current region - these line numbers are evaluated as result of arithmetic
      * expression and not validated against region
      *
-     * @param execRegion is region being processed; lines in repeater records with relative position are evaluated
-     *                  against this region
+     * @param execRegionContext is region being processed; lines in repeater records with relative position are
+     *                         evaluated against this region
      * @return absolute path corresponding to this cell and current region
      * @throws RuntimeException if there is relative line number that does not correspond to repeater in current
      * execution region
      */
     @Nonnull
-    Optional<CellPath> getCellPath(ExecRegion execRegion);
+    Optional<CellPath> getCellPath(ExecRegionContext execRegionContext);
 }
 

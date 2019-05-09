@@ -1,9 +1,11 @@
 package com.provys.report.jooxml.tplworkbook;
 
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.workbook.*;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public interface TplCell {
@@ -43,9 +45,9 @@ public interface TplCell {
     Optional<CellProperties> getCellProperties();
 
     /**
-     * @return list of cell references; returns empty list for anything else than formula cell, list of cell references
-     * that are used in formula for formula cell
+     * @return map of cell references (as strings) to CellReference objects; returns empty list for anything else than
+     * formula cell, map of cell references that are used in formula for formula cell
      */
     @Nonnull
-    Collection<CellReference> getCellReferences();
+    Map<String, CellReference> getReferenceMap();
 }

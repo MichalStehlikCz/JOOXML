@@ -22,4 +22,26 @@ public class CellPathRecord implements CellPath {
     int getRecordNr() {
         return recordNr;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CellPathRecord)) return false;
+        CellPathRecord that = (CellPathRecord) o;
+        return getRecordNr() == that.getRecordNr() &&
+                getChildPath().equals(that.getChildPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getChildPath(), getRecordNr());
+    }
+
+    @Override
+    public String toString() {
+        return "CellPathRecord{" +
+                "childPath=" + childPath +
+                ", recordNr=" + recordNr +
+                '}';
+    }
 }

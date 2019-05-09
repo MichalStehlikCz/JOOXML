@@ -30,9 +30,9 @@ class RowCellAreaTest {
         var row1 = mock(Row.class);
         var row2 = mock(Row.class);
         var stepContext = mock(StepContext.class);
-        var parentRegion = mock(ExecRegion.class);
+        var parentRegionContext = mock(ExecRegionContext.class);
         RowCellArea testStep = new RowCellArea("TEST2", true, 5, Arrays.asList(row1, row2));
-        StepProcessor processor = testStep.getProcessor(stepContext, parentRegion);
+        StepProcessor processor = testStep.getProcessor(stepContext, parentRegionContext);
         assertThat(Stream.of(processor).flatMap(StepProcessor::apply)).
                 containsExactly(processor);
     }
@@ -42,16 +42,18 @@ class RowCellAreaTest {
         var stepContext = mock(StepContext.class);
         var sheet = mock(RepSheet.class);
         var coordinates = new ContextCoordinates(sheet, 0, 0);
-        var parentRegion = mock(ExecRegion.class);
-        var execRegionA = mock(ExecRegion.class);
-        var execRegionB = mock(ExecRegion.class);
-        when(parentRegion.addArea("TEST_A", coordinates)).thenReturn(execRegionA);
-        when(parentRegion.addArea("TEST_B", coordinates)).thenReturn(execRegionB);
+        var parentRegionContext = mock(ExecRegionContext.class);
+        var execRegionContextA = mock(ExecRegionContext.class);
+        var execRegionContextB = mock(ExecRegionContext.class);
+        when(parentRegionContext.addArea("TEST_A", coordinates)).thenReturn(execRegionContextA);
+        when(parentRegionContext.addArea("TEST_B", coordinates)).thenReturn(execRegionContextB);
         var reportContext = mock(ReportContext.class);
         when(stepContext.getReportContext()).thenReturn(reportContext);
         var dataRecord = mock(DataRecord.class);
         when(stepContext.getData()).thenReturn(dataRecord);
         when(stepContext.getCoordinates()).thenReturn(coordinates);
+        var cellPathReplacer = mock(CellPathReplacer.class);
+        when(reportContext.getCellPathReplacer()).thenReturn(cellPathReplacer);
         var workbook = mock(RepWorkbook.class);
         when(reportContext.getWorkbook()).thenReturn(workbook);
         var repRow0 = mock(RepRow.class);
@@ -66,11 +68,11 @@ class RowCellAreaTest {
         when(rowA0.getCells()).thenReturn(rowA0Cells);
         when(cellA0_0.getColIndex()).thenReturn(0);
         var cellValueA0_0 = mock(CellValue.class);
-        when(cellA0_0.getEffectiveValue(dataRecord)).thenReturn(cellValueA0_0);
+        when(cellA0_0.getEffectiveValue(dataRecord, execRegionContextA, cellPathReplacer)).thenReturn(cellValueA0_0);
         when(cellA0_0.getProperties()).thenReturn(Optional.empty());
         when(cellA0_3.getColIndex()).thenReturn(3);
         var cellValueA0_3 = mock(CellValue.class);
-        when(cellA0_3.getEffectiveValue(dataRecord)).thenReturn(cellValueA0_3);
+        when(cellA0_3.getEffectiveValue(dataRecord, execRegionContextA, cellPathReplacer)).thenReturn(cellValueA0_3);
         var cellPropertiesA0_3 = mock(CellProperties.class);
         when(cellA0_3.getProperties()).thenReturn(Optional.of(cellPropertiesA0_3));
         Row rowA2 = mock(Row.class);
@@ -80,7 +82,7 @@ class RowCellAreaTest {
         when(rowA2.getCells()).thenReturn(rowA2Cells);
         when(cellA2_1.getColIndex()).thenReturn(1);
         CellValue cellValueA2_1 = mock(CellValue.class);
-        when(cellA2_1.getEffectiveValue(dataRecord)).thenReturn(cellValueA2_1);
+        when(cellA2_1.getEffectiveValue(dataRecord, execRegionContextA, cellPathReplacer)).thenReturn(cellValueA2_1);
         when(cellA2_1.getProperties()).thenReturn(Optional.empty());
         RowCellArea testStepA = new RowCellArea("TEST_A", true, 5, Arrays.asList(rowA0, rowA2));
         RepRow repRow6 = mock(RepRow.class);
@@ -92,11 +94,12 @@ class RowCellAreaTest {
         when(rowB1.getCells()).thenReturn(rowB1Cells);
         when(cellB1_5.getColIndex()).thenReturn(5);
         CellValue cellValueB1_5 = mock(CellValue.class);
-        when(cellB1_5.getEffectiveValue(dataRecord)).thenReturn(cellValueB1_5);
+        when(cellB1_5.getEffectiveValue(dataRecord, execRegionContextB, cellPathReplacer)).thenReturn(cellValueB1_5);
         when(cellB1_5.getProperties()).thenReturn(Optional.empty());
         RowCellArea testStepB = new RowCellArea("TEST_B", true, 2,
                 Collections.singletonList(rowB1));
-        Stream.of(testStepA.getProcessor(stepContext, parentRegion), testStepB.getProcessor(stepContext, parentRegion)).
+        Stream.of(testStepA.getProcessor(stepContext, parentRegionContext),
+                testStepB.getProcessor(stepContext, parentRegionContext)).
                 forEachOrdered(StepProcessor::execute);
         verify(repRow0).addCell(0, cellValueA0_0, null);
         verify(repRow0).addCell(3, cellValueA0_3, cellPropertiesA0_3);
@@ -105,8 +108,8 @@ class RowCellAreaTest {
         verifyNoMoreInteractions(repRow2);
         verify(repRow6).addCell(5, cellValueB1_5, null);
         verifyNoMoreInteractions(repRow6);
-        verify(parentRegion).addArea("TEST_A", coordinates);
-        verify(parentRegion).addArea("TEST_B", coordinates);
-        verifyNoMoreInteractions(parentRegion);
+        verify(parentRegionContext).addArea("TEST_A", coordinates);
+        verify(parentRegionContext).addArea("TEST_B", coordinates);
+        verifyNoMoreInteractions(parentRegionContext);
     }
 }

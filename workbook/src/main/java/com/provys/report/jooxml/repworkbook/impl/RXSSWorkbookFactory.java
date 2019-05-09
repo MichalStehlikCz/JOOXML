@@ -16,25 +16,38 @@
 
 package com.provys.report.jooxml.repworkbook.impl;
 
+import com.provys.report.jooxml.repexecutor.CellPathReplacer;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import com.provys.report.jooxml.repworkbook.RepWorkbookFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 @Singleton
 public class RXSSWorkbookFactory implements RepWorkbookFactory {
-    private static Logger LOG = LogManager.getLogger(RXSSWorkbookFactory.class.getName());
+    private static final Logger LOG = LogManager.getLogger(RXSSWorkbookFactory.class);
+
+    @Nonnull
+    private final CellPathReplacer cellPathReplacer;
+
+    @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
+    @Inject
+    RXSSWorkbookFactory(CellPathReplacer cellPathReplacer) {
+        this.cellPathReplacer = Objects.requireNonNull(cellPathReplacer);
+    }
 
     @Override
     public RepWorkbook get(File template) throws IOException {
         try (var templateStream = new FileInputStream(template)) {
-            return new RXSSFWorkbook(templateStream);
+            return new RXSSFWorkbook(templateStream, cellPathReplacer);
         } catch (InvalidFormatException e) {
             LOG.error("Supplied template is not valid workbook {} {}", template, e);
             throw new RuntimeException("Supplied template is not valid workbook " + template, e);

@@ -1,9 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.ExecRegion;
-import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.repexecutor.StepContext;
-import com.provys.report.jooxml.repexecutor.StepProcessor;
+import com.provys.report.jooxml.repexecutor.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +36,8 @@ class ParentStep extends Step {
      * @return step processor that will be expanded to children during step processing
      */
     @Override
-    public StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion) {
-        return new ParentProcessor(this, stepContext, parentRegion);
+    public StepProcessor getProcessor(StepContext stepContext, ExecRegionContext parentRegionContext) {
+        return new ParentProcessor(this, stepContext, parentRegionContext);
     }
 
     /**
@@ -52,8 +49,8 @@ class ParentStep extends Step {
 
     private static class ParentProcessor extends StepProcessorAncestor<ParentStep> {
 
-        ParentProcessor(ParentStep step, StepContext stepContext, ExecRegion parentRegion) {
-            super(step, stepContext, parentRegion.addRegion(step.getNameNm(), step.children.size()));
+        ParentProcessor(ParentStep step, StepContext stepContext, ExecRegionContext parentRegionContext) {
+            super(step, stepContext, parentRegionContext.addRegion(step.getNameNm(), step.children.size()));
         }
 
         /**
@@ -62,7 +59,8 @@ class ParentStep extends Step {
          * @return stream of step processors for children of given step
          */
         public Stream<StepProcessor> apply() {
-            return getStep().getChildren().map(childStep -> childStep.getProcessor(getStepContext(), getExecRegion()));
+            return getStep().getChildren().map(childStep -> childStep.getProcessor(getStepContext(),
+                    getExecRegionContext()));
         }
     }
 }

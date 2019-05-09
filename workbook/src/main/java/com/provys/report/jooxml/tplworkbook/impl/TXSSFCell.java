@@ -10,10 +10,8 @@ import org.apache.poi.ss.usermodel.Cell;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 class TXSSFCell implements TplCell {
 
@@ -23,6 +21,8 @@ class TXSSFCell implements TplCell {
     private final int colIndex;
     @Nonnull
     private final CellValue value;
+    @Nonnull
+    private final Map<String, CellReference> referenceMap;
     @Nullable
     private final CellProperties properties;
 
@@ -32,28 +32,34 @@ class TXSSFCell implements TplCell {
         switch (cell.getCellType()) {
             case FORMULA:
                 this.value = CellValueFormula.of(cell.getCellFormula());
+                this.referenceMap = new ConcurrentHashMap<>();
                 break;
             case STRING:
                 this.value = CellValueString.of(cell.getStringCellValue());
+                this.referenceMap = Collections.emptyMap();
                 break;
             case NUMERIC:
                 this.value = CellValueNumeric.of(cell.getNumericCellValue());
+                this.referenceMap = Collections.emptyMap();
                 break;
             case BOOLEAN:
                 this.value = CellValueBoolean.of(cell.getBooleanCellValue());
+                this.referenceMap = Collections.emptyMap();
                 break;
             case ERROR:
                 this.value = CellValueError.of(cell.getErrorCellValue());
+                this.referenceMap = Collections.emptyMap();
                 break;
             case BLANK:
                 this.value = CellValueBlank.get();
+                this.referenceMap = Collections.emptyMap();
                 break;
             default:
                 LOG.warn("TXSSFCell: Unexpected cell type in base template {}", cell.getCellType());
                 this.value = CellValueBlank.get();
+                this.referenceMap = Collections.emptyMap();
         }
         Integer styleIndex = ((cell.getCellStyle() == null) ? null : (int) cell.getCellStyle().getIndex());
-        org.apache.poi.ss.usermodel.Comment cellComment = cell.getCellComment();
         if (styleIndex != null) {
             properties = CellPropertiesInt.of(styleIndex);
         } else {
@@ -97,8 +103,8 @@ class TXSSFCell implements TplCell {
 
     @Nonnull
     @Override
-    public Collection<CellReference> getCellReferences() {
-        return Collections.emptySet();
+    public Map<String, CellReference> getReferenceMap() {
+        return Collections.unmodifiableMap(referenceMap);
     }
 
 }

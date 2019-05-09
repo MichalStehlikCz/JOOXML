@@ -20,14 +20,10 @@
 package com.provys.report.jooxml.repworkbook.impl;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
+import com.provys.report.jooxml.repexecutor.CellPathReplacer;
+import com.provys.report.jooxml.repexecutor.ExecRegion;
 import com.provys.report.jooxml.repworkbook.RepSheet;
 import com.provys.report.jooxml.repworkbook.RepWorkbook;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
@@ -58,6 +54,7 @@ import org.apache.poi.xssf.usermodel.XSSFChartSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -117,18 +114,24 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
     private Zip64Mode zip64Mode = Zip64Mode.AsNeeded;
 
     /**
+     * Replacer used to decode cell path strings in formulas and replace them with valid cell references
+     */
+    @Nonnull
+    private final CellPathReplacer cellPathReplacer;
+
+    /**
      * Construct a new workbook with default row window size
      */
-    public RXSSFWorkbook(){
-    	this((XSSFWorkbook) null /*workbook*/);
+    public RXSSFWorkbook(CellPathReplacer cellPathReplacer){
+    	this((XSSFWorkbook) null, cellPathReplacer);
     }
 
     /**
      * Construct a new workbook based on template file
      * Manually added in RXSSFWorkbook
      */
-    public RXSSFWorkbook(InputStream template) throws IOException, InvalidFormatException {
-        this(new XSSFWorkbook(template));
+    public RXSSFWorkbook(InputStream template, CellPathReplacer cellPathReplacer) throws IOException, InvalidFormatException {
+        this(new XSSFWorkbook(template), cellPathReplacer);
     }
 
     /**
@@ -166,8 +169,8 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      *
      * @param workbook  the template workbook
      */
-    RXSSFWorkbook(XSSFWorkbook workbook){
-    	this(workbook, DEFAULT_WINDOW_SIZE);
+    RXSSFWorkbook(XSSFWorkbook workbook, CellPathReplacer cellPathReplacer){
+    	this(workbook, DEFAULT_WINDOW_SIZE, cellPathReplacer);
     }
     
 
@@ -191,8 +194,8 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      *
      * @param rowAccessWindowSize the number of rows that are kept in memory until flushed out, see above.
      */
-    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize){
-    	this(workbook,rowAccessWindowSize, false);
+    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, CellPathReplacer cellPathReplacer){
+    	this(workbook,rowAccessWindowSize, false, cellPathReplacer);
     }
 
     /**
@@ -216,8 +219,9 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @param rowAccessWindowSize the number of rows that are kept in memory until flushed out, see above.
      * @param compressTmpFiles whether to use gzip compression for temporary files
      */
-    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles){
-    	this(workbook,rowAccessWindowSize, compressTmpFiles, false);
+    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles,
+                  CellPathReplacer cellPathReplacer){
+    	this(workbook,rowAccessWindowSize, compressTmpFiles, false, cellPathReplacer);
     }
 
     /**
@@ -243,7 +247,8 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @param compressTmpFiles whether to use gzip compression for temporary files
      * @param useSharedStringsTable whether to use a shared strings table
      */
-    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable){
+    RXSSFWorkbook(@Nullable XSSFWorkbook workbook, int rowAccessWindowSize, boolean compressTmpFiles,
+                  boolean useSharedStringsTable, CellPathReplacer cellPathReplacer){
         setRandomAccessWindowSize(rowAccessWindowSize);
         setCompressTempFiles(compressTmpFiles);
         if (workbook == null) {
@@ -261,6 +266,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
                 calcChain.getCTCalcChain().setCArray(null);
             }
         }
+        this.cellPathReplacer = Objects.requireNonNull(cellPathReplacer);
     }
 
     /**
@@ -283,8 +289,8 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      *
      * @param rowAccessWindowSize the number of rows that are kept in memory until flushed out, see above.
      */
-    public RXSSFWorkbook(int rowAccessWindowSize){
-    	this(null /*workbook*/, rowAccessWindowSize);
+    public RXSSFWorkbook(int rowAccessWindowSize, CellPathReplacer cellPathReplacer){
+    	this(null /*workbook*/, rowAccessWindowSize, cellPathReplacer);
     }
 
     /**
@@ -399,7 +405,28 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
         return null;
     }
 
-    protected void injectData(ZipEntrySource zipEntrySource, OutputStream out) throws IOException {
+    /**
+     * Copy incoming data from in stream to out stream; invoke SheetDataReplacer to replace data in {code <sheetData>}
+     * section with content of worksheetData
+     *
+     * @param in is input stream - content of our workbook without sheet data
+     * @param out is output to which we want to write workbook
+     * @param worksheetData are data (rows and columns) of worksheet
+     * @throws IOException when either of operations with input / output streams fails
+     */
+    private void copyStreamAndInjectWorksheet(InputStream in, OutputStream out, InputStream worksheetData,
+                                              ExecRegion execRegion)
+            throws IOException {
+        try (var decodedWorksheetData = new FormulaCellReferenceReplacer(worksheetData, cellPathReplacer, execRegion)) {
+            try (SheetDataReplacer workSheet = new SheetDataReplacer(in, worksheetData)) {
+                IOUtils.copy(workSheet, out);
+                out.flush();
+            }
+        }
+    }
+
+    protected void injectData(ZipEntrySource zipEntrySource, OutputStream out, ExecRegion execRegion)
+            throws IOException {
         ZipArchiveOutputStream zos = new ZipArchiveOutputStream(out);
         zos.setUseZip64(zip64Mode);
         try {
@@ -421,7 +448,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
                     if (xSheet != null && !(xSheet instanceof XSSFChartSheet)) {
                         RXSSFSheet sxSheet = getSXSSFSheet(xSheet);
                         try (InputStream xis = sxSheet.getWorksheetXMLInputStream()) {
-                            copyStreamAndInjectWorksheet(is, zos, xis);
+                            copyStreamAndInjectWorksheet(is, zos, xis, execRegion);
                         }
                     } else {
                         IOUtils.copy(is, zos);
@@ -433,13 +460,6 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
         } finally {
             zos.finish();
             zipEntrySource.close();
-        }
-    }
-
-    private static void copyStreamAndInjectWorksheet(InputStream in, OutputStream out, InputStream worksheetData) throws IOException {
-        try (SheetDataReplacer workSheet = new SheetDataReplacer(in, worksheetData)) {
-            IOUtils.copy(workSheet, out);
-            out.flush();
         }
     }
 
@@ -848,7 +868,12 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
         //  it's a newly created one
         _wb.close();
     }
-    
+
+    @Override
+    public void write(OutputStream outputStream) throws IOException {
+        throw new RuntimeException("Plain write not implemeneted for RXSSF workbook - execution region map needed");
+    }
+
     /**
      * Write out this workbook to an OutputStream.
      *
@@ -856,7 +881,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
      * @exception IOException if anything can't be written.
      */
     @Override
-    public void write(OutputStream stream) throws IOException {
+    public void write(OutputStream stream, ExecRegion execRegion) throws IOException {
         flushSheets();
 
         //Save the template
@@ -870,7 +895,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
             //Substitute the template entries with the generated sheet data files
             try (ZipSecureFile zf = new ZipSecureFile(tmplFile);
                  ZipFileZipEntrySource source = new ZipFileZipEntrySource(zf)) {
-                injectData(source, stream);
+                injectData(source, stream, execRegion);
             }
         } finally {
             deleted = tmplFile.delete();

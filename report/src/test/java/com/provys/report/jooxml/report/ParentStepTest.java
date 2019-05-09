@@ -1,9 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.ExecRegion;
-import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.repexecutor.StepContext;
-import com.provys.report.jooxml.repexecutor.StepProcessor;
+import com.provys.report.jooxml.repexecutor.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -34,47 +31,47 @@ class ParentStepTest {
     @Test
     void getProcessorApplyTest() {
         var stepContext = mock(StepContext.class);
-        var parentRegion = mock(ExecRegion.class);
-        var execRegion1 = mock(ExecRegion.class);
-        when(parentRegion.addRegion("TEST", 3)).thenReturn(execRegion1);
-        var execRegion2 = mock(ExecRegion.class);
-        when(parentRegion.addRegion("TEST2", 2)).thenReturn(execRegion2);
+        var parentRegionContext = mock(ExecRegionContext.class);
+        var execRegionContext1 = mock(ExecRegionContext.class);
+        when(parentRegionContext.addRegion("TEST", 3)).thenReturn(execRegionContext1);
+        var execRegionContext2 = mock(ExecRegionContext.class);
+        when(parentRegionContext.addRegion("TEST2", 2)).thenReturn(execRegionContext2);
         var child1 = mock(ReportStep.class);
         var processor1 = mock(StepProcessor.class);
-        when(child1.getProcessor(stepContext, execRegion1)).thenReturn(processor1);
-        when(child1.getProcessor(stepContext, execRegion2)).thenReturn(processor1);
+        when(child1.getProcessor(stepContext, execRegionContext1)).thenReturn(processor1);
+        when(child1.getProcessor(stepContext, execRegionContext2)).thenReturn(processor1);
         var child2 = mock(ReportStep.class);
         var processor2 = mock(StepProcessor.class);
-        when(child2.getProcessor(stepContext, execRegion1)).thenReturn(processor2);
+        when(child2.getProcessor(stepContext, execRegionContext1)).thenReturn(processor2);
         var child3 = mock(ReportStep.class);
         var processor3 = mock(StepProcessor.class);
-        when(child3.getProcessor(stepContext, execRegion1)).thenReturn(processor3);
-        when(child3.getProcessor(stepContext, execRegion2)).thenReturn(processor3);
+        when(child3.getProcessor(stepContext, execRegionContext1)).thenReturn(processor3);
+        when(child3.getProcessor(stepContext, execRegionContext2)).thenReturn(processor3);
         var testStep = new ParentStep("TEST", Arrays.asList(child1, child2, child3));
-        assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
+        assertThat(Stream.of(testStep.getProcessor(stepContext, parentRegionContext)).flatMap(StepProcessor::apply)).
                 containsExactly(processor1, processor2, processor3);
         var testStep2 = new ParentStep("TEST2", Arrays.asList(child1, child3));
-        assertThat(Stream.of(testStep2.getProcessor(stepContext, parentRegion)).flatMap(StepProcessor::apply)).
+        assertThat(Stream.of(testStep2.getProcessor(stepContext, parentRegionContext)).flatMap(StepProcessor::apply)).
                 containsExactly(processor1, processor3);
     }
 
     @Test
     void getProcessorExecuteTest() {
         var stepContext = mock(StepContext.class);
-        var parentRegion = mock(ExecRegion.class);
-        var execRegion = mock(ExecRegion.class);
-        when(parentRegion.addRegion("TEST", 3)).thenReturn(execRegion);
+        var parentRegionContext = mock(ExecRegionContext.class);
+        var execRegionContext = mock(ExecRegionContext.class);
+        when(parentRegionContext.addRegion("TEST", 3)).thenReturn(execRegionContext);
         ReportStep child1 = mock(ReportStep.class);
         StepProcessor processor1 = mock(StepProcessor.class);
-        when(child1.getProcessor(stepContext, execRegion)).thenReturn(processor1);
+        when(child1.getProcessor(stepContext, execRegionContext)).thenReturn(processor1);
         ReportStep child2 = mock(ReportStep.class);
         StepProcessor processor2 = mock(StepProcessor.class);
-        when(child2.getProcessor(stepContext, execRegion)).thenReturn(processor2);
+        when(child2.getProcessor(stepContext, execRegionContext)).thenReturn(processor2);
         ReportStep child3 = mock(ReportStep.class);
         StepProcessor processor3 = mock(StepProcessor.class);
-        when(child3.getProcessor(stepContext, execRegion)).thenReturn(processor3);
+        when(child3.getProcessor(stepContext, execRegionContext)).thenReturn(processor3);
         ParentStep testStep = new ParentStep("TEST", Arrays.asList(child1, child2, child3));
-        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext, parentRegion)).
+        assertThatThrownBy(() -> Stream.of(testStep.getProcessor(stepContext, parentRegionContext)).
                 forEachOrdered(StepProcessor::execute));
     }
 }

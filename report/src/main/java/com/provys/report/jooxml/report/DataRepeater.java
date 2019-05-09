@@ -16,14 +16,14 @@ class DataRepeater extends DataStep {
     }
 
     @Override
-    public StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion) {
-        return new DataRepeaterProcessor(this, stepContext, parentRegion);
+    public StepProcessor getProcessor(StepContext stepContext, ExecRegionContext parentRegionContext) {
+        return new DataRepeaterProcessor(this, stepContext, parentRegionContext);
     }
 
     private static class DataRepeaterProcessor extends StepProcessorAncestor<DataRepeater> {
 
-        DataRepeaterProcessor(DataRepeater step, StepContext stepContext, ExecRegion parentRegion) {
-            super(step, stepContext, parentRegion.addTable(step.getNameNm()));
+        DataRepeaterProcessor(DataRepeater step, StepContext stepContext, ExecRegionContext parentRegionContext) {
+            super(step, stepContext, parentRegionContext.addTable(step.getNameNm()));
         }
 
         /**
@@ -37,7 +37,7 @@ class DataRepeater extends DataStep {
             DataCursor dataCursor = getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
                     execute(getStepContext().getData());
             return Stream.concat(dataCursor.getData().map(dataRecord -> getStep().getChild().getProcessor(
-                            getStepContext().cloneWithReplaceData(dataRecord), getExecRegion())),
+                            getStepContext().cloneWithReplaceData(dataRecord), getExecRegionContext())),
                     Stream.of(new CloseDataCursorProcessor(getStep(), dataCursor)));
         }
 

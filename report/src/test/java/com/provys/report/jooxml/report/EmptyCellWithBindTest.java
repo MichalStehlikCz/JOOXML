@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
+import com.provys.report.jooxml.repexecutor.CellPathReplacer;
+import com.provys.report.jooxml.repexecutor.ExecRegionContext;
 import com.provys.report.jooxml.workbook.CellType;
 import com.provys.report.jooxml.workbook.CellValue;
 import org.junit.jupiter.api.Test;
@@ -32,13 +34,17 @@ class EmptyCellWithBindTest {
         var dataRecord = mock(DataRecord.class);
         var cellValue = mock(CellValue.class);
         when(dataRecord.getCellValue("COLUMN")).thenReturn(cellValue);
-        assertThat(new EmptyCellWithBind(0, "COLUMN").getEffectiveValue(dataRecord)).
+        var execRegionContext = mock(ExecRegionContext.class);
+        var cellPathReplacer = mock(CellPathReplacer.class);
+        assertThat(new EmptyCellWithBind(0, "COLUMN").getEffectiveValue(dataRecord,
+                execRegionContext, cellPathReplacer)).
                 isEqualTo(cellValue);
     }
 
     @Test
     void getPropertiesTest() {
-        assertThat(new EmptyCellWithBind(0, "COLUMN").getProperties()).isEmpty();
+        assertThat(new EmptyCellWithBind(0, "COLUMN").getProperties()).
+                isEmpty();
     }
 
     @Test
@@ -49,6 +55,6 @@ class EmptyCellWithBindTest {
 
     @Test
     void getCellReferencesTest() {
-        assertThat(new EmptyCellWithBind(0, "COLUMN").getCellReferences()).isEmpty();
+        assertThat(new EmptyCellWithBind(0, "COLUMN").getReferenceMap()).isEmpty();
     }
 }

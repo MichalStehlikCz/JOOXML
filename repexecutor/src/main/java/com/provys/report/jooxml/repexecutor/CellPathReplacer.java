@@ -1,6 +1,9 @@
 package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.workbook.CellReferenceFactory;
+import com.provys.report.jooxml.workbook.CellType;
+import com.provys.report.jooxml.workbook.CellValue;
+import com.provys.report.jooxml.workbook.CellValueFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,9 +22,9 @@ import java.util.regex.Pattern;
 public class CellPathReplacer {
 
     static final Pattern ENCODED_PATH_PATTERN = Pattern.compile("(\\{\\{[^{}]*}})");
-    private static final char CELL_PREFIX_CHAR = '$';
+    private static final char CELL_PREFIX_CHAR = '#';
     private static final String CELL_PREFIX = Character.toString(CELL_PREFIX_CHAR) + CELL_PREFIX_CHAR;
-    private static final char CELL_POSTFIX_CHAR = '$';
+    private static final char CELL_POSTFIX_CHAR = '#';
     private static final String CELL_POSTFIX = Character.toString(CELL_POSTFIX_CHAR) + CELL_POSTFIX_CHAR;
     private static final char RECORD_PREFIX_CHAR = '[';
     private static final String RECORD_PREFIX = Character.toString(RECORD_PREFIX_CHAR) + RECORD_PREFIX_CHAR;
@@ -33,20 +36,27 @@ public class CellPathReplacer {
     private static final String REGION_POSTFIX = Character.toString(REGION_POSTFIX_CHAR) + REGION_POSTFIX_CHAR;
     private static final char PART_DELIMITER_CHAR = '/';
     private static final String PART_DELIMITER = Character.toString(PART_DELIMITER_CHAR);
+    private static final Pattern CELL_PATH_RECORD_PATTERN = Pattern.compile("([-]?[0-9]+)" + PART_DELIMITER + ".*");
+    private static final Pattern CELL_PATH_REGION_PATTERN = Pattern.compile("([A-Z][A-Z0-9_$#]*)" + PART_DELIMITER +
+            ".*");
 
     @Nonnull
     private final CellReferenceFactory cellReferenceFactory;
     @Nonnull
-    private final Pattern cellPathPattern;
+    private final CellValueFactory cellValueFactory;
+    @Nonnull
+    // canot b static as it depends on cellReferenceFactory, that is injected to instance...
+    private final Pattern cellPathCellPattern;
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    CellPathReplacer(CellReferenceFactory cellReferenceFactory) {
+    CellPathReplacer(CellReferenceFactory cellReferenceFactory, CellValueFactory cellValueFactory) {
         this.cellReferenceFactory = Objects.requireNonNull(cellReferenceFactory);
-        this.cellPathPattern = Pattern.compile("(" + cellReferenceFactory.getRegex() + ")" + CELL_POSTFIX + ".*");
+        this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+        this.cellPathCellPattern = Pattern.compile("(" + cellReferenceFactory.getRegex() + ")" + CELL_POSTFIX + ".*");
     }
 
-    void encodePath(StringBuilder builder, CellPath cellPath) {
+    private void encodeCellPath(StringBuilder builder, CellPath cellPath) {
         switch (cellPath.getClass().getSimpleName()) {
             case "CellPathCell":
                 builder.append(CELL_PREFIX).
@@ -58,7 +68,7 @@ public class CellPathReplacer {
                 builder.append(RECORD_PREFIX).
                         append(cellPathRecord.getRecordNr()).
                         append(PART_DELIMITER);
-                encodePath(builder, cellPathRecord.getChildPath());
+                encodeCellPath(builder, cellPathRecord.getChildPath());
                 builder.append(RECORD_POSTFIX);
                 break;
             case "CellPathRegion":
@@ -66,7 +76,7 @@ public class CellPathReplacer {
                 builder.append(REGION_PREFIX).
                         append(cellPathRegion.getRegionNm()).
                         append(PART_DELIMITER);
-                encodePath(builder, cellPathRegion.getChildPath());
+                encodeCellPath(builder, cellPathRegion.getChildPath());
                 builder.append(REGION_POSTFIX);
                 break;
             default:
@@ -74,32 +84,61 @@ public class CellPathReplacer {
                         cellPath.getClass().getSimpleName());
         }
     }
+
+    String encodePath(CellPath cellPath) {
+        var builder = new StringBuilder("{{");
+        encodeCellPath(builder, cellPath);
+        builder.append("}}");
+        return builder.toString();
+    }
+
     /**
      * Replace cell references in formula text with serialized CellPath expressions
      *
      * @param formula is expression present in formula cell, potentially with original cell references
-     * @param execRegion is region current cell belongs to
+     * @param referenceMap is list of references and their corresponding paths, present in value
+     * @param execRegionContext is region current cell belongs to
      * @return formula with serialized CellPath expressions
      */
     @Nullable
-    public String encode(@Nullable String formula, Map<String, AreaCellPath> referenceMap, ExecRegion execRegion) {
-        if (formula == null) {
-            return null;
+    private String encode(@Nullable String formula, Map<String, AreaCellPath> referenceMap,
+                         ExecRegionContext execRegionContext) {
+        if ((formula == null) || referenceMap.isEmpty()) {
+            return formula;
         }
         var result = formula;
         for (var reference : referenceMap.entrySet()) {
-            var cellPath = reference.getValue().getCellPath(execRegion);
+            var cellPath = reference.getValue().getCellPath(execRegionContext);
             if (cellPath.isEmpty()) {
                 // invalid reference - we prefer to remove formula rather than leave invalid formula
                 return null;
             } else {
-                var builder = new StringBuilder("{{");
-                encodePath(builder, cellPath.get());
-                builder.append("}}");
-                result = result.replaceAll(reference.getKey(), builder.toString());
+                result = result.replaceAll(reference.getKey(), encodePath(cellPath.get()));
             }
         }
         return result;
+    }
+
+    /**
+     * Replace cell references in formula text with serialized CellPath expressions; variant working with CellValue
+     *
+     * @param value is cell value, potentially formula with original cell references
+     * @param referenceMap is list of references and their corresponding paths, present in value
+     * @param execRegionContext is region current cell belongs to
+     * @return cell value with serialized CellPath expressions
+     */
+    @Nonnull
+    public CellValue encode(CellValue value, Map<String, AreaCellPath> referenceMap,
+                         ExecRegionContext execRegionContext) {
+        if (value.getCellType() != CellType.FORMULA) {
+            return value;
+        }
+        var origFormula = value.getFormula();
+        var formula = encode(origFormula, referenceMap, execRegionContext);
+        if (origFormula.equals(formula)) {
+            return value;
+        }
+        return (formula == null) ? cellValueFactory.getBlank() : cellValueFactory.ofFormula(formula);
     }
 
     /**
@@ -116,38 +155,65 @@ public class CellPathReplacer {
         }
 
         private void readStartTag() {
-            if (expression.length() < offset+1) {
+            if (expression.length() < offset+2) {
                 throw new RuntimeException("Cannot read path - end of string while {{ expected " + this);
             }
-            if (expression.charAt(offset) != '{') {
-                throw new RuntimeException("Cannot read path - opening { expected, " + expression.charAt(offset) +
+            if (expression.charAt(offset++) != '{') {
+                throw new RuntimeException("Cannot read path - opening { expected, " + expression.charAt(--offset) +
                         " found  " + this);
             }
-            if (expression.charAt(++offset) != '{') {
-                throw new RuntimeException("Cannot read path - second opening { expected, " + expression.charAt(offset) +
-                        " found  " + this);
+            if (expression.charAt(offset++) != '{') {
+                throw new RuntimeException("Cannot read path - second opening { expected, " +
+                        expression.charAt(--offset) + " found  " + this);
             }
-            offset++;
         }
 
         @Nonnull
         private CellPathCell readCellPathCell() {
-            var matcher = cellPathPattern.matcher(expression.substring(offset));
+            var matcher = cellPathCellPattern.matcher(expression.substring(offset));
             if (!matcher.matches()) {
                 throw new RuntimeException("Failed to parse CellPathCell - pattern not matched " + this);
             }
-            offset += matcher.group(1).length() + 2;
+            offset += matcher.group(1).length() + CELL_POSTFIX.length();
             return new CellPathCell(cellReferenceFactory.parse(matcher.group(1)));
         }
 
         @Nonnull
         private CellPathRecord readCellPathRecord() {
-            return null;
+            var matcher = CELL_PATH_RECORD_PATTERN.matcher(expression.substring(offset));
+            if (!matcher.matches()) {
+                throw new RuntimeException("Failed to parse CellPathRecord - pattern not matched " + this);
+            }
+            offset += matcher.group(1).length() + PART_DELIMITER.length();
+            var childPath = readCellPath();
+            if (expression.charAt(offset++) != RECORD_POSTFIX_CHAR) {
+                throw new RuntimeException("Record postfix chracter " + RECORD_POSTFIX_CHAR + " expected, " +
+                        expression.charAt(--offset) + " found " + this);
+            }
+            if (expression.charAt(offset++) != RECORD_POSTFIX_CHAR) {
+                throw new RuntimeException("Second record postfix chracter " + RECORD_POSTFIX_CHAR + " expected, " +
+                        expression.charAt(--offset) + " found " + this);
+            }
+            return new CellPathRecord(childPath, Integer.valueOf(matcher.group(1)));
         }
 
         @Nonnull
         private CellPathRegion readCellPathRegion() {
-            return null;
+            var matcher = CELL_PATH_REGION_PATTERN.matcher(expression.substring(offset));
+            if (!matcher.matches()) {
+                throw new RuntimeException("Failed to parse CellPathRegion - pattern not matched " + this);
+            }
+            offset += matcher.group(1).length() + PART_DELIMITER.length();
+            var childPath = readCellPath();
+            if (expression.charAt(offset++) != REGION_POSTFIX_CHAR) {
+                throw new RuntimeException("Region postfix chracter " + REGION_POSTFIX_CHAR + " expected, " +
+                        expression.charAt(--offset) + " found " + this);
+            }
+            if (expression.charAt(offset++) != REGION_POSTFIX_CHAR) {
+                throw new RuntimeException("Second region postfix chracter " + REGION_POSTFIX_CHAR + " expected, " +
+                        expression.charAt(--offset) + " found " + this);
+            }
+            return new CellPathRegion(childPath, matcher.group(1));
         }
 
         private char readOpenCellPath() {
@@ -177,17 +243,16 @@ public class CellPathReplacer {
         }
 
         private void readEndTag() {
-            if (expression.length() != offset+1) {
-                throw new RuntimeException("Cannot read path - }} expected to close path expression (\"" + expression +
-                        "\", position " + offset + ")");
+            if (expression.length() != offset+2) {
+                throw new RuntimeException("Cannot read path - }} expected to close path expression " + this);
             }
-            if (expression.charAt(offset) != '}') {
-                throw new RuntimeException("Cannot read path - first closing } expected, " + expression.charAt(offset) +
-                        " found  (\"" + expression + "\", position " + offset + ")");
+            if (expression.charAt(offset++) != '}') {
+                throw new RuntimeException("Cannot read path - closing } expected, " + expression.charAt(--offset) +
+                        " found  " + this);
             }
-            if (expression.charAt(++offset) != '}') {
-                throw new RuntimeException("Cannot read path - closing } expected, " + expression.charAt(offset) +
-                        " found  (\"" + expression + "\", position " + offset + ")");
+            if (expression.charAt(offset++) != '}') {
+                throw new RuntimeException("Cannot read path - second closing } expected, " +
+                        expression.charAt(--offset) + " found  " + this);
             }
         }
 
@@ -195,8 +260,9 @@ public class CellPathReplacer {
         CellPath run() {
             offset = 0;
             readStartTag();
+            var cellPath = readCellPath();
             readEndTag();
-            return null;
+            return cellPath;
         }
 
         @Override

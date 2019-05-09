@@ -18,13 +18,14 @@ public class AreaCellPathRegion implements AreaCellPath {
     }
     @Nonnull
     @Override
-    public Optional<CellPath> getCellPath(ExecRegion execRegion) {
+    public Optional<CellPath> getCellPath(ExecRegionContext execRegionContext) {
         ExecRegion childRegion;
-        if (execRegion instanceof ExecRegionRegion) {
+//        if (execRegion instanceof ExecRegionRegion) {
 //            childRegion = ((ExecRegionRegion) execRegion).
 
-        }
-        var childPath = child.getCellPath(execRegion);
-        return childPath.map(cellPath -> new CellPathRegion(cellPath, execRegion.getNameNm()));
+//        }
+//        var childPath = child.getCellPath(execRegion);
+//        return childPath.map(cellPath -> new CellPathRegion(cellPath, execRegion.getNameNm()));
+        return Optional.empty();
     }
 }

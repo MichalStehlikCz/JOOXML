@@ -1,7 +1,5 @@
 package com.provys.report.jooxml.repexecutor;
 
-import java.util.stream.Stream;
-
 /**
  * Describes step in report execution.
  * Steps are immutable classes that form report definition and support report processing. Implementations of this
@@ -35,9 +33,9 @@ public interface ReportStep {
      * Get step processor for given step and specified context
      *
      * @param stepContext is context step processor will get assigned
-     * @param parentRegion is execution region address of parent processor; new processor should create its own region
-     *                  reference and add it to this execution region
+     * @param parentRegionContext is execution region context of parent processor; new processor should create its own
+     *                           region reference and add it to parent execution region
      * @return step processor that will represent this step in processing pipeline
      */
-    StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion);
+    StepProcessor getProcessor(StepContext stepContext, ExecRegionContext parentRegionContext);
 }

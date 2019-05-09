@@ -1,6 +1,9 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
+import com.provys.report.jooxml.repexecutor.CellPathReplacer;
+import com.provys.report.jooxml.repexecutor.ExecRegionContext;
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellReference;
@@ -10,6 +13,7 @@ import com.provys.report.jooxml.workbook.CellValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -66,8 +70,13 @@ class TemplateCellWithBind implements AreaCell {
 
     @Nonnull
     @Override
-    public CellValue getEffectiveValue(DataRecord data) {
-        return (bindColumn != null) ? data.getCellValue(bindColumn, getCellType()) : cell.getCellValue();
+    public CellValue getEffectiveValue(DataRecord data, ExecRegionContext execRegionContext,
+                                       CellPathReplacer cellPathReplacer) {
+        var cellValue = (bindColumn != null) ? data.getCellValue(bindColumn, getCellType()) : cell.getCellValue();
+        if (cellValue.getCellType() == CellType.FORMULA) {
+            cellValue = cellPathReplacer.encode(cellValue, getReferenceMap(), execRegionContext);
+        }
+        return cellValue;
     }
 
     @Nonnull
@@ -84,7 +93,7 @@ class TemplateCellWithBind implements AreaCell {
 
     @Nonnull
     @Override
-    public Collection<CellReference> getCellReferences() {
-        return cell.getCellReferences();
+    public Map<String, AreaCellPath> getReferenceMap() {
+        return null;
     }
 }

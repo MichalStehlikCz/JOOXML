@@ -27,4 +27,26 @@ public class CellPathRegion implements CellPath {
     String getRegionNm() {
         return regionNm;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CellPathRegion)) return false;
+        CellPathRegion that = (CellPathRegion) o;
+        return getChildPath().equals(that.getChildPath()) &&
+                getRegionNm().equals(that.getRegionNm());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getChildPath(), getRegionNm());
+    }
+
+    @Override
+    public String toString() {
+        return "CellPathRegion{" +
+                "childPath=" + childPath +
+                ", regionNm='" + regionNm + '\'' +
+                '}';
+    }
 }

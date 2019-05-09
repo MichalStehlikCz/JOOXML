@@ -18,4 +18,24 @@ public class CellPathCell implements CellPath {
     CellReference getCellReference() {
         return cell;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CellPathCell)) return false;
+        CellPathCell that = (CellPathCell) o;
+        return cell.equals(that.cell);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cell);
+    }
+
+    @Override
+    public String toString() {
+        return "CellPathCell{" +
+                "cell=" + cell +
+                '}';
+    }
 }

@@ -1,9 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.AreaCellPath;
-import com.provys.report.jooxml.repexecutor.CellPath;
-import com.provys.report.jooxml.repexecutor.CellPathCell;
-import com.provys.report.jooxml.repexecutor.ExecRegion;
+import com.provys.report.jooxml.repexecutor.*;
 import com.provys.report.jooxml.workbook.CellReference;
 
 import javax.annotation.Nonnull;
@@ -20,7 +17,7 @@ public class AreaCellPathCell implements AreaCellPath {
 
     @Nonnull
     @Override
-    public Optional<CellPath> getCellPath(ExecRegion execRegion) {
+    public Optional<CellPath> getCellPath(ExecRegionContext execRegionContext) {
         return Optional.of(new CellPathCell(cell));
     }
 }

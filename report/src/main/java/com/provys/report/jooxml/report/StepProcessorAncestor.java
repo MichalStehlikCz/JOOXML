@@ -1,9 +1,6 @@
 package com.provys.report.jooxml.report;
 
-import com.provys.report.jooxml.repexecutor.ExecRegion;
-import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.repexecutor.StepContext;
-import com.provys.report.jooxml.repexecutor.StepProcessor;
+import com.provys.report.jooxml.repexecutor.*;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -15,12 +12,12 @@ abstract class StepProcessorAncestor<T extends ReportStep> implements StepProces
     @Nonnull
     private final T step;
     @Nonnull
-    private final ExecRegion execRegion;
+    private final ExecRegionContext execRegionContext;
 
-    StepProcessorAncestor(T step, StepContext stepContext, ExecRegion execRegion) {
+    StepProcessorAncestor(T step, StepContext stepContext, ExecRegionContext execRegionContext) {
         this.step = Objects.requireNonNull(step);
         this.stepContext = Objects.requireNonNull(stepContext);
-        this.execRegion = Objects.requireNonNull(execRegion);
+        this.execRegionContext = Objects.requireNonNull(execRegionContext);
     }
 
     /**
@@ -41,11 +38,19 @@ abstract class StepProcessorAncestor<T extends ReportStep> implements StepProces
     }
 
     /**
-     * @return execution region for this step processor
+     * @return execution region context for this step processor
+     */
+    @Nonnull
+    ExecRegionContext getExecRegionContext() {
+        return execRegionContext;
+    }
+
+    /**
+     * @return execution region for this step processor (taken from execution region context)
      */
     @Nonnull
     ExecRegion getExecRegion() {
-        return execRegion;
+        return execRegionContext.getExecRegion();
     }
 
     @Override

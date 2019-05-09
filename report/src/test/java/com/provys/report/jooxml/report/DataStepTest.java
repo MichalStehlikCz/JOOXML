@@ -1,10 +1,7 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
-import com.provys.report.jooxml.repexecutor.ExecRegion;
-import com.provys.report.jooxml.repexecutor.ReportStep;
-import com.provys.report.jooxml.repexecutor.StepContext;
-import com.provys.report.jooxml.repexecutor.StepProcessor;
+import com.provys.report.jooxml.repexecutor.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,7 +23,7 @@ class DataStepTest {
 
         @Nonnull
         @Override
-        public StepProcessor getProcessor(StepContext stepContext, ExecRegion parentRegion) {
+        public StepProcessor getProcessor(StepContext stepContext, ExecRegionContext parentRegionContext) {
             throw new RuntimeException("Method not implemented");
         }
     }

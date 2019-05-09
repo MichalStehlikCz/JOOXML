@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.DataRecord;
+import com.provys.report.jooxml.repexecutor.CellPathReplacer;
+import com.provys.report.jooxml.repexecutor.ExecRegionContext;
 import com.provys.report.jooxml.tplworkbook.TplCell;
 import com.provys.report.jooxml.workbook.CellProperties;
 import com.provys.report.jooxml.workbook.CellReference;
@@ -48,8 +50,10 @@ class TemplateCellWithBindTest {
         var cellValue = mock(CellValue.class);
         when(dataRecord.getCellValue("COLUMN", CellType.STRING)).thenReturn(cellValue);
         when(tplCell.getCellValue()).thenReturn(cellValue);
-        assertThat(new TemplateCellWithBind(0, tplCell, "COLUMN").getEffectiveValue(dataRecord)).
-                isEqualTo(cellValue);
+        var execRegionContext = mock(ExecRegionContext.class);
+        var cellPathReplacer = mock(CellPathReplacer.class);
+        assertThat(new TemplateCellWithBind(0, tplCell, "COLUMN").
+                getEffectiveValue(dataRecord, execRegionContext, cellPathReplacer)).isEqualTo(cellValue);
     }
 
     @Test
@@ -58,8 +62,10 @@ class TemplateCellWithBindTest {
         var cellValue = mock(CellValue.class);
         var dataRecord = mock(DataRecord.class);
         when(tplCell.getCellValue()).thenReturn(cellValue);
-        assertThat(new TemplateCellWithBind(0, tplCell, null).getEffectiveValue(dataRecord)).
-                isEqualTo(cellValue);
+        var execRegionContext = mock(ExecRegionContext.class);
+        var cellPathReplacer = mock(CellPathReplacer.class);
+        assertThat(new TemplateCellWithBind(0, tplCell, null).
+                getEffectiveValue(dataRecord, execRegionContext, cellPathReplacer)).isEqualTo(cellValue);
     }
 
     @Test
@@ -79,14 +85,5 @@ class TemplateCellWithBindTest {
         var tplCell = mock(TplCell.class);
         assertThat(new TemplateCellWithBind(0, tplCell, null).getBindColumn()).isEmpty();
         assertThat(new TemplateCellWithBind(2, tplCell, "TEST").getBindColumn()).contains("TEST");
-    }
-
-    @Test
-    void getCellReferencesTest() {
-        var tplCell = mock(TplCell.class);
-        var cellReference = mock(CellReference.class);
-        when(tplCell.getCellReferences()).thenReturn(Collections.singletonList(cellReference));
-        assertThat(new TemplateCellWithBind(0, tplCell, null).getCellReferences()).
-                containsExactly(cellReference);
     }
 }

@@ -1,5 +1,7 @@
 package com.provys.report.jooxml.repworkbook;
 
+import com.provys.report.jooxml.repexecutor.ExecRegion;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,7 +30,8 @@ public interface RepWorkbook extends Closeable {
      * Write workbook to supplied output stream.
      *
      * @param stream is outpus stream workbook should be written to
+     * @param execRegion is map of regions written to worksheet. Used to resolve formula cell references
      * @throws IOException if any problem happens writing to output stream
      */
-    void write(OutputStream stream) throws IOException;
+    void write(OutputStream stream, ExecRegion execRegion) throws IOException;
 }

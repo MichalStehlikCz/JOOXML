@@ -29,6 +29,12 @@ public class RepExecutor {
     /** Cell value factory used to create cell values during report execution */
     @Nonnull
     private final CellValueFactory cellValueFactory;
+    /**
+     *  Cell path replacer replaces cell references with path expressions and then decodes them back to valid cell
+     *  references in generated workbook
+     */
+    @Nonnull
+    private final CellPathReplacer cellPathReplacer;
     @Nonnull
     private final ProvysDbContext dbContext;
     private Report report;
@@ -36,12 +42,14 @@ public class RepExecutor {
     private List<Parameter> parameters = new ArrayList<>(0);
     private String dbToken;
 
-    @SuppressWarnings("CdiInjectionPointsInspection") // implementations are supplied from libraries
+    @SuppressWarnings({"CdiInjectionPointsInspection", "CdiUnproxyableBeanTypesInspection"})
+    // implementations are supplied from libraries
     @Inject
     public RepExecutor(RepWorkbookFactory repWorkBookFactory, CellValueFactory cellValueFactory,
-                       ProvysDbContext dbContext) {
+                       CellPathReplacer cellPathReplacer, ProvysDbContext dbContext) {
         this.repWorkBookFactory = Objects.requireNonNull(repWorkBookFactory);
         this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+        this.cellPathReplacer = Objects.requireNonNull(cellPathReplacer);
         this.dbContext = Objects.requireNonNull(dbContext);
     }
 
@@ -51,6 +59,14 @@ public class RepExecutor {
     @Nonnull
     CellValueFactory getCellValueFactory() {
         return cellValueFactory;
+    }
+
+    /**
+     * @return value of field cellPathReplacer
+     */
+    @Nonnull
+    public CellPathReplacer getCellPathReplacer() {
+        return cellPathReplacer;
     }
 
     @Nonnull
@@ -129,12 +145,11 @@ public class RepExecutor {
         }
     }
 
-    @Nonnull
-    private void writeWorkbook(RepWorkbook workbook) {
+    private void writeWorkbook(RepWorkbook workbook, ExecRegion execRegion) {
         LOG.info("WriteWorkbook: Write workbook to file {}", getTargetFile());
         try (OutputStream stream = Files.newOutputStream(getTargetFile().toPath(),
                 StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-            workbook.write(stream);
+            workbook.write(stream, execRegion);
         } catch (IOException ex) {
             LOG.error("WriteWorkbook: IO error writing workbook {} {}", getTargetFile(), ex);
             throw new RuntimeException("IO error writing workbook", ex);
@@ -142,7 +157,8 @@ public class RepExecutor {
     }
 
     public void run() {
-        try (ReportContext reportContext = new ReportContext(getParameters(), getCellValueFactory());
+        try (ReportContext reportContext = new ReportContext(getParameters(), getCellValueFactory(),
+                getCellPathReplacer());
              RepWorkbook workbook = readWorkbook();
              DSLContext dslContext = dbContext.createDSL(dbToken)) {
             reportContext.open(workbook, dslContext);
@@ -150,14 +166,15 @@ public class RepExecutor {
                     , new ContextCoordinates(workbook.getSheet(), 0, 0));
             var execRegion = new ExecRegionRoot();
             Stream<StepProcessor> pipeline
-                    = Stream.of(getReport().getRootStep().getProcessor(stepContext, execRegion));
+                    = Stream.of(getReport().getRootStep().getProcessor(stepContext,
+                    new ExecRegionContext(null, execRegion)));
             // we add necessary number of step processor expansions to pipeline
             for (int i = getReport().getRootStep().getNeededProcessorApplications(); i > 0; i--) {
                 pipeline = pipeline.flatMap(StepProcessor::apply);
             }
             // and once only terminal steps remain, we execute them
             pipeline.forEachOrdered(StepProcessor::execute);
-            writeWorkbook(workbook);
+            writeWorkbook(workbook, execRegion);
         } catch (IOException ex) {
             LOG.error("Workbook: IO error running report {}", ex);
             throw new RuntimeException("IO error running report", ex);
