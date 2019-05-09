@@ -38,7 +38,7 @@ class SheetNameFormatterTest {
     @ParameterizedTest
     @MethodSource
     void getREGEXPTest(String sheetString, boolean match) {
-        Matcher matcher = Pattern.compile(SheetNameFormatter.REGEXP).matcher(sheetString);
+        Matcher matcher = Pattern.compile(SheetNameFormatter.REGEX).matcher(sheetString);
         assertThat(matcher.matches()).isEqualTo(match);
     }
 

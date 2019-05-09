@@ -18,10 +18,10 @@ public class SheetNameFormatter {
     private static final char SPECIAL_NAME_DELIMITER = '\'';
     /** Regexp for sheet name without escaping */
     @Nonnull
-    private static final String NO_ESCAPE_REGEXP = "[a-zA-Z][0-9a-zA-Z._]*";
+    private static final String NO_ESCAPE_REGEX = "[a-zA-Z][0-9a-zA-Z._]*";
     /** Pattern for matching of sheet name without escaping */
     @Nonnull
-    private static final Pattern NO_ESCAPE_PATTERN = Pattern.compile(NO_ESCAPE_REGEXP);
+    private static final Pattern NO_ESCAPE_PATTERN = Pattern.compile(NO_ESCAPE_REGEX);
     /** Pattern for matching cell address - used to decide if escaping is to be used */
     @Nonnull
     private static final Pattern CELL_ADDRESS_PATTERN = Pattern.compile("[$]?" + ColumnFormatter.REGEX + "[$]?" +
@@ -31,7 +31,7 @@ public class SheetNameFormatter {
      * string
      */
     @Nonnull
-    public static final String REGEXP = "(?:" + NO_ESCAPE_REGEXP + ")" +
+    public static final String REGEX = "(?:" + NO_ESCAPE_REGEX + ")" +
             "|(?:" + SPECIAL_NAME_DELIMITER +
             "(?:[^" + SPECIAL_NAME_DELIMITER + "]|" + SPECIAL_NAME_DELIMITER + SPECIAL_NAME_DELIMITER + ")+" +
             SPECIAL_NAME_DELIMITER + ")";

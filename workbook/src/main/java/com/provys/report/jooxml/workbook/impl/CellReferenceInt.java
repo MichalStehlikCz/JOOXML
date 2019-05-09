@@ -20,7 +20,7 @@ class CellReferenceInt extends CellAddressInt implements CellReference {
      * Sheet reference is optional, column and row references are mandatory.
      */
     @Nonnull
-    static final String REGEX = "(?:(?:" + SheetNameFormatter.REGEXP + ')'
+    static final String REGEX = "(?:(?:" + SheetNameFormatter.REGEX + ')'
             + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?" + "[$]?" + ColumnFormatter.REGEX + "[$]?"
             + RowFormatter.REGEX;
 
@@ -28,7 +28,7 @@ class CellReferenceInt extends CellAddressInt implements CellReference {
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
     @Nonnull
-    private static final String PARSE_REGEX = "(?:(" + SheetNameFormatter.REGEXP + ")" +
+    private static final String PARSE_REGEX = "(?:(" + SheetNameFormatter.REGEX + ")" +
             SheetNameFormatter.SHEET_NAME_DELIMITER + ")?([$])?(" + ColumnFormatter.REGEX + ")([$])?(" +
             RowFormatter.REGEX + ')';
     @Nonnull

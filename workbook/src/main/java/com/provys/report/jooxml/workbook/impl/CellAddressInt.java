@@ -18,7 +18,7 @@ public class CellAddressInt implements CellAddress {
      * Sheet reference is optional, column and row references are mandatory.
      */
     @Nonnull
-    static final String REGEX = "(?:(?:" + SheetNameFormatter.REGEXP + ')' + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?"
+    static final String REGEX = "(?:(?:" + SheetNameFormatter.REGEX + ')' + SheetNameFormatter.SHEET_NAME_DELIMITER + ")?"
             + ColumnFormatter.REGEX + RowFormatter.REGEX;
 
     /**
@@ -26,7 +26,7 @@ public class CellAddressInt implements CellAddress {
      *
      * Sheet reference is group 1, run of letters is group 2 and the run of digits is group 3.
      */
-    private static final @Nonnull String PARSE_REGEX = "(?:(" + SheetNameFormatter.REGEXP + ")" +
+    private static final @Nonnull String PARSE_REGEX = "(?:(" + SheetNameFormatter.REGEX + ")" +
             SheetNameFormatter.SHEET_NAME_DELIMITER + ")?(" + ColumnFormatter.REGEX + ")(" + RowFormatter.REGEX + ')';
     private static final @Nonnull Pattern PARSE_PATTERN = Pattern.compile(PARSE_REGEX);
 
