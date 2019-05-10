@@ -1,9 +1,8 @@
 package com.provys.report.jooxml.tplworkbook.impl;
 
 import com.provys.report.jooxml.tplworkbook.TplCell;
-import com.provys.report.jooxml.tplworkbook.TplRow;
 import com.provys.report.jooxml.workbook.*;
-import com.provys.report.jooxml.workbook.impl.*;
+import com.provys.report.jooxml.workbook.impl.CellPropertiesInt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,53 +10,45 @@ import org.apache.poi.ss.usermodel.Cell;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 class TXSSFCell implements TplCell {
 
-    private static final Logger LOG = LogManager.getLogger(TXSSFCell.class.getName());
+    private static final Logger LOG = LogManager.getLogger(TXSSFCell.class);
     @Nonnull
     private final TXSSFRow row;
     private final int colIndex;
     @Nonnull
     private final CellValue value;
-    @Nonnull
-    private final Map<String, CellReference> referenceMap;
     @Nullable
     private final CellProperties properties;
 
     TXSSFCell(TXSSFRow row, Cell cell) {
         this.row = Objects.requireNonNull(row);
         this.colIndex = cell.getColumnIndex();
+        var cellValueFactory = row.getSheet().getWorkbook().getCellValueFactory();
         switch (cell.getCellType()) {
             case FORMULA:
-                this.value = CellValueFormula.of(cell.getCellFormula());
-                this.referenceMap = new ConcurrentHashMap<>();
+                this.value = cellValueFactory.ofFormula(cell.getCellFormula());
                 break;
             case STRING:
-                this.value = CellValueString.of(cell.getStringCellValue());
-                this.referenceMap = Collections.emptyMap();
+                this.value = cellValueFactory.ofString(cell.getStringCellValue());
                 break;
             case NUMERIC:
-                this.value = CellValueNumeric.of(cell.getNumericCellValue());
-                this.referenceMap = Collections.emptyMap();
+                this.value = cellValueFactory.ofNumeric(cell.getNumericCellValue());
                 break;
             case BOOLEAN:
-                this.value = CellValueBoolean.of(cell.getBooleanCellValue());
-                this.referenceMap = Collections.emptyMap();
+                this.value = cellValueFactory.ofBoolean(cell.getBooleanCellValue());
                 break;
             case ERROR:
-                this.value = CellValueError.of(cell.getErrorCellValue());
-                this.referenceMap = Collections.emptyMap();
+                this.value = cellValueFactory.ofError(cell.getErrorCellValue());
                 break;
             case BLANK:
-                this.value = CellValueBlank.get();
-                this.referenceMap = Collections.emptyMap();
+                this.value = cellValueFactory.getBlank();
                 break;
             default:
                 LOG.warn("TXSSFCell: Unexpected cell type in base template {}", cell.getCellType());
-                this.value = CellValueBlank.get();
-                this.referenceMap = Collections.emptyMap();
+                this.value = cellValueFactory.getBlank();
         }
         Integer styleIndex = ((cell.getCellStyle() == null) ? null : (int) cell.getCellStyle().getIndex());
         if (styleIndex != null) {
@@ -104,7 +95,19 @@ class TXSSFCell implements TplCell {
     @Nonnull
     @Override
     public Map<String, CellReference> getReferenceMap() {
-        return Collections.unmodifiableMap(referenceMap);
+        if (value.getCellType() != CellType.FORMULA) {
+            return Collections.emptyMap();
+        }
+        var cellReferenceFactory = row.getSheet().getWorkbook().getCellReferenceFactory();
+        var cellReferencePattern = Pattern.compile(cellReferenceFactory.getRegex());
+        var matcher = cellReferencePattern.matcher(value.getFormula());
+        Map<String, CellReference> referenceMap = null;
+        while (matcher.find()) {
+            if (referenceMap == null) {
+                referenceMap = new HashMap<>();
+            }
+            referenceMap.computeIfAbsent(matcher.group(0), cellReferenceFactory::parse);
+        }
+        return (referenceMap == null) ? Collections.emptyMap() : referenceMap;
     }
-
 }

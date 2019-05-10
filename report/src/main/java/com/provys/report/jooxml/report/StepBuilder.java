@@ -1,8 +1,10 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -68,6 +70,16 @@ interface StepBuilder {
      * @param dataSources is map of data-sources in report, might be used for data source validation
      */
     void validate(Map<String, ReportDataSource> dataSources);
+
+    /**
+     * Evaluate path with structure that will correspond to {@link com.provys.report.jooxml.repexecutor.ExecRegion} map
+     * during execution; used in reference translation.
+     *
+     * @param cellReference is cell reference being translated
+     * @return path that can be used to translate this reference during report execution
+     */
+    @Nonnull
+    Optional<AreaCellPath> getPath(CellReference cellReference);
 
     /**
      * Do actual build of step.

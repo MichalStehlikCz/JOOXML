@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import javax.inject.Singleton;
 
 @Singleton
-class CellReferenceFactoryImpl implements CellReferenceFactory {
+public class CellReferenceFactoryImpl implements CellReferenceFactory {
 
     @Nonnull
     @Override

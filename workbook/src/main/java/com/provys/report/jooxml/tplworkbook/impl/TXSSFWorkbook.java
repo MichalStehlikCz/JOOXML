@@ -4,6 +4,8 @@ import com.provys.report.jooxml.repexecutor.RepExecutor;
 import com.provys.report.jooxml.tplworkbook.TplSheet;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
+import com.provys.report.jooxml.workbook.CellReferenceFactory;
+import com.provys.report.jooxml.workbook.CellValueFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -30,12 +32,20 @@ class TXSSFWorkbook implements TplWorkbook {
 
     private static final Logger LOG = LogManager.getLogger(RepExecutor.class.getName());
 
+    @Nonnull
     private final CellCoordinatesFactory cellCoordinatesFactory;
+    @Nonnull
+    private final CellValueFactory cellValueFactory;
+    @Nonnull
+    private final CellReferenceFactory cellReferenceFactory;
     private final Workbook workbook;
     private final List<TplSheet> sheets;
 
-    TXSSFWorkbook(InputStream stream, CellCoordinatesFactory cellCoordinatesFactory) throws IOException {
+    TXSSFWorkbook(InputStream stream, CellCoordinatesFactory cellCoordinatesFactory, CellValueFactory cellValueFactory,
+                  CellReferenceFactory cellReferenceFactory) throws IOException {
         this.cellCoordinatesFactory = Objects.requireNonNull(cellCoordinatesFactory);
+        this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+        this.cellReferenceFactory = Objects.requireNonNull(cellReferenceFactory);
         this.workbook = new XSSFWorkbook(stream);
         this.sheets = initSheets(this.workbook);
     }
@@ -55,6 +65,22 @@ class TXSSFWorkbook implements TplWorkbook {
     @Nonnull
     CellCoordinatesFactory getCellCoordinatesFactory() {
         return cellCoordinatesFactory;
+    }
+
+    /**
+     * @return value of field cellValueFactory
+     */
+    @Nonnull
+    CellValueFactory getCellValueFactory() {
+        return cellValueFactory;
+    }
+
+    /**
+     * @return value of field cellReferenceFactory
+     */
+    @Nonnull
+    CellReferenceFactory getCellReferenceFactory() {
+        return cellReferenceFactory;
     }
 
     @Override

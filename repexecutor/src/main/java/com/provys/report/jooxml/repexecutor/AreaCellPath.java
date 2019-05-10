@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface AreaCellPath {
 
     /**
-     * Retrieve path (absolute, with resolved references to lines in repeater areas), corresponding to given area cell
+     * Retrieve path (absolute - with resolved references to lines in repeater areas), corresponding to given area cell
      * path in context of data addressed by execution region being currently processed. It assumes that area path is
      * valid for given context (e.g. in case of repeaters, it can only use absolute addressing for repeaters not being
      * on the stack). It returns empty optional if resulting address is invalid (e.g. in case relative addressing is
@@ -21,13 +21,13 @@ public interface AreaCellPath {
      * numbers for areas that are ahead of current region - these line numbers are evaluated as result of arithmetic
      * expression and not validated against region
      *
-     * @param execRegionContext is region being processed; lines in repeater records with relative position are
+     * @param execRegionPath is region being processed; lines in repeater records with relative position are
      *                         evaluated against this region
      * @return absolute path corresponding to this cell and current region
      * @throws RuntimeException if there is relative line number that does not correspond to repeater in current
      * execution region
      */
     @Nonnull
-    Optional<CellPath> getCellPath(ExecRegionContext execRegionContext);
+    Optional<CellPath> getCellPath(ExecRegionPath execRegionPath);
 }
 

@@ -19,6 +19,8 @@ package com.provys.report.jooxml.tplworkbook.impl;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.tplworkbook.TplWorkbookFactory;
 import com.provys.report.jooxml.workbook.CellCoordinatesFactory;
+import com.provys.report.jooxml.workbook.CellReferenceFactory;
+import com.provys.report.jooxml.workbook.CellValueFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -34,18 +36,25 @@ public class TXSSFWorkbookFactory implements TplWorkbookFactory {
 
     @Nonnull
     private final CellCoordinatesFactory cellCoordinatesFactory;
+    @Nonnull
+    private final CellValueFactory cellValueFactory;
+    @Nonnull
+    private final CellReferenceFactory cellReferenceFactory;
 
     @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
     @Inject
-    TXSSFWorkbookFactory(CellCoordinatesFactory cellCoordinatesFactory) {
+    TXSSFWorkbookFactory(CellCoordinatesFactory cellCoordinatesFactory, CellValueFactory cellValueFactory,
+                         CellReferenceFactory cellReferenceFactory) {
         this.cellCoordinatesFactory = Objects.requireNonNull(cellCoordinatesFactory);
+        this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
+        this.cellReferenceFactory = Objects.requireNonNull(cellReferenceFactory);
     }
 
     @Override
     @Nonnull
     public TplWorkbook get(File template) throws IOException {
         try (var templateStream = new FileInputStream(template)) {
-            return new TXSSFWorkbook(templateStream, cellCoordinatesFactory);
+            return new TXSSFWorkbook(templateStream, cellCoordinatesFactory, cellValueFactory, cellReferenceFactory);
         }
     }
 }

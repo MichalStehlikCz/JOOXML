@@ -67,4 +67,25 @@ public class ExecRegionContext {
     public ExecRegionContext addTable(String nameNm) {
         return new ExecRegionContext(this, getExecRegion().addTable(nameNm));
     }
+
+    /**
+     * Retrieve path corresponding to this execution region context with appended child.
+     *
+     * @param child is path to be appended to one retrieved from this execution region context
+     * @return execution region path from root to this region plus supplied child path
+     */
+    private ExecRegionPath getPath(@Nullable ExecRegionPath child) {
+        var execRegionPath = new ExecRegionPath(this.execRegion, child);
+        return (parent == null) ? execRegionPath : parent.getPath(execRegionPath);
+    }
+
+    /**
+     * Retrieve path corresponding to this region context. Path is similar to execution region context, but with
+     * pointers going in reverse direction
+     *
+     * @return execution region path from root to this region
+     */
+    public ExecRegionPath getPath() {
+        return getPath(null);
+    }
 }

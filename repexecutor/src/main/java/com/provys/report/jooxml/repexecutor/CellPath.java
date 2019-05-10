@@ -5,6 +5,4 @@ package com.provys.report.jooxml.repexecutor;
  * actually populates cell with record number in each region; on lowest level, it keeps CellReference with row and
  * column indices relative to paths region.
  */
-public interface CellPath {
-
-}
+public interface CellPath {}
