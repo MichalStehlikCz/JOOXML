@@ -1,9 +1,11 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
 import com.provys.report.jooxml.workbook.CellCoordinates;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,6 +41,14 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
     @Override
     public String proposeChildName(StepBuilder child) {
         throw new RuntimeException("Cell area doesn't have any children");
+    }
+
+    @Nonnull
+    @Override
+    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+        return Optional.of(new AreaCellPathCell(cellReference.shiftBy(-getEffFirstRow().orElseThrow(
+                () -> new RuntimeException("Cannot evaluate cell path - first row of cell area not known")),
+                0)));
     }
 
     /**

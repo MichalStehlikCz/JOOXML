@@ -56,4 +56,12 @@ public class ExecRegionTable extends ExecRegionBase {
         records.add(subRegion);
         return subRegion;
     }
+
+    /**
+     * @param child is child execution region we want to find position of
+     * @return position of child region in this table, -1 if child region is not found
+     */
+    public int getIndexOf(ExecRegion child) {
+        return records.indexOf(child);
+    }
 }

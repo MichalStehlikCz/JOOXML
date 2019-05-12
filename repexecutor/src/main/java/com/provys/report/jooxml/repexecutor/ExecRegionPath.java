@@ -2,6 +2,7 @@ package com.provys.report.jooxml.repexecutor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Class represents path from root ExecRegion to one currently processed. It is basically reverse version of
@@ -29,8 +30,8 @@ public class ExecRegionPath {
     /**
      * @return value of field child
      */
-    @Nullable
-    public ExecRegionPath getChild() {
-        return child;
+    @Nonnull
+    public Optional<ExecRegionPath> getChild() {
+        return Optional.ofNullable(child);
     }
 }

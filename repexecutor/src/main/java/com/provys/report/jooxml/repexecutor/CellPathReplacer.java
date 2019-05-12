@@ -101,14 +101,16 @@ public class CellPathReplacer {
      * @return formula with serialized CellPath expressions
      */
     @Nullable
+    @SuppressWarnings("squid:S3655") // Sonar does not underestand Optional.isEmpty
     private String encode(@Nullable String formula, Map<String, AreaCellPath> referenceMap,
                          ExecRegionContext execRegionContext) {
         if ((formula == null) || referenceMap.isEmpty()) {
             return formula;
         }
         var result = formula;
+        var execRegionPath = execRegionContext.getPath();
         for (var reference : referenceMap.entrySet()) {
-            var cellPath = reference.getValue().getCellPath(execRegionContext);
+            var cellPath = reference.getValue().getCellPath(execRegionPath);
             if (cellPath.isEmpty()) {
                 // invalid reference - we prefer to remove formula rather than leave invalid formula
                 return null;

@@ -1,8 +1,10 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellReference;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -34,6 +36,12 @@ class RowRegionBuilderTest {
         @Nonnull
         @Override
         public String proposeChildName(StepBuilder child) {
+            throw new RuntimeException("Not implemented");
+        }
+
+        @Nonnull
+        @Override
+        public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
             throw new RuntimeException("Not implemented");
         }
 

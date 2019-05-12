@@ -1,8 +1,10 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,7 +55,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
      * @return value of field dataSourceName
      */
     @Nonnull
-    public Optional<String> getDataSourceName() {
+    Optional<String> getDataSourceName() {
         return Optional.ofNullable(dataSourceName);
     }
 
@@ -84,6 +86,58 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
             throw new RuntimeException("Root region cannot be queried for datasource until validation");
         }
         return dataSource;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+        if (firstBodyRow == null) {
+            throw new RuntimeException("Cannot evaluate cell path - first body row not known");
+        }
+        if (lastBodyRow == null) {
+            throw new RuntimeException("Cannot evaluate cell path - last body row not known");
+        }
+        if (child == null) {
+            throw new RuntimeException("Cannot evaluate cell path - child not known");
+        }
+        if (fromArea.isAncestor(this)) {
+            // from area is descendant of this builder -> we build relative reference
+            var row = cellReference.getRow();
+            int recordNr;
+            if (row < firstBodyRow) {
+                recordNr = (row - lastBodyRow) / (lastBodyRow - firstBodyRow + 1);
+            } else if (row > lastBodyRow) {
+                recordNr = (row - firstBodyRow) / (lastBodyRow - firstBodyRow + 1);
+            } else {
+                recordNr = 0;
+            }
+            var newCellReference = cellReference.shiftBy(recordNr * (lastBodyRow - firstBodyRow + 1), 0);
+            return child.getPath(fromArea, newCellReference).
+                    map(childPath -> new AreaCellPathRelativeRecord(childPath, recordNr));
+        } else {
+            // from area is not descendant of this builder -> we build absolute reference
+            var row = cellReference.getRow();
+            int recordNr;
+            CellReference newCellReference;
+            if (row < firstBodyRow) {
+                // absolute reference from start
+                var effFirstRow = getEffFirstRow().orElseThrow(
+                        () -> new RuntimeException("Cannot evaluate relative cell path - effective first row now known"));
+                recordNr = (row - effFirstRow) / (lastBodyRow - firstBodyRow + 1);
+                newCellReference = cellReference.shiftBy((firstBodyRow - effFirstRow), 0);
+            } else if (row > lastBodyRow) {
+                // absolute reference from end
+                var effLastRow = getEffLastRow().orElseThrow(
+                        () -> new RuntimeException("Cannot evaluate relative cell path - effective last row now known"));
+                recordNr = (row - effLastRow) / (lastBodyRow - firstBodyRow + 1) - 1;
+                newCellReference = cellReference.shiftBy((lastBodyRow - effLastRow), 0);
+            } else {
+                throw new RuntimeException("Cannot set cell reference from outside of repeater to body (from "
+                        + fromArea + " to cell " + cellReference);
+            }
+            return child.getPath(fromArea, newCellReference).
+                    map(childPath -> new AreaCellPathAbsoluteRecord(childPath, recordNr));
+        }
     }
 
     /**

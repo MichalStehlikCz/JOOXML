@@ -55,4 +55,9 @@ public class ExecRegionRegion extends ExecRegionBase {
         addSubRegion(table);
         return table;
     }
+
+    @Nonnull
+    public Optional<ExecRegion> getSubRegion(String nameNm) {
+        return Optional.ofNullable(subRegions.get(nameNm));
+    }
 }

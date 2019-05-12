@@ -32,6 +32,17 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
 
     @Override
     @Nonnull
+    public StepBuilder getRoot() {
+        return getParent().map(StepBuilder::getRoot).orElse(this);
+    }
+
+    @Override
+    public boolean isAncestor(StepBuilder step) {
+        return getParent().map(p -> p.isAncestor(step)).orElse(false);
+    }
+
+    @Override
+    @Nonnull
     public Optional<String> getNameNm() {
         return Optional.ofNullable(nameNm);
     }

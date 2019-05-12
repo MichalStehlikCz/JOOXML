@@ -7,7 +7,6 @@ import com.provys.report.jooxml.repexecutor.ExecRegionContext;
 import com.provys.report.jooxml.workbook.*;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 

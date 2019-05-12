@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.repexecutor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -19,15 +20,18 @@ public interface AreaCellPath {
      * used in repeater and resulting line number would be negative). On the other hand it is expected that evaluation
      * is done during evaluation of area containing cell with reference and thus it is not possible to validate line
      * numbers for areas that are ahead of current region - these line numbers are evaluated as result of arithmetic
-     * expression and not validated against region
+     * expression and not validated against region.
      *
      * @param execRegionPath is region being processed; lines in repeater records with relative position are
-     *                         evaluated against this region
+     *                         evaluated against this region. It might be unspecified if reference goes to subregions of
+     *                       current region or if on one of higher level repeaters, reference has gone to other than
+     *                       current line (absolute record reference or relative record reference with offset other than
+     *                       0) or path has gone to different region
      * @return absolute path corresponding to this cell and current region
      * @throws RuntimeException if there is relative line number that does not correspond to repeater in current
-     * execution region
+     * path
      */
     @Nonnull
-    Optional<CellPath> getCellPath(ExecRegionPath execRegionPath);
+    Optional<CellPath> getCellPath(@Nullable ExecRegionPath execRegionPath);
 }
 

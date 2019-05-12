@@ -1,8 +1,10 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,6 +64,26 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
             throw new IllegalArgumentException("Can only propose internal name for child");
         }
         return child.getDefaultNameNmPrefix() + index;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+        final var cellRow = cellReference.getRow();
+        StepBuilder childForRow = children.stream().
+                filter(child -> ((cellRow >= child.getEffFirstRow().orElseThrow(
+                        () -> new RuntimeException(
+                                "Cannot evaluate cell path - child effective first row not known " + child))) &&
+                        (cellRow <= child.getEffFirstRow().orElseThrow(
+                                () -> new RuntimeException(
+                                        "Cannot evaluate cell path - child effective last row not known " + child))))).
+                findFirst().
+                orElseThrow(() -> new RuntimeException(
+                        "Cannot evaluate cell path - child not found " + this + " for reference " + cellReference));
+        return childForRow.getPath(fromArea, cellReference).
+                map(childPath -> new AreaCellPathRegion(childForRow.getNameNm().orElseThrow(
+                        () -> new RuntimeException("Cannot evaluate cell path - child name not known " + childForRow)),
+                        childPath));
     }
 
     @Nonnull

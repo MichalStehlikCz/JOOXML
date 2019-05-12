@@ -20,6 +20,17 @@ interface StepBuilder {
     Optional<StepBuilder> getParent();
 
     /**
+     * @return root builder (e.g. iterate parents until one is found that has no parent
+     */
+    @Nonnull
+    StepBuilder getRoot();
+
+    /**
+     * @return true if specified step builder is ancestor of this region, false otherwise
+     */
+    boolean isAncestor(StepBuilder step);
+
+    /**
      * @return internal name of step builder
      */
     @Nonnull
@@ -75,11 +86,13 @@ interface StepBuilder {
      * Evaluate path with structure that will correspond to {@link com.provys.report.jooxml.repexecutor.ExecRegion} map
      * during execution; used in reference translation.
      *
+     * @param fromArea is area cell containing reference belongs to. Might be used to decide if reference to row should
+     *                 be absolute or relative
      * @param cellReference is cell reference being translated
      * @return path that can be used to translate this reference during report execution
      */
     @Nonnull
-    Optional<AreaCellPath> getPath(CellReference cellReference);
+    Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference);
 
     /**
      * Do actual build of step.

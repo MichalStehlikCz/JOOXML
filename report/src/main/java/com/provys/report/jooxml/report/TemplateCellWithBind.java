@@ -12,10 +12,7 @@ import com.provys.report.jooxml.workbook.CellValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Represents cell from template workbook. Has coordinates relative to its parent region and holds reference to
@@ -27,9 +24,20 @@ class TemplateCellWithBind implements AreaCell {
                                    // template cell as long as we do not have column regions, but...
     @Nonnull
     private final TplCell cell;
+    @Nonnull
+    private final Map<String, AreaCellPath> referenceMap;
     @Nullable
     private final String bindColumn;
 
+    private static Map<String, AreaCellPath> calcReferenceMap(Map<String, CellReference> tplReferenceMap,
+                                                              StepBuilder stepBuilder) {
+        var result = new HashMap<String, AreaCellPath>();
+        var rootStepBuilder = stepBuilder.getRoot();
+        for (var entry : tplReferenceMap.entrySet()) {
+            result.put(entry.getKey(), rootStepBuilder.getPath(stepBuilder, entry.getValue()).orElse(null));
+        }
+        return result;
+    }
     /**
      * Create new region cell with characteristics based on supplied template cell, that might be populated from bind
      * column if one is supplied
@@ -39,7 +47,7 @@ class TemplateCellWithBind implements AreaCell {
      * @param cell is template cell this cell should take formatting and other properties from
      * @param bindColumn is name of column from underlying dataset, null if value from template should be used
      */
-    TemplateCellWithBind(int columnIndex, TplCell cell, @Nullable String bindColumn) {
+    TemplateCellWithBind(int columnIndex, TplCell cell, StepBuilder stepBuilder, @Nullable String bindColumn) {
         this.columnIndex = columnIndex;
         this.cell = Objects.requireNonNull(cell);
         if ((cell.getCellType() == CellType.FORMULA) && (bindColumn != null)) {
@@ -47,6 +55,12 @@ class TemplateCellWithBind implements AreaCell {
         }
         if ((cell.getCellType() == CellType.ERROR) && (bindColumn != null)) {
             throw new IllegalArgumentException("Value binding to error cell is not allowed");
+        }
+        var tplReferenceMap = cell.getReferenceMap();
+        if (tplReferenceMap.isEmpty()) {
+            this.referenceMap = Collections.emptyMap();
+        } else {
+            this.referenceMap = calcReferenceMap(tplReferenceMap, stepBuilder);
         }
         this.bindColumn = bindColumn;
     }
@@ -94,6 +108,6 @@ class TemplateCellWithBind implements AreaCell {
     @Nonnull
     @Override
     public Map<String, AreaCellPath> getReferenceMap() {
-        return null;
+        return referenceMap;
     }
 }

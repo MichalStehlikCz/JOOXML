@@ -23,6 +23,7 @@ class CellBuilder {
 
     @Nullable private CellCoordinates coordinates; // coordinates are relative to region
     @Nullable private TplCell tplCell;
+    @Nonnull StepBuilder region;
     @Nullable private String bindColumn;
 
     /**
@@ -45,6 +46,7 @@ class CellBuilder {
         this.coordinates = tplCell.getCoordinates().shiftBy(-region.getEffFirstRow().orElseThrow(
                 () -> new RuntimeException("Cannot build cell - region coordinates not known")), 0);
         this.tplCell = tplCell;
+        this.region = region;
         this.bindColumn = null;
     }
 
@@ -142,7 +144,7 @@ class CellBuilder {
         if (tplCell != null) {
             return new TemplateCellWithBind(getCellIndex().
                     orElseThrow(() -> new RuntimeException("Cell index missing")),
-                    tplCell, bindColumn);
+                    tplCell, region, bindColumn);
         } else if (bindColumn == null) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
         }
