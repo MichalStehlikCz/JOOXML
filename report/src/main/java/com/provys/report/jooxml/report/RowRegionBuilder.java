@@ -143,4 +143,12 @@ abstract class RowRegionBuilder<T extends RowRegionBuilder> extends StepBuilderB
         super.doValidate(dataSources);
         validateEffRows();
     }
+
+    @Override
+    public String toString() {
+        return "RowRegionBuilder{" +
+                "firstRow=" + firstRow +
+                ", lastRow=" + lastRow +
+                ", " + super.toString() + "}";
+    }
 }

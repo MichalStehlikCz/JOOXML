@@ -23,7 +23,7 @@ class CellBuilder {
 
     @Nullable private CellCoordinates coordinates; // coordinates are relative to region
     @Nullable private TplCell tplCell;
-    @Nonnull StepBuilder region;
+    @Nullable StepBuilder region;
     @Nullable private String bindColumn;
 
     /**
@@ -32,6 +32,7 @@ class CellBuilder {
     private CellBuilder() {
         this.coordinates = null;
         this.tplCell = null;
+        this.region = null;
         this.bindColumn = null;
     }
 
@@ -61,6 +62,7 @@ class CellBuilder {
         this.coordinates = cellBind.getCoordinates().shiftBy(-region.getEffFirstRow().orElseThrow(
                 () -> new RuntimeException("Cannot build cell - region coordinates not known")), 0);
         this.tplCell = null;
+        this.region = region;
         this.bindColumn = cellBind.getSourceColumn();
     }
 
@@ -121,6 +123,11 @@ class CellBuilder {
         } else if (cell.tplCell != null) {
             throw new IllegalArgumentException("Cannot merge two template cells");
         }
+        if (this.region == null) {
+            this.region = cell.region;
+        } else if ((cell.region != null) && (cell.region != this.region)) {
+            throw new IllegalArgumentException("Cannot merge cells belonging to different region");
+        }
         if (this.bindColumn == null) {
             this.bindColumn = cell.bindColumn;
         } else if (cell.bindColumn != null) {
@@ -140,6 +147,8 @@ class CellBuilder {
     private AreaCell build() {
         if (getCellIndex().isEmpty()) {
             throw new IllegalStateException("Cannot build region cell from empty combined cell");
+        } else if (region == null) {
+            throw new IllegalStateException("Cannot build region cell from cell without known region");
         }
         if (tplCell != null) {
             return new TemplateCellWithBind(getCellIndex().

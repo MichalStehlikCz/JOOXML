@@ -24,6 +24,11 @@ public class ExecRegionRoot implements ExecRegion {
         return "ROOT";
     }
 
+    @Nonnull
+    public Optional<ExecRegion> getRootRegion() {
+        return Optional.ofNullable(rootRegion);
+    }
+
     /**
      * Pass cell evaluation to child.
      *

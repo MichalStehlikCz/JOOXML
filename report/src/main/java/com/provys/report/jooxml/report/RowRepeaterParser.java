@@ -79,6 +79,9 @@ class RowRepeaterParser {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
                 switch (reader.getLocalName()) {
+                    case StepParser.NAME_NM_TAG:
+                        stepParser.parseNameNm(builder, reader);
+                        break;
                     case ROWS_TAG:
                         parseRows(builder, reader);
                         break;

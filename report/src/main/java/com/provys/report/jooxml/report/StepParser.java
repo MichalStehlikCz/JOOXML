@@ -1,8 +1,5 @@
 package com.provys.report.jooxml.report;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -15,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 @ApplicationScoped
 public class StepParser {
 
-    private static final Logger LOG = LogManager.getLogger(StepParser.class.getName());
+    static final String NAME_NM_TAG = "NAME_NM";
 
     @Nonnull
     private final RowCellAreaParser rowCellAreaParser;
@@ -33,7 +30,7 @@ public class StepParser {
      */
     @Inject
     StepParser(CellBindParser cellBindParser) {
-        rowCellAreaParser = new RowCellAreaParser(cellBindParser);
+        rowCellAreaParser = new RowCellAreaParser(this, cellBindParser);
         rowParentAreaParser = new RowParentAreaParser(this);
         rowRepeaterParser = new RowRepeaterParser(this);
     }
@@ -53,16 +50,28 @@ public class StepParser {
         this.rowRepeaterParser = rowRepeaterParser;
     }
 
+    void parseNameNm(StepBuilderBase builder, XMLStreamReader reader) throws XMLStreamException {
+        if (builder.getNameNm().isPresent()) {
+            throw new RuntimeException("Duplicate internal name specification " +
+                    reader.getElementText());
+        }
+        builder.setNameNm(reader.getElementText());
+    }
+
     void parseRowChildren(RowParentAreaBuilder builder, XMLStreamReader reader) throws XMLStreamException {
         while (reader.hasNext()) {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
                 String name = reader.getLocalName();
-                StepBuilder child = parse(builder, reader);
-                if (!(child instanceof RowRegionBuilder)) {
-                    throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
+                if (name.equals(NAME_NM_TAG)) {
+                    parseNameNm(builder, reader);
+                } else {
+                    StepBuilder child = parse(builder, reader);
+                    if (!(child instanceof RowRegionBuilder)) {
+                        throw new RuntimeException("Only row areas allowed in row parent area, not " + name);
+                    }
+                    builder.addChild((RowStepBuilder) child);
                 }
-                builder.addChild((RowStepBuilder) child);
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;
             }

@@ -74,13 +74,29 @@ interface StepBuilder {
     boolean isTopLevel();
 
     /**
+     * Procedure should validate that all cell references from given step builder (its formulas, merge cells, ...) and
+     * its children are valid. It is called by root step builder as last step of validation. It is only expected to be
+     * used internally
+     */
+    void validateCellReferences(TplWorkbook template);
+
+    /**
      * Validate that builder fulfills conditions for building the step.
      * Validation is called as part of build process as well and usually doesn't have to be called explicitly. Throws
      * exceptions if validation fails. Validation might fill in default values of values taken from parent or children if appropriate.
      *
      * @param dataSources is map of data-sources in report, might be used for data source validation
      */
-    void validate(Map<String, ReportDataSource> dataSources);
+    void validate(Map<String, ReportDataSource> dataSources, TplWorkbook template);
+
+    /**
+     * Validate that getPath method is able to evaluate path. Called from validation to ensure all cell references are
+     * valid fo report.
+     *
+     * @param fromArea is area cell containing reference belongs to
+     * @param cellReference is cell reference being validated
+     */
+    void validatePath(StepBuilder fromArea, CellReference cellReference);
 
     /**
      * Evaluate path with structure that will correspond to {@link com.provys.report.jooxml.repexecutor.ExecRegion} map

@@ -38,7 +38,7 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
 
     @Override
     public boolean isAncestor(StepBuilder step) {
-        return getParent().map(p -> p.isAncestor(step)).orElse(false);
+        return getParent().map(p -> (p == step) || p.isAncestor(step)).orElse(false);
     }
 
     @Override
@@ -123,7 +123,7 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
      * Procedure is called once validtion of object itself was successful.
      * Can validate children or other outside objects connected to step builder
      */
-    protected void afterValidate(Map<String, ReportDataSource> dataSources) {}
+    protected void afterValidate(Map<String, ReportDataSource> dataSources, TplWorkbook template) {}
 
     /**
      * Validate that builder fulfills conditions for building the step.
@@ -133,15 +133,22 @@ abstract class StepBuilderBase<T extends StepBuilderBase> implements StepBuilder
      * @param dataSources is map of data-sources in report
      */
     @Override
-    public void validate(Map<String, ReportDataSource> dataSources) {
+    public void validate(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
         doValidate(dataSources);
-        afterValidate(dataSources);
+        afterValidate(dataSources, template);
     }
 
     @Nonnull
     @Override
     public ReportStep build(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
-        validate(dataSources);
+        validate(dataSources, template);
         return doBuild(template);
+    }
+
+    @Override
+    public String toString() {
+        return "StepBuilderBase{" +
+                "nameNm='" + nameNm + '\'' +
+                '}';
     }
 }

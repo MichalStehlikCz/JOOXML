@@ -60,7 +60,7 @@ class TemplateCellWithBind implements AreaCell {
         if (tplReferenceMap.isEmpty()) {
             this.referenceMap = Collections.emptyMap();
         } else {
-            this.referenceMap = calcReferenceMap(tplReferenceMap, stepBuilder);
+            this.referenceMap = calcReferenceMap(tplReferenceMap, Objects.requireNonNull(stepBuilder));
         }
         this.bindColumn = bindColumn;
     }

@@ -66,23 +66,37 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
         return child.getDefaultNameNmPrefix() + index;
     }
 
-    @Nonnull
-    @Override
-    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
-        final var cellRow = cellReference.getRow();
-        StepBuilder childForRow = children.stream().
+    private StepBuilder getChildForReference(CellReference cellReference) {
+        var cellRow = cellReference.getRow();
+        return children.stream().
                 filter(child -> ((cellRow >= child.getEffFirstRow().orElseThrow(
                         () -> new RuntimeException(
                                 "Cannot evaluate cell path - child effective first row not known " + child))) &&
-                        (cellRow <= child.getEffFirstRow().orElseThrow(
+                        (cellRow <= child.getEffLastRow().orElseThrow(
                                 () -> new RuntimeException(
                                         "Cannot evaluate cell path - child effective last row not known " + child))))).
                 findFirst().
                 orElseThrow(() -> new RuntimeException(
                         "Cannot evaluate cell path - child not found " + this + " for reference " + cellReference));
-        return childForRow.getPath(fromArea, cellReference).
-                map(childPath -> new AreaCellPathRegion(childForRow.getNameNm().orElseThrow(
-                        () -> new RuntimeException("Cannot evaluate cell path - child name not known " + childForRow)),
+    }
+
+    @Override
+    public void validatePath(StepBuilder fromArea, CellReference cellReference) {
+        StepBuilder childForReference = getChildForReference(cellReference);
+        if (childForReference.getNameNm().isEmpty()) {
+            throw new RuntimeException("Cannot evaluate cell path - child name not known " + childForReference);
+        }
+        childForReference.validatePath(fromArea, cellReference);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+        StepBuilder childForReference = getChildForReference(cellReference);
+        return childForReference.getPath(fromArea, cellReference).
+                map(childPath -> new AreaCellPathRegion(childForReference.getNameNm().orElseThrow(
+                        () -> new RuntimeException("Cannot evaluate cell path - child name not known "
+                                + childForReference)),
                         childPath));
     }
 
@@ -159,7 +173,7 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
      * Validate sub-regions. Calls validate on each region plus checks that regions are in ascending order of first row
      * and do not overlap.
      */
-    private void validateChildren(Map<String, ReportDataSource> dataSources) {
+    private void validateChildren(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
         // we go through regions and verify
         // - that they are inside template area of this builder
         // - that they do not overlap
@@ -182,21 +196,28 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
         // and now we can validate children; we couldn't have done it in first pass because end of child might have been
         // filled in on its successor
         for (RowStepBuilder child : children) {
-            child.validate(dataSources);
+            child.validate(dataSources, template);
         }
     }
 
     @Override
-    protected void afterValidate(Map<String, ReportDataSource> dataSources) {
-        validateChildren(dataSources);
-        super.afterValidate(dataSources);
+    protected void afterValidate(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
+        validateChildren(dataSources, template);
+        super.afterValidate(dataSources, template);
+    }
+
+    @Override
+    public void validateCellReferences(TplWorkbook template) {
+        for (var child : children) {
+            child.validateCellReferences(template);
+        }
     }
 
     /**
      * @return collection of sub-regions for this region
      */
     @Nonnull
-    Collection<ReportStep> doBuildChildren(TplWorkbook template) {
+    private Collection<ReportStep> doBuildChildren(TplWorkbook template) {
         List<ReportStep> builtChildren = new ArrayList<>(children.size());
         for (var child : children) {
             builtChildren.add(child.doBuild(template));
@@ -209,5 +230,12 @@ class RowParentAreaBuilder extends RowRegionBuilder<RowParentAreaBuilder> {
     public ReportStep doBuild(TplWorkbook template) {
         return new ParentStep(getNameNm().orElseThrow() /*empty should be caught during validation */,
                 doBuildChildren(template));
+    }
+
+    @Override
+    public String toString() {
+        return "RowParentAreaBuilder{" +
+                "children=" + children +
+                ", " + super.toString() +  "}";
     }
 }

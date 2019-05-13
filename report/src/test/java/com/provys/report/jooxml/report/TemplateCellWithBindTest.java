@@ -19,7 +19,8 @@ class TemplateCellWithBindTest {
     @Test
     void getColIndexTest() {
         var tplCell = mock(TplCell.class);
-        assertThat(new TemplateCellWithBind(3, tplCell, null).getColIndex()).
+        var stepBuilder = mock(StepBuilder.class);
+        assertThat(new TemplateCellWithBind(3, tplCell, stepBuilder, null).getColIndex()).
                 isEqualTo(3);
     }
 
@@ -27,7 +28,8 @@ class TemplateCellWithBindTest {
     void getCellTypeTest() {
         var tplCell = mock(TplCell.class);
         when(tplCell.getCellType()).thenReturn(CellType.STRING);
-        assertThat(new TemplateCellWithBind(0, tplCell, null).getCellType()).
+        var stepBuilder = mock(StepBuilder.class);
+        assertThat(new TemplateCellWithBind(0, tplCell, stepBuilder, null).getCellType()).
                 isEqualTo(CellType.STRING);
     }
 
@@ -36,7 +38,8 @@ class TemplateCellWithBindTest {
         var tplCell = mock(TplCell.class);
         var cellValue = mock(CellValue.class);
         when(tplCell.getCellValue()).thenReturn(cellValue);
-        assertThat(new TemplateCellWithBind(0, tplCell, null).getCellValue()).
+        var stepBuilder = mock(StepBuilder.class);
+        assertThat(new TemplateCellWithBind(0, tplCell, stepBuilder, null).getCellValue()).
                 contains(cellValue);
     }
 
@@ -48,9 +51,10 @@ class TemplateCellWithBindTest {
         var cellValue = mock(CellValue.class);
         when(dataRecord.getCellValue("COLUMN", CellType.STRING)).thenReturn(cellValue);
         when(tplCell.getCellValue()).thenReturn(cellValue);
+        var stepBuilder = mock(StepBuilder.class);
         var execRegionContext = mock(ExecRegionContext.class);
         var cellPathReplacer = mock(CellPathReplacer.class);
-        assertThat(new TemplateCellWithBind(0, tplCell, "COLUMN").
+        assertThat(new TemplateCellWithBind(0, tplCell, stepBuilder, "COLUMN").
                 getEffectiveValue(dataRecord, execRegionContext, cellPathReplacer)).isEqualTo(cellValue);
     }
 
@@ -60,9 +64,10 @@ class TemplateCellWithBindTest {
         var cellValue = mock(CellValue.class);
         var dataRecord = mock(DataRecord.class);
         when(tplCell.getCellValue()).thenReturn(cellValue);
+        var stepBuilder = mock(StepBuilder.class);
         var execRegionContext = mock(ExecRegionContext.class);
         var cellPathReplacer = mock(CellPathReplacer.class);
-        assertThat(new TemplateCellWithBind(0, tplCell, null).
+        assertThat(new TemplateCellWithBind(0, tplCell, stepBuilder, null).
                 getEffectiveValue(dataRecord, execRegionContext, cellPathReplacer)).isEqualTo(cellValue);
     }
 
@@ -70,18 +75,20 @@ class TemplateCellWithBindTest {
     void getPropertiesTest() {
         var tplCell = mock(TplCell.class);
         when(tplCell.getCellProperties()).thenReturn(Optional.empty());
-        assertThat(new TemplateCellWithBind(0, tplCell, null).getProperties()).isEmpty();
+        var stepBuilder = mock(StepBuilder.class);
+        assertThat(new TemplateCellWithBind(0, tplCell, stepBuilder, null).getProperties()).isEmpty();
         var tplCell2 = mock(TplCell.class);
         var cellProperties = mock(CellProperties.class);
         when(tplCell2.getCellProperties()).thenReturn(Optional.of(cellProperties));
-        assertThat(new TemplateCellWithBind(2, tplCell2, "TEST").getProperties()).
+        assertThat(new TemplateCellWithBind(2, tplCell2, stepBuilder, "TEST").getProperties()).
                 contains(cellProperties);
     }
 
     @Test
     void getBindColumnTest() {
         var tplCell = mock(TplCell.class);
-        assertThat(new TemplateCellWithBind(0, tplCell, null).getBindColumn()).isEmpty();
-        assertThat(new TemplateCellWithBind(2, tplCell, "TEST").getBindColumn()).contains("TEST");
+        var stepBuilder = mock(StepBuilder.class);
+        assertThat(new TemplateCellWithBind(0, tplCell, stepBuilder, null).getBindColumn()).isEmpty();
+        assertThat(new TemplateCellWithBind(2, tplCell, stepBuilder, "TEST").getBindColumn()).contains("TEST");
     }
 }

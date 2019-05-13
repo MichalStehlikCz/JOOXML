@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AreaCellPathRelativeRecord implements AreaCellPath {
+final class AreaCellPathRelativeRecord implements AreaCellPath {
 
     @Nonnull
     private final AreaCellPath child;
@@ -43,5 +43,19 @@ public class AreaCellPathRelativeRecord implements AreaCellPath {
         }
         return child.getCellPath(childExecRegionPath).
                 map(childPath -> new CellPathRecord(childPath, effectiveRecordNr));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AreaCellPathRelativeRecord)) return false;
+        AreaCellPathRelativeRecord that = (AreaCellPathRelativeRecord) o;
+        return recordNr == that.recordNr &&
+                child.equals(that.child);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(child, recordNr);
     }
 }

@@ -88,9 +88,14 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
         return dataSource;
     }
 
-    @Nonnull
     @Override
-    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+    public void validateCellReferences(TplWorkbook template) {
+        if (child != null) {
+            child.validateCellReferences(template);
+        }
+    }
+
+    private void validatePathReady() {
         if (firstBodyRow == null) {
             throw new RuntimeException("Cannot evaluate cell path - first body row not known");
         }
@@ -100,43 +105,98 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
         if (child == null) {
             throw new RuntimeException("Cannot evaluate cell path - child not known");
         }
-        if (fromArea.isAncestor(this)) {
-            // from area is descendant of this builder -> we build relative reference
-            var row = cellReference.getRow();
-            int recordNr;
-            if (row < firstBodyRow) {
-                recordNr = (row - lastBodyRow) / (lastBodyRow - firstBodyRow + 1);
-            } else if (row > lastBodyRow) {
-                recordNr = (row - firstBodyRow) / (lastBodyRow - firstBodyRow + 1);
-            } else {
-                recordNr = 0;
-            }
-            var newCellReference = cellReference.shiftBy(recordNr * (lastBodyRow - firstBodyRow + 1), 0);
-            return child.getPath(fromArea, newCellReference).
-                    map(childPath -> new AreaCellPathRelativeRecord(childPath, recordNr));
+    }
+
+    private int calcRelativeRecordNr(CellReference cellReference) {
+        var row = cellReference.getRow();
+        //noinspection ConstantConditions - verified by prior validatePathReady call
+        if (row < firstBodyRow) {
+            //noinspection ConstantConditions - verified by prior validatePathReady call
+            return (row - lastBodyRow) / (lastBodyRow - firstBodyRow + 1);
+        } else //noinspection ConstantConditions - verified by prior validatePathReady call
+            if (row > lastBodyRow) {
+            return (row - firstBodyRow) / (lastBodyRow - firstBodyRow + 1);
         } else {
-            // from area is not descendant of this builder -> we build absolute reference
-            var row = cellReference.getRow();
-            int recordNr;
-            CellReference newCellReference;
-            if (row < firstBodyRow) {
-                // absolute reference from start
-                var effFirstRow = getEffFirstRow().orElseThrow(
-                        () -> new RuntimeException("Cannot evaluate relative cell path - effective first row now known"));
-                recordNr = (row - effFirstRow) / (lastBodyRow - firstBodyRow + 1);
-                newCellReference = cellReference.shiftBy((firstBodyRow - effFirstRow), 0);
-            } else if (row > lastBodyRow) {
+            return 0;
+        }
+    }
+
+    private void validateRelativePath(StepBuilder fromArea, CellReference cellReference) {
+        // from area is descendant of this builder -> we build relative reference
+        int recordNr = calcRelativeRecordNr(cellReference);
+        //noinspection ConstantConditions - verified by prior call to validatePathReady
+        var newCellReference = cellReference.shiftBy(- recordNr * (lastBodyRow - firstBodyRow + 1), 0);
+        //noinspection ConstantConditions - verified by prior call to validatePathReady
+        child.validatePath(fromArea, newCellReference);
+    }
+
+    private static class RecordNrAndCellReference {
+        private int recordNr;
+        private CellReference cellReference;
+    }
+
+    @Nonnull
+    private RecordNrAndCellReference calcAbsoluteRecordNr(CellReference cellReference) {
+        var row = cellReference.getRow();
+        RecordNrAndCellReference result = new RecordNrAndCellReference();
+        //noinspection ConstantConditions - verified by prior call to validatePathReady
+        if (row < firstBodyRow) {
+            // absolute reference from start
+            var effFirstRow = getEffFirstRow().orElseThrow(
+                    () -> new RuntimeException("Cannot evaluate relative cell path - effective first row now known"));
+            //noinspection ConstantConditions - verified by prior call to validatePathReady
+            result.recordNr = (row - effFirstRow) / (lastBodyRow - firstBodyRow + 1);
+            result.cellReference = cellReference.shiftBy(
+                    firstBodyRow - effFirstRow - result.recordNr * (lastBodyRow - firstBodyRow + 1), 0);
+        } else //noinspection ConstantConditions - verified by prior call to validatePathReady
+            if (row > lastBodyRow) {
                 // absolute reference from end
                 var effLastRow = getEffLastRow().orElseThrow(
                         () -> new RuntimeException("Cannot evaluate relative cell path - effective last row now known"));
-                recordNr = (row - effLastRow) / (lastBodyRow - firstBodyRow + 1) - 1;
-                newCellReference = cellReference.shiftBy((lastBodyRow - effLastRow), 0);
+                result.recordNr = (row - effLastRow) / (lastBodyRow - firstBodyRow + 1) - 1;
+                result.cellReference = cellReference.shiftBy(
+                        lastBodyRow - effLastRow - (result.recordNr + 1) * (lastBodyRow - firstBodyRow + 1), 0);
             } else {
-                throw new RuntimeException("Cannot set cell reference from outside of repeater to body (from "
-                        + fromArea + " to cell " + cellReference);
+                throw new RuntimeException("Cannot set cell reference from outside of repeater to body (cell "
+                        + cellReference + '"');
             }
+            return result;
+    }
+
+    private void validateAbsolutePath(StepBuilder fromArea, CellReference cellReference) {
+        var recordNrAndCellReference = calcAbsoluteRecordNr(cellReference);
+        //noinspection ConstantConditions - verified by prior call to validatePathReady
+        child.validatePath(fromArea, recordNrAndCellReference.cellReference);
+    }
+
+    @Override
+    public void validatePath(StepBuilder fromArea, CellReference cellReference) {
+        validatePathReady();
+        if (fromArea.isAncestor(this)) {
+            validateRelativePath(fromArea, cellReference);
+        } else {
+            validateAbsolutePath(fromArea, cellReference);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+        validatePathReady();
+        if (fromArea.isAncestor(this)) {
+            // from area is descendant of this builder -> we build relative reference
+            var recordNr = calcRelativeRecordNr(cellReference);
+            //noinspection ConstantConditions - verified by prior call to validatePathReady
+            var newCellReference = cellReference.shiftBy(
+                    - recordNr * (lastBodyRow - firstBodyRow + 1), 0);
+            //noinspection ConstantConditions - verified by prior call to validatePathReady
             return child.getPath(fromArea, newCellReference).
-                    map(childPath -> new AreaCellPathAbsoluteRecord(childPath, recordNr));
+                    map(childPath -> new AreaCellPathRelativeRecord(childPath, recordNr));
+        } else {
+            var recordNrAndCellReference = calcAbsoluteRecordNr(cellReference);
+            //noinspection ConstantConditions - verified by prior call to validatePathReady
+            return child.getPath(fromArea, recordNrAndCellReference.cellReference).
+                    map(childPath -> new AreaCellPathAbsoluteRecord(childPath, recordNrAndCellReference.recordNr));
         }
     }
 
@@ -219,7 +279,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
     }
 
     @SuppressWarnings({"squid:S3655", "OptionalGetWithoutIsPresent"}) // analysers do not underestand isEmpty is sufficient
-    private void validateChild(Map<String, ReportDataSource> dataSources) {
+    private void validateChild(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
         if (child == null) {
             throw new RuntimeException("Child must be specified for RowRepeater step");
         }
@@ -245,7 +305,7 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
                 throw new RuntimeException("Mismatch between last body row and last child row in RowRepeater");
             }
         }
-        child.validate(dataSources);
+        child.validate(dataSources, template);
     }
 
     private void validateBody() {
@@ -273,10 +333,10 @@ class RowRepeaterBuilder extends RowRegionBuilder<RowRepeaterBuilder> {
     }
 
     @Override
-    protected void afterValidate(Map<String, ReportDataSource> dataSources) {
-        validateChild(dataSources);
+    protected void afterValidate(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
+        validateChild(dataSources, template);
         validateBody();
-        super.afterValidate(dataSources);
+        super.afterValidate(dataSources, template);
     }
 
     @Nonnull

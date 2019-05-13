@@ -39,6 +39,14 @@ class RowRegionBuilderTest {
             throw new RuntimeException("Not implemented");
         }
 
+        @Override
+        public void validateCellReferences(TplWorkbook template) {}
+
+        @Override
+        public void validatePath(StepBuilder fromArea, CellReference cellReference) {
+            throw new RuntimeException("Not implemented");
+        }
+
         @Nonnull
         @Override
         public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
@@ -111,16 +119,17 @@ class RowRegionBuilderTest {
     @Test
     void validateTest() {
         Map<String, ReportDataSource> dataSources = Collections.emptyMap();
+        var template = mock(TplWorkbook.class);
         var parent = mock(StepBuilder.class);
         var builder = new RowRegionBuilderImpl(parent);
         // child name is evaluated during validation
         when(parent.proposeChildName(builder)).thenReturn("CHILD");
-        assertThatThrownBy(() -> builder.validate(dataSources)).hasMessageContaining("First row");
+        assertThatThrownBy(() -> builder.validate(dataSources, template)).hasMessageContaining("First row");
         builder.setFirstRow(5);
-        assertThatThrownBy(() -> builder.validate(dataSources)).hasMessageContaining("Last row");
+        assertThatThrownBy(() -> builder.validate(dataSources, template)).hasMessageContaining("Last row");
         builder.setLastRow(4);
-        assertThatThrownBy(() -> builder.validate(dataSources)).hasMessageContaining("above last row");
+        assertThatThrownBy(() -> builder.validate(dataSources, template)).hasMessageContaining("above last row");
         builder.setFirstRow(3);
-        assertThatCode(() -> builder.validate(dataSources)).doesNotThrowAnyException();
+        assertThatCode(() -> builder.validate(dataSources, template)).doesNotThrowAnyException();
     }
 }

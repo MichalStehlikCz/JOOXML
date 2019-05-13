@@ -20,10 +20,14 @@ class RowCellAreaParser {
     private static final Pattern ROW_SPAN_PATTERN = Pattern.compile(ROW_SPAN_REGEXP);
 
     @Nonnull
+    private final StepParser stepParser;
+    @Nonnull
     private final CellBindParser cellBindParser;
 
+    @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
     @Inject
-    RowCellAreaParser(CellBindParser cellBindParser) {
+    RowCellAreaParser(StepParser stepParser, CellBindParser cellBindParser) {
+        this.stepParser = Objects.requireNonNull(stepParser);
         this.cellBindParser = Objects.requireNonNull(cellBindParser);
     }
 
@@ -33,6 +37,9 @@ class RowCellAreaParser {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
                 switch (reader.getLocalName()) {
+                    case StepParser.NAME_NM_TAG:
+                        stepParser.parseNameNm(builder, reader);
+                        break;
                     case ROW_SPAN_TAG:
                         var matcher = ROW_SPAN_PATTERN.matcher(reader.getElementText());
                         if (!matcher.matches()) {

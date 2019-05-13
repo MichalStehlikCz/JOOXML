@@ -7,7 +7,8 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AreaCellPathRegion implements AreaCellPath {
+final class AreaCellPathRegion implements AreaCellPath {
+
     @Nonnull
     private final String regionNm;
     @Nonnull
@@ -34,5 +35,19 @@ public class AreaCellPathRegion implements AreaCellPath {
             }
         }
         return child.getCellPath(childRegionPath).map(childPath -> new CellPathRegion(childPath, regionNm));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AreaCellPathRegion)) return false;
+        AreaCellPathRegion that = (AreaCellPathRegion) o;
+        return regionNm.equals(that.regionNm) &&
+                child.equals(that.child);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(regionNm, child);
     }
 }

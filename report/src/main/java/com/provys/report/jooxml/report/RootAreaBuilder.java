@@ -1,13 +1,16 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.datasource.ReportDataSource;
+import com.provys.report.jooxml.repexecutor.AreaCellPath;
 import com.provys.report.jooxml.repexecutor.ReportStep;
 import com.provys.report.jooxml.tplworkbook.TplWorkbook;
+import com.provys.report.jooxml.workbook.CellReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 @SuppressWarnings("UnusedReturnValue")
 class RootAreaBuilder extends RowParentAreaBuilder {
@@ -63,6 +66,12 @@ class RootAreaBuilder extends RowParentAreaBuilder {
         return super.getEffLastRow().or(() -> Optional.of(Integer.MAX_VALUE));
     }
 
+    @Nonnull
+    @Override
+    public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
+        return super.getPath(fromArea, cellReference).map(AreaCellPathRoot::new);
+    }
+
     @Override
     protected void validateParent() {
         if (getParent().isPresent()) {
@@ -86,14 +95,25 @@ class RootAreaBuilder extends RowParentAreaBuilder {
         validateDataSource(dataSources);
     }
 
+    @Override
+    public void validate(Map<String, ReportDataSource> dataSources, TplWorkbook template) {
+        super.validate(dataSources, template);
+        validateCellReferences(template);
+    }
+
     @Nonnull
     @Override
     public ReportStep doBuild(TplWorkbook template) {
         if (dataSource == null) {
             throw new RuntimeException("Root data source should have been set during validation");
         }
-        return new DataReader(getNameNm().orElseThrow() + "DATA", dataSource,
-                new ParentStep(getNameNm().orElseThrow() /*empty should be caught during validation */,
-                        doBuildChildren(template)));
+        return new DataReader(getNameNm().orElseThrow() + "DATA", dataSource, super.doBuild(template));
+    }
+
+    @Override
+    public String toString() {
+        return "RootAreaBuilder{" +
+                "dataSource=" + dataSource +
+                ", " + super.toString() + "}";
     }
 }

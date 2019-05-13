@@ -43,6 +43,19 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
         throw new RuntimeException("Cell area doesn't have any children");
     }
 
+    @Override
+    public void validatePath(StepBuilder fromArea, CellReference cellReference) {
+        var row = cellReference.getRow();
+        if (getEffFirstRow().orElseThrow(
+                () -> new RuntimeException("Cannot evaluate cell path - first row of cell area not known")) > row) {
+            throw new RuntimeException("Cannot evaluate cell reference - cell reference row before the first row of area");
+        }
+        if (getEffLastRow().orElseThrow(
+                () -> new RuntimeException("Cannot evaluate cell path - last row of cell area not known")) < row) {
+            throw new RuntimeException("Cannot evaluate cell reference - cell reference row after the last row of area");
+        }
+    }
+
     @Nonnull
     @Override
     public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
@@ -108,6 +121,26 @@ final class RowCellAreaBuilder extends RowRegionBuilder<RowCellAreaBuilder> {
     public void doValidate(Map<String, ReportDataSource> dataSources) {
         super.doValidate(dataSources);
         validateFieldBinds();
+    }
+
+    private void validateCellReference(CellReference cellReference) {
+        try {
+            getRoot().validatePath(this, cellReference);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid cell reference " + cellReference.getAddress() +
+                    " in area " + getNameNm().orElse(null), e);
+        }
+    }
+
+    @Override
+    public void validateCellReferences(TplWorkbook template) {
+        template.getSheet()// cells retrieved from template
+                .getRows(getFirstRow().orElseThrow(), getLastRow().orElseThrow()) // validate ensures
+                // there will be no exception here
+                .stream()
+                .flatMap(row -> row.getCells().stream())
+                .flatMap(cell -> cell.getReferenceMap().values().stream())
+                .forEach(this::validateCellReference);
     }
 
     /**

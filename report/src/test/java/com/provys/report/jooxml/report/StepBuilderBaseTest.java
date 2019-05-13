@@ -44,6 +44,14 @@ class StepBuilderBaseTest {
             return false;
         }
 
+        @Override
+        public void validateCellReferences(TplWorkbook template) {}
+
+        @Override
+        public void validatePath(StepBuilder fromArea, CellReference cellReference) {
+            throw new RuntimeException("Not implemented");
+        }
+
         @Nonnull
         @Override
         public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
@@ -103,19 +111,21 @@ class StepBuilderBaseTest {
     @Test
     void validateEmptyNameNmTest() {
         Map<String, ReportDataSource> dataSources = Collections.emptyMap();
+        var template = mock(TplWorkbook.class);
         // default name should be used if not specified
         var builder = new StepBuilderBaseImpl(null);
-        builder.validate(dataSources);
+        builder.validate(dataSources, template);
         assertThat(builder.getNameNm()).isEqualTo(Optional.of("DEFNAMENM"));
     }
 
     @Test
     void validateKeepNameNmTest() {
         Map<String, ReportDataSource> dataSources = Collections.emptyMap();
+        var template = mock(TplWorkbook.class);
         // but specified name should not be touched
         var builder2 = new StepBuilderBaseImpl(null);
         builder2.setNameNm("TESTNAMENM");
-        builder2.validate(dataSources);
+        builder2.validate(dataSources, template);
         assertThat(builder2.getNameNm()).isEqualTo(Optional.of("TESTNAMENM"));
     }
 }
