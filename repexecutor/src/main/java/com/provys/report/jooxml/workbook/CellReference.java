@@ -57,7 +57,7 @@ public interface CellReference extends CellAddress {
     CellReference shiftBy(CellCoordinates shift);
 
     /**
-     * Get cell reference, shifted bz offset, defined by {@code ContextCoordinates}
+     * Get cell reference, shifted by offset, defined by {@code ContextCoordinates}
      *
      * @param shift is coordinate defining upper left corner of area being filled in, where cell reference is considered
      *              to be filled. Sheet is either ignored (if it is not present in this reference) as reference within

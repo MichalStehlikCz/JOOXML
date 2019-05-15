@@ -15,6 +15,18 @@ public class ContextCoordinates {
         this.columnIndex = columnIndex;
     }
 
+    /**
+     * Create new context coordinates as clone of original one. ContextCoordinates object is mutable, thus if we want to
+     * keep it private, we have to clone them
+     *
+     * @param coordinates are source coordinates that are to be cloned
+     */
+    public ContextCoordinates(ContextCoordinates coordinates) {
+        this.sheet = coordinates.getSheet();
+        this.rowIndex = coordinates.getRowIndex();
+        this.columnIndex = coordinates.getColumnIndex();
+    }
+
     public RepSheet getSheet() {
         return sheet;
     }
@@ -33,5 +45,14 @@ public class ContextCoordinates {
 
     public int getColumnIndex() {
         return columnIndex;
+    }
+
+    @Override
+    public String toString() {
+        return "ContextCoordinates{" +
+                "sheet=" + sheet +
+                ", rowIndex=" + rowIndex +
+                ", columnIndex=" + columnIndex +
+                '}';
     }
 }

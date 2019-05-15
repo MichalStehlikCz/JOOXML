@@ -22,7 +22,7 @@ final class AreaCellPathRelativeRecord implements AreaCellPath {
     @Override
     public Optional<CellPath> getCellPath(@Nullable ExecRegionPath execRegionPath) {
         if (execRegionPath == null) {
-            throw new RuntimeException("Accessing relative cell path without supplied execution region path");
+            throw new RuntimeException("Accessing relative cell path without supplied execution region path " + this);
         }
         var execRegion = execRegionPath.getExecRegion();
         if (!(execRegion instanceof ExecRegionTable)) {
@@ -57,5 +57,13 @@ final class AreaCellPathRelativeRecord implements AreaCellPath {
     @Override
     public int hashCode() {
         return Objects.hash(child, recordNr);
+    }
+
+    @Override
+    public String toString() {
+        return "AreaCellPathRelativeRecord{" +
+                "recordNr=" + recordNr +
+                ", child=" + child +
+                '}';
     }
 }

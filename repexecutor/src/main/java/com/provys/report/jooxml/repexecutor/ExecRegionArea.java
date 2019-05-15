@@ -11,7 +11,7 @@ public class ExecRegionArea extends ExecRegionBase {
 
     ExecRegionArea(String nameNm, ContextCoordinates coordinates) {
         super(nameNm);
-        this.coordinates = coordinates;
+        this.coordinates = new ContextCoordinates(coordinates);
     }
 
     @Nonnull
@@ -39,5 +39,13 @@ public class ExecRegionArea extends ExecRegionBase {
     @Override
     public ExecRegion addTable(String nameNm) {
         throw new RuntimeException("Cannot add sub-table to execution area");
+    }
+
+    @Override
+    public String toString() {
+        return "ExecRegionArea{" +
+                "nameNm=" + getNameNm() +
+                ", coordinates=" + coordinates +
+                "} ";
     }
 }

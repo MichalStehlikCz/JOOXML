@@ -70,4 +70,11 @@ public class ExecRegionRoot implements ExecRegion {
         rootRegion = new ExecRegionTable(nameNm);
         return rootRegion;
     }
+
+    @Override
+    public String toString() {
+        return "ExecRegionRoot{" +
+                "rootRegion=" + rootRegion +
+                '}';
+    }
 }

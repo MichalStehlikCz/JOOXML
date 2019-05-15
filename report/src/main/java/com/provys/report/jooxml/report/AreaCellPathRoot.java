@@ -31,4 +31,23 @@ public class AreaCellPathRoot implements AreaCellPath {
         return child.getCellPath((execRegionPath == null) ? null : execRegionPath.getChild().orElse(null));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AreaCellPathRoot)) return false;
+        AreaCellPathRoot that = (AreaCellPathRoot) o;
+        return child.equals(that.child);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(child);
+    }
+
+    @Override
+    public String toString() {
+        return "AreaCellPathRoot{" +
+                "child=" + child +
+                '}';
+    }
 }

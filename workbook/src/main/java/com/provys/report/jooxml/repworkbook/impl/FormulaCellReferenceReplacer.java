@@ -86,7 +86,7 @@ class FormulaCellReferenceReplacer extends InputStream {
             LOG.error("WriteWorkbook: </f> not found");
             throw new RuntimeException("</f> not found");
         }
-        formula = cellPathReplacer.decode(builder.substring(0, builder.length() - 1 - END_FORMULA_PATTERN.length),
+        formula = cellPathReplacer.decode(builder.substring(0, builder.length() - END_FORMULA_PATTERN.length),
                 execRegion);
         formulaActive = true;
         formulaPosition = 0;
@@ -96,6 +96,8 @@ class FormulaCellReferenceReplacer extends InputStream {
         var result = formula.charAt(formulaPosition++);
         if (formulaPosition >= formula.length()) {
             formulaActive = false;
+            endFormulaActive = true;
+            endFormulaPosition = 0;
         }
         return result;
     }
@@ -130,6 +132,7 @@ class FormulaCellReferenceReplacer extends InputStream {
         if (character == FORMULA_PATTERN[patternPosition++]) {
             if (patternPosition == FORMULA_PATTERN.length) {
                 activateFormula();
+                patternPosition = 0;
             }
         } else {
             patternPosition = 0;

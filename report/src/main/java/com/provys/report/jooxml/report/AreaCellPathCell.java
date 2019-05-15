@@ -35,4 +35,11 @@ final class AreaCellPathCell implements AreaCellPath {
     public int hashCode() {
         return Objects.hash(cell);
     }
+
+    @Override
+    public String toString() {
+        return "AreaCellPathCell{" +
+                "cell=" + cell +
+                '}';
+    }
 }

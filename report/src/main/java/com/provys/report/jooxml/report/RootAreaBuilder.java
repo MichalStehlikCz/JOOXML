@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 @SuppressWarnings("UnusedReturnValue")
 class RootAreaBuilder extends RowParentAreaBuilder {
@@ -69,7 +68,12 @@ class RootAreaBuilder extends RowParentAreaBuilder {
     @Nonnull
     @Override
     public Optional<AreaCellPath> getPath(StepBuilder fromArea, CellReference cellReference) {
-        return super.getPath(fromArea, cellReference).map(AreaCellPathRoot::new);
+        return super.getPath(fromArea, cellReference).
+                map(childPath -> new AreaCellPathRegion(getNameNm().orElseThrow(
+                        () -> new RuntimeException("Cannot evaluate cell path - internal name of region not known " +
+                                this)),
+                        childPath)).
+                map(AreaCellPathRoot::new);
     }
 
     @Override
@@ -101,13 +105,21 @@ class RootAreaBuilder extends RowParentAreaBuilder {
         validateCellReferences(template);
     }
 
+    /**
+     * @return internal name that will be assigned to data step, created to connect ROOT dataset
+     */
+    @Nonnull
+    private String getDataStepNm() {
+        return getNameNm().orElseThrow() + "DATA";
+    }
+
     @Nonnull
     @Override
     public ReportStep doBuild(TplWorkbook template) {
         if (dataSource == null) {
             throw new RuntimeException("Root data source should have been set during validation");
         }
-        return new DataReader(getNameNm().orElseThrow() + "DATA", dataSource, super.doBuild(template));
+        return new DataReader(getDataStepNm(), dataSource, super.doBuild(template));
     }
 
     @Override

@@ -418,7 +418,7 @@ public class RXSSFWorkbook implements Workbook, RepWorkbook {
                                               ExecRegion execRegion)
             throws IOException {
         try (var decodedWorksheetData = new FormulaCellReferenceReplacer(worksheetData, cellPathReplacer, execRegion)) {
-            try (SheetDataReplacer workSheet = new SheetDataReplacer(in, worksheetData)) {
+            try (SheetDataReplacer workSheet = new SheetDataReplacer(in, decodedWorksheetData)) {
                 IOUtils.copy(workSheet, out);
                 out.flush();
             }

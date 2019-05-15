@@ -11,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -21,7 +22,12 @@ import java.util.regex.Pattern;
 @ApplicationScoped
 public class CellPathReplacer {
 
-    static final Pattern ENCODED_PATH_PATTERN = Pattern.compile("(\\{\\{[^{}]*}})");
+    private static final char PATH_PREFIX_CHAR = '%';
+    private static final String PATH_PREFIX = Character.toString(PATH_PREFIX_CHAR) + PATH_PREFIX_CHAR;
+    private static final char PATH_POSTFIX_CHAR = '%';
+    private static final String PATH_POSTFIX = Character.toString(PATH_POSTFIX_CHAR) + PATH_POSTFIX_CHAR;
+    static final Pattern ENCODED_PATH_PATTERN = Pattern.compile(
+            PATH_PREFIX + "[^" + PATH_PREFIX_CHAR + "]*" + PATH_POSTFIX);
     private static final char CELL_PREFIX_CHAR = '#';
     private static final String CELL_PREFIX = Character.toString(CELL_PREFIX_CHAR) + CELL_PREFIX_CHAR;
     private static final char CELL_POSTFIX_CHAR = '#';
@@ -30,9 +36,9 @@ public class CellPathReplacer {
     private static final String RECORD_PREFIX = Character.toString(RECORD_PREFIX_CHAR) + RECORD_PREFIX_CHAR;
     private static final char RECORD_POSTFIX_CHAR = ']';
     private static final String RECORD_POSTFIX = Character.toString(RECORD_POSTFIX_CHAR) + RECORD_POSTFIX_CHAR;
-    private static final char REGION_PREFIX_CHAR = '<';
+    private static final char REGION_PREFIX_CHAR = '(';
     private static final String REGION_PREFIX = Character.toString(REGION_PREFIX_CHAR) + REGION_PREFIX_CHAR;
-    private static final char REGION_POSTFIX_CHAR = '<';
+    private static final char REGION_POSTFIX_CHAR = ')';
     private static final String REGION_POSTFIX = Character.toString(REGION_POSTFIX_CHAR) + REGION_POSTFIX_CHAR;
     private static final char PART_DELIMITER_CHAR = '/';
     private static final String PART_DELIMITER = Character.toString(PART_DELIMITER_CHAR);
@@ -86,9 +92,9 @@ public class CellPathReplacer {
     }
 
     String encodePath(CellPath cellPath) {
-        var builder = new StringBuilder("{{");
+        var builder = new StringBuilder(PATH_PREFIX);
         encodeCellPath(builder, cellPath);
-        builder.append("}}");
+        builder.append(PATH_POSTFIX);
         return builder.toString();
     }
 
@@ -102,11 +108,8 @@ public class CellPathReplacer {
      */
     @Nullable
     @SuppressWarnings("squid:S3655") // Sonar does not underestand Optional.isEmpty
-    private String encode(@Nullable String formula, Map<String, AreaCellPath> referenceMap,
+    private String encode(String formula, Map<String, AreaCellPath> referenceMap,
                          ExecRegionContext execRegionContext) {
-        if ((formula == null) || referenceMap.isEmpty()) {
-            return formula;
-        }
         var result = formula;
         var execRegionPath = execRegionContext.getPath();
         for (var reference : referenceMap.entrySet()) {
@@ -115,7 +118,8 @@ public class CellPathReplacer {
                 // invalid reference - we prefer to remove formula rather than leave invalid formula
                 return null;
             } else {
-                result = result.replaceAll(reference.getKey(), encodePath(cellPath.get()));
+                result = result.replaceAll(Matcher.quoteReplacement(reference.getKey()),
+                        Matcher.quoteReplacement(encodePath(cellPath.get())));
             }
         }
         return result;
@@ -132,7 +136,7 @@ public class CellPathReplacer {
     @Nonnull
     public CellValue encode(CellValue value, Map<String, AreaCellPath> referenceMap,
                          ExecRegionContext execRegionContext) {
-        if (value.getCellType() != CellType.FORMULA) {
+        if ((value.getCellType() != CellType.FORMULA) || (referenceMap.isEmpty())) {
             return value;
         }
         var origFormula = value.getFormula();
@@ -158,14 +162,15 @@ public class CellPathReplacer {
 
         private void readStartTag() {
             if (expression.length() < offset+2) {
-                throw new RuntimeException("Cannot read path - end of string while {{ expected " + this);
+                throw new RuntimeException("Cannot read path - end of string while " + PATH_PREFIX + " expected " +
+                        this);
             }
-            if (expression.charAt(offset++) != '{') {
-                throw new RuntimeException("Cannot read path - opening { expected, " + expression.charAt(--offset) +
-                        " found  " + this);
+            if (expression.charAt(offset++) != PATH_PREFIX_CHAR) {
+                throw new RuntimeException("Cannot read path - opening " + PATH_PREFIX_CHAR + " expected, " +
+                        expression.charAt(--offset) + " found  " + this);
             }
-            if (expression.charAt(offset++) != '{') {
-                throw new RuntimeException("Cannot read path - second opening { expected, " +
+            if (expression.charAt(offset++) != PATH_PREFIX_CHAR) {
+                throw new RuntimeException("Cannot read path - second opening " + PATH_PREFIX_CHAR + " expected, " +
                         expression.charAt(--offset) + " found  " + this);
             }
         }
@@ -246,14 +251,16 @@ public class CellPathReplacer {
 
         private void readEndTag() {
             if (expression.length() != offset+2) {
-                throw new RuntimeException("Cannot read path - }} expected to close path expression " + this);
+                throw new RuntimeException("Cannot read path - " + PATH_POSTFIX +
+                        " expected to close path expression " + this);
             }
-            if (expression.charAt(offset++) != '}') {
-                throw new RuntimeException("Cannot read path - closing } expected, " + expression.charAt(--offset) +
+            if (expression.charAt(offset++) != PATH_POSTFIX_CHAR) {
+                throw new RuntimeException("Cannot read path - closing " + PATH_POSTFIX_CHAR + " expected, " +
+                        expression.charAt(--offset) +
                         " found  " + this);
             }
-            if (expression.charAt(offset++) != '}') {
-                throw new RuntimeException("Cannot read path - second closing } expected, " +
+            if (expression.charAt(offset++) != PATH_POSTFIX_CHAR) {
+                throw new RuntimeException("Cannot read path - second closing " + PATH_POSTFIX_CHAR + " expected, " +
                         expression.charAt(--offset) + " found  " + this);
             }
         }
@@ -298,13 +305,13 @@ public class CellPathReplacer {
         var buffer = new StringBuffer();
         var matcher = ENCODED_PATH_PATTERN.matcher(formula);
         while (matcher.find()) {
-            var cell = execRegion.getCell(decodePath(matcher.group(1)));
+            var cell = execRegion.getCell(decodePath(matcher.group(0)));
             if (cell.isEmpty()) {
                 // we were not able to evaluate referenced cell -> whole formula should be removed to prevent invalid
                 // formula errors
                 return null;
             }
-            matcher.appendReplacement(buffer, cell.get().getAddress());
+            matcher.appendReplacement(buffer, Matcher.quoteReplacement(cell.get().getAddress()));
         }
         matcher.appendTail(buffer);
         return buffer.toString();

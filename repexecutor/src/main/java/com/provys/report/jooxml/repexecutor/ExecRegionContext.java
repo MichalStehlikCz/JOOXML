@@ -88,4 +88,11 @@ public class ExecRegionContext {
     public ExecRegionPath getPath() {
         return getPath(null);
     }
+
+    @Override
+    public String toString() {
+        return "ExecRegionContext{" +
+                "execRegion=" + execRegion +
+                '}';
+    }
 }

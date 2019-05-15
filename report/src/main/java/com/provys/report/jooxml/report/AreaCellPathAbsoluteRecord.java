@@ -38,4 +38,12 @@ final class AreaCellPathAbsoluteRecord implements AreaCellPath {
     public int hashCode() {
         return Objects.hash(child, recordNr);
     }
+
+    @Override
+    public String toString() {
+        return "AreaCellPathAbsoluteRecord{" +
+                "recordNr=" + recordNr +
+                ", child=" + child +
+                '}';
+    }
 }

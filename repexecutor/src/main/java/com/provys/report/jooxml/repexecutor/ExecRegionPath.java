@@ -34,4 +34,11 @@ public class ExecRegionPath {
     public Optional<ExecRegionPath> getChild() {
         return Optional.ofNullable(child);
     }
+
+    @Override
+    public String toString() {
+        return "ExecRegionPath{" +
+                "execRegion=" + execRegion +
+                '}';
+    }
 }

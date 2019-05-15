@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.repexecutor;
 
 import com.provys.report.jooxml.workbook.CellReference;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ExecRegionTable extends ExecRegionBase {
+
+    private final Logger LOG = LogManager.getLogger(ExecRegionTable.class);
 
     private final List<ExecRegion> records = new ArrayList<>(10);
 
@@ -22,12 +26,16 @@ public class ExecRegionTable extends ExecRegionBase {
             throw new IllegalArgumentException("Cannot evaluate cell path - record excepted");
         }
         int recordNr = ((CellPathRecord) path).getRecordNr();
-        if (recordNr == Integer.MAX_VALUE) {
-            if (records.isEmpty()) {
+        if (recordNr < 0) {
+            recordNr += records.size();
+            if (recordNr < 0) {
+                LOG.debug("Cell reference returned empty - negative index bigger than number of rows ({}, {})",
+                        recordNr - records.size(), this);
                 return Optional.empty();
             }
-            recordNr = records.size() - 1;
         } else if (recordNr > records.size()) {
+            LOG.debug("Cell reference returned empty - index bigger than number of rows ({}, {})",
+                    recordNr, this);
             return Optional.empty();
         }
         return records.get(recordNr).getCell(((CellPathRecord) path).getChildPath());
@@ -63,5 +71,13 @@ public class ExecRegionTable extends ExecRegionBase {
      */
     public int getIndexOf(ExecRegion child) {
         return records.indexOf(child);
+    }
+
+    @Override
+    public String toString() {
+        return "ExecRegionTable{" +
+                "nameNm='" + getNameNm() + '\'' +
+                ", size=" + records.size() +
+                "}";
     }
 }

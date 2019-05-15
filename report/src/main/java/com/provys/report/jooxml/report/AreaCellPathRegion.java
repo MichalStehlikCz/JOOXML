@@ -50,4 +50,12 @@ final class AreaCellPathRegion implements AreaCellPath {
     public int hashCode() {
         return Objects.hash(regionNm, child);
     }
+
+    @Override
+    public String toString() {
+        return "AreaCellPathRegion{" +
+                "regionNm='" + regionNm + '\'' +
+                ", child=" + child +
+                '}';
+    }
 }

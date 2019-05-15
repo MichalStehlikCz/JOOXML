@@ -6,7 +6,7 @@ import com.provys.report.jooxml.repexecutor.ReportStep;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-abstract class DataStep extends Step {
+abstract class DataStep extends Step implements StepWithChild {
     @Nonnull
     private final ReportDataSource dataSource;
     @Nonnull
@@ -24,7 +24,7 @@ abstract class DataStep extends Step {
     }
 
     @Nonnull
-    ReportStep getChild() {
+    public ReportStep getChild() {
         return child;
     }
 

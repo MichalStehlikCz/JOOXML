@@ -29,7 +29,12 @@ public class ExecRegionRegion extends ExecRegionBase {
         if (!(path instanceof CellPathRegion)) {
             throw new IllegalArgumentException("Region path expected");
         }
-        return subRegions.get(((CellPathRegion) path).getRegionNm()).getCell(((CellPathRegion) path).getChildPath());
+        var subRegion = subRegions.get(((CellPathRegion) path).getRegionNm());
+        if (subRegion == null) {
+            throw new RuntimeException("Subregion " + ((CellPathRegion) path).getRegionNm() + " not found in region " +
+                    getNameNm());
+        }
+        return subRegion.getCell(((CellPathRegion) path).getChildPath());
     }
 
     @Override
@@ -59,5 +64,12 @@ public class ExecRegionRegion extends ExecRegionBase {
     @Nonnull
     public Optional<ExecRegion> getSubRegion(String nameNm) {
         return Optional.ofNullable(subRegions.get(nameNm));
+    }
+
+    @Override
+    public String toString() {
+        return "ExecRegionRegion{" +
+                "nameNm='" + getNameNm() + '\'' +
+                "}";
     }
 }
