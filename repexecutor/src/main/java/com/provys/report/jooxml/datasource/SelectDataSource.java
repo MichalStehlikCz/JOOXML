@@ -5,6 +5,10 @@ import com.provys.report.jooxml.repexecutor.ReportContext;
 
 import javax.annotation.Nonnull;
 
+/**
+ * SelectDataSource is part of report definition. It holds select statement (as string) and passes it to data context.
+ * It is immutable and has no association with database / connection
+ */
 class SelectDataSource extends DataSourceAncestor {
 
     @Nonnull

@@ -2,11 +2,11 @@ package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.DataCursor;
 
-public abstract class DataCursorAncestor implements DataCursor {
+public abstract class DataCursorAncestor<T extends DataContextAncestor> implements DataCursor {
 
-    private final DataContextAncestor dataContext;
+    private final T dataContext;
 
-    DataCursorAncestor(DataContextAncestor dataContext) {
+    DataCursorAncestor(T dataContext) {
         this.dataContext = dataContext;
         dataContext.cursorOpened(this);
     }
@@ -19,7 +19,7 @@ public abstract class DataCursorAncestor implements DataCursor {
     /**
      * @return DataContext this cursor has been created from
      */
-    DataContextAncestor getDataContext() {
+    T getDataContext() {
         return dataContext;
     }
 

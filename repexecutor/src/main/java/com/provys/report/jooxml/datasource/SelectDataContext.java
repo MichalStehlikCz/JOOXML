@@ -2,15 +2,18 @@ package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.DataCursor;
 import com.provys.report.jooxml.repexecutor.ReportContext;
-import org.jooq.Cursor;
 import org.jooq.Param;
 import org.jooq.ResultQuery;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
+/**
+ * Select data context represents select data sorce and its state during report execution.
+ * On prepare, it parses select statement held by select data source sing JOOQ parser. Select statement is held parsed
+ * and is closed on close of this context.
+ * On execute, query is executed and resulting cursor is returned
+ */
 public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
 
     @Nullable
@@ -29,6 +32,9 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
         }
     }
 
+    /**
+     * Parse associated statement
+     */
     @Override
     public void prepare() {
         if (query == null) {
@@ -36,6 +42,12 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
         }
     }
 
+    /**
+     * Execute associated statement. Uses lazy fetching, execute returns cursor that is opened against database.
+     *
+     * @param master is master (parent) data record, used to populate bind variables in statement
+     * @return cursor that holds database cursor that can be used to fetch results
+     */
     @Override
     public DataCursor execute(DataRecord master) {
         if (query == null) {
@@ -51,6 +63,9 @@ public class SelectDataContext extends DataContextAncestor<SelectDataSource> {
         return new SelectDataCursor(this, query.fetchLazy());
     }
 
+    /**
+     * Close parsed statement. Note that all cursors produced by execute should be closed first.
+     */
     @Override
     public synchronized void close() {
         if (query != null) {

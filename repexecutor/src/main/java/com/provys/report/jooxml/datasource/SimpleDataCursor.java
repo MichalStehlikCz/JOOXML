@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 /**
  * Simple cursor implementation, that just wraps stream and does not return any data.
  */
-public class SimpleDataCursor extends DataCursorAncestor {
+public class SimpleDataCursor extends DataCursorAncestor<DataContextAncestor> {
 
     private final Stream<DataRecord> data;
 

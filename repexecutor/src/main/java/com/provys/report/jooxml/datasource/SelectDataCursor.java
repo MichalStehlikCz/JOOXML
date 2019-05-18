@@ -1,19 +1,13 @@
 package com.provys.report.jooxml.datasource;
 
-import com.provys.report.jooxml.repexecutor.ReportContext;
 import org.jooq.Cursor;
 
-import java.util.Iterator;
+import javax.annotation.Nonnull;
 import java.util.NoSuchElementException;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-public class SelectDataCursor extends DataCursorAncestor implements Iterator<DataRecord> {
+class SelectDataCursor extends StreamDataCursorAncestor<SelectDataContext> {
 
     private final Cursor<?> cursor;
-    private int rowNumber = 0;
 
     SelectDataCursor(SelectDataContext dataContext, Cursor<?> cursor) {
         super(dataContext);
@@ -25,17 +19,13 @@ public class SelectDataCursor extends DataCursorAncestor implements Iterator<Dat
         return cursor.hasNext();
     }
 
+    @Nonnull
     @Override
-    public DataRecord next() {
+    DataRecord getNext(int rowNumber) {
         if (!cursor.hasNext()) {
             throw new NoSuchElementException();
         }
-        return new SelectDataRecord(getDataContext().getReportContext(), rowNumber++, cursor.fetchNext());
-    }
-
-    @Override
-    public Stream<DataRecord> getData() {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED), false);
+        return new SelectDataRecord(getDataContext().getReportContext(), rowNumber, cursor.fetchNext());
     }
 
     @Override

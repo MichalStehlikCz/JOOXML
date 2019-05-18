@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.stream.XMLInputFactory;
@@ -18,7 +17,7 @@ import java.util.Objects;
 public class DataSourceReader {
 
     private static final Logger LOG = LogManager.getLogger(DataSourceReader.class.getName());
-    private static final String rootElement = "DATASOURCE";
+    private static final String ROOT_TAG = "DATASOURCE";
 
     @Nonnull
     private final DataSourceParser childParser;
@@ -33,15 +32,14 @@ public class DataSourceReader {
         var builder = new RootDataSourceBuilder();
         // read root element
         reader.nextTag();
-        if (!reader.getLocalName().equals(rootElement)) {
-            throw new RuntimeException("Root elements in JOOXML data source should be " + rootElement + ", not " +
+        if (!reader.getLocalName().equals(ROOT_TAG)) {
+            throw new RuntimeException("Root elements in JOOXML data source should be " + ROOT_TAG + ", not " +
                     reader.getLocalName());
         }
         // read content
         while (reader.hasNext()) {
             int eventType = reader.next();
             if (eventType == XMLStreamConstants.START_ELEMENT) {
-                String name = reader.getLocalName();
                 builder.addChild(childParser.parse(builder, reader));
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;
