@@ -2,11 +2,22 @@ package com.provys.report.jooxml.datasource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.annotation.Nonnull;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.util.Objects;
 
@@ -55,14 +66,55 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
 
     @Override
     public boolean hasNext() {
-        
+        try {
+            if (!reader.hasNext()) {
+                return false;
+            }
+            if (!reader.isStartElement()) {
+                throw new RuntimeException("Element expected in XML source");
+            }
+            // skip elements other than row element
+            int level = 0;
+            while (reader.hasNext()) {
+                if (reader.isStartElement()) {
+                    if ((level == 0) && (reader.getLocalName().equals(getDataContext().getRowTag()))) {
+                        return true;
+                    }
+                    level++;
+                } else if (reader.isEndElement()) {
+                    level--;
+                    if (level < 0) {
+                        // we found end element after all rows...
+                        return false;
+                    }
+                }
+                reader.nextTag();
+            }
+        } catch (XMLStreamException e) {
+            LOG.error("Exception {}", e);
+            throw new RuntimeException("", e);
+        }
         return false;
     }
 
     @Nonnull
     @Override
-    DataRecord getNext(int rowNumber) {
-        return null;
+    DataRecord getNext(long rowNumber) {
+        Document document;
+        try {
+            TransformerFactory factory = TransformerFactory.newDefaultInstance();
+            Transformer transformer = null;
+            transformer = factory.newTransformer();
+            File file = new File("xmlrow.xml");
+            transformer.transform(new StAXSource(reader), new StreamResult(file));
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            document = builder.parse(file);
+        } catch (TransformerException | ParserConfigurationException | SAXException | IOException e) {
+            LOG.error("Exception {}", e);
+            throw new RuntimeException("", e);
+        }
+        return new XmlDataRecord(getDataContext().getReportContext(), rowNumber, document);
     }
 
 }

@@ -7,9 +7,10 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-abstract class StreamDataCursorAncestor<T extends DataContextAncestor> extends DataCursorAncestor<T> implements Iterator<DataRecord> {
+abstract class StreamDataCursorAncestor<T extends DataContextAncestor> extends DataCursorAncestor<T>
+        implements Iterator<DataRecord> {
 
-    private int rowNumber = 0;
+    private long rowNumber = 0;
 
     StreamDataCursorAncestor(T dataContext) {
         super(dataContext);
@@ -21,7 +22,7 @@ abstract class StreamDataCursorAncestor<T extends DataContextAncestor> extends D
     }
 
     @Nonnull
-    abstract DataRecord getNext(int rowNumber);
+    abstract DataRecord getNext(long rowNumber);
 
     @Override
     public DataRecord next() {

@@ -38,4 +38,11 @@ abstract class DataSourceAncestorBuilder<T extends DataSourceAncestorBuilder> ex
         this.nameNm = Objects.requireNonNull(nameNm);
         return self();
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" +
+                "nameNm='" + nameNm + '\'' +
+                "}";
+    }
 }

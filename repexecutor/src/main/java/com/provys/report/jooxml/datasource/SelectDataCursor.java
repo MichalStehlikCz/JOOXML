@@ -21,7 +21,7 @@ class SelectDataCursor extends StreamDataCursorAncestor<SelectDataContext> {
 
     @Nonnull
     @Override
-    DataRecord getNext(int rowNumber) {
+    DataRecord getNext(long rowNumber) {
         if (!cursor.hasNext()) {
             throw new NoSuchElementException();
         }

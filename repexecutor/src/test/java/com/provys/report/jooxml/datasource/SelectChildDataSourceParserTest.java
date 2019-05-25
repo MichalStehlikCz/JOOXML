@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class SelectDataSourceParserTest {
+class SelectChildDataSourceParserTest {
 
     @Nonnull
     static Stream<Object[]> parseTest() {
@@ -38,7 +38,7 @@ class SelectDataSourceParserTest {
     @ParameterizedTest
     @MethodSource
     void parseTest(String testData, @Nullable String expNameNm, @Nullable String expSelect, Boolean shouldFail) {
-        var dataSourceParser = mock(DataSourceParser.class);
+        var dataSourceParser = mock(ChildDataSourceParser.class);
         var parent = mock(DataSourceBuilder.class);
         var parser = new SelectDataSourceParser(dataSourceParser);
         try {

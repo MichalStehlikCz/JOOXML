@@ -20,10 +20,10 @@ public class DataSourceReader {
     private static final String ROOT_TAG = "DATASOURCE";
 
     @Nonnull
-    private final DataSourceParser childParser;
+    private final ChildDataSourceParser childParser;
 
     @Inject
-    DataSourceReader(DataSourceParser childParser) {
+    DataSourceReader(ChildDataSourceParser childParser) {
         this.childParser = Objects.requireNonNull(childParser);
     }
 

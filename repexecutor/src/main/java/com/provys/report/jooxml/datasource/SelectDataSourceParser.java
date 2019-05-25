@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Objects;
 
-class SelectDataSourceParser {
+class SelectDataSourceParser implements DataSourceParser {
 
     private static final Logger LOG = LogManager.getLogger(SelectDataSourceParser.class);
     static final String TAG = "SELECTDATASOURCE";
@@ -18,13 +18,15 @@ class SelectDataSourceParser {
     private static final String SELECT_TAG = "SELECT";
 
     @Nonnull
-    private final DataSourceParser dataSourceParser;
+    private final ChildDataSourceParser childDataSourceParser;
 
-    SelectDataSourceParser(DataSourceParser dataSourceParser) {
-        this.dataSourceParser = Objects.requireNonNull(dataSourceParser);
+    SelectDataSourceParser(ChildDataSourceParser childDataSourceParser) {
+        this.childDataSourceParser = Objects.requireNonNull(childDataSourceParser);
     }
 
-    SelectDataSourceBuilder parse(@Nullable DataSourceBuilder parent, XMLStreamReader reader) throws XMLStreamException {
+    @Override
+    @Nonnull
+    public SelectDataSourceBuilder parse(@Nullable DataSourceBuilder parent, XMLStreamReader reader) throws XMLStreamException {
         var builder = new SelectDataSourceBuilder().setParent(parent);
         boolean readNameNm = false;
         boolean readSelect = false;
@@ -48,7 +50,7 @@ class SelectDataSourceParser {
                         builder.setSelectStatement(reader.getElementText());
                         break;
                     default:
-                        builder.addChild(dataSourceParser.parse(builder, reader));
+                        builder.addChild(childDataSourceParser.parse(builder, reader));
                 }
             } else if (eventType == XMLStreamConstants.END_ELEMENT) {
                 break;
