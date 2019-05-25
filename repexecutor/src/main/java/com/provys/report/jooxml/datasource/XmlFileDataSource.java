@@ -35,7 +35,7 @@ class XmlFileDataSource extends DataSourceAncestor {
      * @return value of field documentTag
      */
     @Nonnull
-    public String getDocumentTag() {
+    String getDocumentTag() {
         return documentTag;
     }
 
@@ -43,7 +43,7 @@ class XmlFileDataSource extends DataSourceAncestor {
      * @return value of field rowTag
      */
     @Nonnull
-    public String getRowTag() {
+    String getRowTag() {
         return rowTag;
     }
 

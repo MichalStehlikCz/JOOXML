@@ -35,7 +35,14 @@ public class RepExecutor {
      */
     @Nonnull
     private final CellPathReplacer cellPathReplacer;
-    @Nonnull
+    /**
+     * dbContext enables to create connection to database that can be used to execute report. It is formally not
+     * mandatory, as we want to be able to test report without connection to database and need to mock one, using file
+     * based data-sources.
+     * If dbContext is not specified and at least one data source requires connection to database, report execution will
+     * fail
+     */
+    @Nullable
     private final ProvysDbContext dbContext;
     private Report report;
     private File targetFile;
@@ -46,11 +53,11 @@ public class RepExecutor {
     // implementations are supplied from libraries
     @Inject
     public RepExecutor(RepWorkbookFactory repWorkBookFactory, CellValueFactory cellValueFactory,
-                       CellPathReplacer cellPathReplacer, ProvysDbContext dbContext) {
+                       CellPathReplacer cellPathReplacer, @Nullable ProvysDbContext dbContext) {
         this.repWorkBookFactory = Objects.requireNonNull(repWorkBookFactory);
         this.cellValueFactory = Objects.requireNonNull(cellValueFactory);
         this.cellPathReplacer = Objects.requireNonNull(cellPathReplacer);
-        this.dbContext = Objects.requireNonNull(dbContext);
+        this.dbContext = dbContext;
     }
 
     /**
@@ -160,7 +167,7 @@ public class RepExecutor {
         try (ReportContext reportContext = new ReportContext(getParameters(), getCellValueFactory(),
                 getCellPathReplacer());
              RepWorkbook workbook = readWorkbook();
-             DSLContext dslContext = dbContext.createDSL(dbToken)) {
+             DSLContext dslContext = (dbContext == null) ? null : dbContext.createDSL(dbToken)) {
             reportContext.open(workbook, dslContext);
             StepContext stepContext = new StepContext(reportContext, new RootDataRecord(reportContext)
                     , new ContextCoordinates(workbook.getSheet(), 0, 0));

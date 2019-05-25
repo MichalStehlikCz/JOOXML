@@ -10,15 +10,16 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -45,6 +46,8 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
                 throw new RuntimeException("Root elements in XML data file should be " +
                         this.getDataContext().getDocumentTag() + ", not " + reader.getLocalName());
             }
+            // we have to move from document element... hasNext expects us to be after previous row
+            reader.nextTag();
         } catch (XMLStreamException e) {
             throw new RuntimeException("Failed to open xml reader in XML cursor from stream " + this.inputStream, e);
         }
@@ -71,7 +74,7 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
                 return false;
             }
             if (!reader.isStartElement()) {
-                throw new RuntimeException("Element expected in XML source");
+                throw new RuntimeException("Element expected in XML source, " + reader.getEventType() + " found");
             }
             // skip elements other than row element
             int level = 0;
@@ -88,7 +91,7 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
                         return false;
                     }
                 }
-                reader.nextTag();
+                reader.next();
             }
         } catch (XMLStreamException e) {
             LOG.error("Exception {}", e);
@@ -100,6 +103,10 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
     @Nonnull
     @Override
     DataRecord getNext(long rowNumber) {
+        // both error detection and navigation to next row...
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
         Document document;
         try {
             TransformerFactory factory = TransformerFactory.newDefaultInstance();

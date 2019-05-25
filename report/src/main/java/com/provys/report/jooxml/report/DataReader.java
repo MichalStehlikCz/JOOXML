@@ -3,6 +3,8 @@ package com.provys.report.jooxml.report;
 import com.provys.report.jooxml.datasource.DataRecord;
 import com.provys.report.jooxml.datasource.ReportDataSource;
 import com.provys.report.jooxml.repexecutor.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Stream;
@@ -20,6 +22,8 @@ class DataReader extends DataStep {
 
     private static class DataReaderProcessor extends StepProcessorAncestor<DataReader> {
 
+        private static final Logger LOG = LogManager.getLogger(DataReaderProcessor.class);
+
         DataReaderProcessor(DataReader step, StepContext stepContext, ExecRegionContext parentRegionContext) {
             super(step, stepContext, parentRegionContext.addRegion(step.getNameNm(), 1));
         }
@@ -31,6 +35,7 @@ class DataReader extends DataStep {
          */
         @Nonnull
         public Stream<StepProcessor> apply() {
+            LOG.trace("Apply DataReaderProcesor {}", this::getStep);
             DataRecord dataRecord;
             try (var dataCursor = getStepContext().getReportContext().getDataContext(getStep().getDataSource()).
                     execute(getStepContext().getData())) {

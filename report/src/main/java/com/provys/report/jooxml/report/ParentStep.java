@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +51,8 @@ class ParentStep extends Step {
 
     private static class ParentProcessor extends StepProcessorAncestor<ParentStep> {
 
+        private static final Logger LOG = LogManager.getLogger(ParentProcessor.class);
+
         ParentProcessor(ParentStep step, StepContext stepContext, ExecRegionContext parentRegionContext) {
             super(step, stepContext, parentRegionContext.addRegion(step.getNameNm(), step.children.size()));
         }
@@ -59,6 +63,7 @@ class ParentStep extends Step {
          * @return stream of step processors for children of given step
          */
         public Stream<StepProcessor> apply() {
+            LOG.trace("Apply ParentProcessor {}", this::getStep);
             return getStep().getChildren().map(childStep -> childStep.getProcessor(getStepContext(),
                     getExecRegionContext()));
         }

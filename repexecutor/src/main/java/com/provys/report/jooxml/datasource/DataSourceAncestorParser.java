@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Objects;
 
-abstract class DataSourceAncestorParser<T extends DataSourceAncestorBuilder> implements DataSourceParser {
+abstract class DataSourceAncestorParser<T extends DataSourceAncestorBuilder<T>> implements DataSourceParser {
 
     private static final Logger LOG = LogManager.getLogger(DataSourceAncestorParser.class);
     private static final String NAME_NM_TAG = "NAME_NM";

@@ -13,6 +13,7 @@ public class XmlFileDataContext extends DataContextAncestor<XmlFileDataSource> {
     }
 
     @Override
+    @SuppressWarnings("squid:S2095") // input stream is closed by cursor - it cannot be closed here as cursor reads it
     public DataCursor execute(DataRecord master) {
         InputStream inputStream;
         try {

@@ -11,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -106,9 +107,9 @@ public class CellPathReplacer {
      * @param execRegionContext is region current cell belongs to
      * @return formula with serialized CellPath expressions
      */
-    @Nullable
+    @Nonnull
     @SuppressWarnings("squid:S3655") // Sonar does not underestand Optional.isEmpty
-    private String encode(String formula, Map<String, AreaCellPath> referenceMap,
+    private Optional<String> encode(String formula, Map<String, AreaCellPath> referenceMap,
                          ExecRegionContext execRegionContext) {
         var result = formula;
         var execRegionPath = execRegionContext.getPath();
@@ -116,13 +117,13 @@ public class CellPathReplacer {
             var cellPath = reference.getValue().getCellPath(execRegionPath);
             if (cellPath.isEmpty()) {
                 // invalid reference - we prefer to remove formula rather than leave invalid formula
-                return null;
+                return Optional.empty();
             } else {
                 result = result.replaceAll(Matcher.quoteReplacement(reference.getKey()),
                         Matcher.quoteReplacement(encodePath(cellPath.get())));
             }
         }
-        return result;
+        return Optional.of(result);
     }
 
     /**
@@ -141,10 +142,10 @@ public class CellPathReplacer {
         }
         var origFormula = value.getFormula();
         var formula = encode(origFormula, referenceMap, execRegionContext);
-        if (origFormula.equals(formula)) {
+        if (origFormula.equals(formula.orElse(null))) {
             return value;
         }
-        return (formula == null) ? cellValueFactory.getBlank() : cellValueFactory.ofFormula(formula);
+        return formula.map(cellValueFactory::ofFormula).orElse(cellValueFactory.getBlank());
     }
 
     /**
@@ -296,11 +297,11 @@ public class CellPathReplacer {
      * @param execRegion is region map from report execution
      * @return formula with valid cell references, corresponding to CellPath expressions
      */
-    @Nullable
+    @Nonnull
     @SuppressWarnings("squid:S3655") // Sonar doesn't understand Optional.isEmpty and thus throws false warnings :(
-    public String decode(@Nullable String formula, ExecRegion execRegion) {
+    public Optional<String> decode(@Nullable String formula, ExecRegion execRegion) {
         if (formula == null) {
-            return null;
+            return Optional.empty();
         }
         var buffer = new StringBuffer();
         var matcher = ENCODED_PATH_PATTERN.matcher(formula);
@@ -309,11 +310,11 @@ public class CellPathReplacer {
             if (cell.isEmpty()) {
                 // we were not able to evaluate referenced cell -> whole formula should be removed to prevent invalid
                 // formula errors
-                return null;
+                return Optional.empty();
             }
             matcher.appendReplacement(buffer, Matcher.quoteReplacement(cell.get().getAddress()));
         }
         matcher.appendTail(buffer);
-        return buffer.toString();
+        return Optional.of(buffer.toString());
     }
 }

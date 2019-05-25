@@ -1,6 +1,8 @@
 package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -11,6 +13,8 @@ import java.util.stream.Stream;
  * used, potentially releasing associated database resources
  */
 public class CloseDataCursorProcessor implements StepProcessor {
+
+    private static final Logger LOG = LogManager.getLogger(CloseDataCursorProcessor.class);
 
     @Nonnull
     private final Step step;
@@ -34,6 +38,7 @@ public class CloseDataCursorProcessor implements StepProcessor {
 
     @Override
     public void execute() {
+        LOG.trace("Execute CloseDataCursorProcessor {}", dataCursor);
         dataCursor.close();
     }
 

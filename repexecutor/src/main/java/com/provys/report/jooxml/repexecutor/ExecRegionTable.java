@@ -33,7 +33,7 @@ public class ExecRegionTable extends ExecRegionBase {
                         recordNr - records.size(), this);
                 return Optional.empty();
             }
-        } else if (recordNr > records.size()) {
+        } else if (recordNr >= records.size()) {
             LOG.debug("Cell reference returned empty - index bigger than number of rows ({}, {})",
                     recordNr, this);
             return Optional.empty();

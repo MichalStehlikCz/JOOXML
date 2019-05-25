@@ -9,7 +9,6 @@ import org.jooq.DSLContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.sql.Connection;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -121,7 +120,7 @@ public class ReportContext implements AutoCloseable {
     @Nonnull
     public DataContext getDataContext(ReportDataSource dataSource) {
         DataContext dataContext = dataContexts.computeIfAbsent(Objects.requireNonNull(dataSource),
-                (ds) -> ds.getDataContext(this));
+                ds -> ds.getDataContext(this));
         dataContext.prepare();
         return dataContext;
     }

@@ -2,6 +2,7 @@ package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.ReportContext;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -18,25 +19,32 @@ class XmlDataRecord extends DataRecordRowAncestor {
         this.document = document;
     }
 
+    @Nullable
+    private String getAttributeValue(String columnName) {
+        Node attrNode = document.getDocumentElement().getAttributes().getNamedItem(columnName.substring(1));
+        return (attrNode == null) ? null : attrNode.getNodeValue();
+    }
+
+    @Nullable
+    private String getElementValue(String columnName) {
+        var children = document.getDocumentElement().getChildNodes();
+        Element elementNode = null;
+        for (int child = 0; child<children.getLength(); child++) {
+            if ((children.item(child) instanceof Element) &&
+                    ((Element) children.item(child)).getTagName().equals(columnName)) {
+                if (elementNode != null) {
+                    throw new RuntimeException("Multiple elements " + columnName + " in XML data source row");
+                }
+                elementNode = (Element) children.item(child);
+            }
+        }
+        return (elementNode == null) ? null : elementNode.getNodeValue();
+    }
+
     @Nonnull
     @Override
     public Optional<Object> getValue(String columnName, @Nullable Class<?> prefClass) {
-        String value;
-        if (columnName.charAt(0) == '@') {
-            // attribute
-            Node attrNode = document.getDocumentElement().getAttributes().getNamedItem(columnName.substring(1));
-            value = (attrNode == null) ? null : attrNode.getNodeValue();
-        } else {
-            // element
-            NodeList list = document.getElementsByTagName(columnName);
-            if (list.getLength() == 1) {
-                value = list.item(0).getNodeValue();
-            } else if (list.getLength() == 0) {
-                value = null;
-            } else {
-                throw new RuntimeException("Multiple elements " + columnName + " in XML data source row");
-            }
-        }
+        String value = (columnName.charAt(0) == '@') ? getAttributeValue(columnName) : getElementValue(columnName);
         return Optional.ofNullable(value);
     }
 }

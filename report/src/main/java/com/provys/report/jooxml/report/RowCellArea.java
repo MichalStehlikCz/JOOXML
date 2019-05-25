@@ -2,6 +2,8 @@ package com.provys.report.jooxml.report;
 
 import com.provys.report.jooxml.repexecutor.*;
 import com.provys.report.jooxml.repworkbook.RepRow;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -58,6 +60,8 @@ class RowCellArea extends Step {
 
     private static class RowCellAreaProcessor extends StepProcessorAncestor<RowCellArea> {
 
+        private static final Logger LOG = LogManager.getLogger(RowCellAreaProcessor.class);
+
         RowCellAreaProcessor(RowCellArea step, StepContext stepContext, ExecRegionContext parentRegionContext) {
             // unlike other step processors that append their region to parentRegion immediately, are processor keeps
             // parent region and only attaches child region on execution
@@ -74,6 +78,7 @@ class RowCellArea extends Step {
 
         @Override
         public void execute() {
+            LOG.trace("Execute RowCellAreaProcessor {}", this::getStep);
             ContextCoordinates coordinates = getStepContext().getCoordinates();
             var execRegionContext = getExecRegionContext().addArea(getStep().getNameNm(), coordinates);
             // populate cells in sheet with cells from region

@@ -1,0 +1,29 @@
+<DATA>
+  <MASTER>
+    <NAME>Master Alpha</NAME>
+    <CHILDCNT>3</CHILDCNT>
+    <CHILDREN>
+      <CHILD>
+        <NAME>Child One</NAME>
+      </CHILD>
+      <CHILD>
+        <NAME>Child Two</NAME>
+      </CHILD>
+      <CHILD>
+        <NAME>Child Three</NAME>
+      </CHILD>
+    </CHILDREN>
+  </MASTER>
+  <MASTER>
+    <NAME>Master Beta</NAME>
+    <CHILDCNT>2</CHILDCNT>
+    <CHILDREN>
+      <CHILD>
+        <NAME>Child One'</NAME>
+      </CHILD>
+      <CHILD>
+        <NAME>Child Two'</NAME>
+      </CHILD>
+    </CHILDREN>
+  </MASTER>
+</DATA>

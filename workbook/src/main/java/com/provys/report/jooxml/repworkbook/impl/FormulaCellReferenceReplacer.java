@@ -87,9 +87,14 @@ class FormulaCellReferenceReplacer extends InputStream {
             throw new RuntimeException("</f> not found");
         }
         formula = cellPathReplacer.decode(builder.substring(0, builder.length() - END_FORMULA_PATTERN.length),
-                execRegion);
-        formulaActive = true;
-        formulaPosition = 0;
+                execRegion).orElse(null);
+        if (formula == null) {
+            endFormulaActive = true;
+            endFormulaPosition = 0;
+        } else {
+            formulaActive = true;
+            formulaPosition = 0;
+        }
     }
 
     private int readFormula() {

@@ -21,4 +21,11 @@ abstract class Step implements ReportStep {
     public String getNameNm() {
         return nameNm;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" +
+                "nameNm='" + nameNm + '\'' +
+                '}';
+    }
 }
