@@ -30,6 +30,7 @@ public class ChildDataSourceParser {
         parsers = new HashMap<>(3);
         parsers.put(SelectDataSourceParser.TAG, new SelectDataSourceParser(this));
         parsers.put(XmlFileDataSourceParser.TAG, new XmlFileDataSourceParser(this));
+        parsers.put(XmlChildDataSourceParser.TAG, new XmlChildDataSourceParser(this));
     }
 
     /**

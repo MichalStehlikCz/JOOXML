@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><MASTER>
-    <NAME>Master Alpha</NAME>
-    <CHILDCNT>3</CHILDCNT>
+    <NAME>Master Beta</NAME>
+    <CHILDCNT>2</CHILDCNT>
     <CHILDREN>
       <CHILD>
-        <NAME>Child One</NAME>
+        <NAME>Child One'</NAME>
       </CHILD>
       <CHILD>
-        <NAME>Child Two</NAME>
-      </CHILD>
-      <CHILD>
-        <NAME>Child Three</NAME>
+        <NAME>Child Two'</NAME>
       </CHILD>
     </CHILDREN>
   </MASTER>

@@ -49,7 +49,7 @@ class XmlFileDataSource extends DataSourceAncestor {
 
     @Nonnull
     @Override
-    public DataContext getDataContext(ReportContext reportContext) {
+    public XmlFileDataContext getDataContext(ReportContext reportContext) {
         return new XmlFileDataContext(this, reportContext);
     }
 }

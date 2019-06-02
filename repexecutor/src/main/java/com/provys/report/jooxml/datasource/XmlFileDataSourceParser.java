@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 
 class XmlFileDataSourceParser extends DataSourceAncestorParser<XmlFileDataSourceBuilder> {
 
-    private static final Logger LOG = LogManager.getLogger(com.provys.report.jooxml.datasource.SelectDataSourceParser.class);
+    private static final Logger LOG = LogManager.getLogger(XmlFileDataSourceParser.class);
     static final String TAG = "XMLFILEDATASOURCE";
     private static final String FILE_NAME_TAG = "FILENAME";
     private static final String DOCUMENT_TAG_TAG = "ROOT";

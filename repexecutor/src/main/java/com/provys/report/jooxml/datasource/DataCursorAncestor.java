@@ -6,7 +6,7 @@ public abstract class DataCursorAncestor<T extends DataContextAncestor> implemen
 
     private final T dataContext;
 
-    DataCursorAncestor(T dataContext) {
+    <U extends T> DataCursorAncestor(U dataContext) {
         this.dataContext = dataContext;
         dataContext.cursorOpened(this);
     }

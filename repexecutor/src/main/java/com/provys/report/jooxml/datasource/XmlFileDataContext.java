@@ -21,7 +21,7 @@ public class XmlFileDataContext extends DataContextAncestor<XmlFileDataSource> {
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Failed to open XML data file " + getDataSource().getXmlDataFile(), e);
         }
-        return new XmlDataCursor(this, inputStream);
+        return new XmlStreamDataCursor(this, inputStream);
     }
 
     /**

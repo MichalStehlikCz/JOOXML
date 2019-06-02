@@ -10,7 +10,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Transformer;
@@ -26,9 +25,9 @@ import java.util.Objects;
  * Receives input stream, reads XML data from this input stream and returns them as data records.
  * On close, close all resources associated with this cursor, including underlying input stream.
  */
-class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
+class XmlStreamDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
 
-    private static final Logger LOG = LogManager.getLogger(XmlDataCursor.class);
+    private static final Logger LOG = LogManager.getLogger(XmlStreamDataCursor.class);
 
     @Nonnull
     private final InputStream inputStream;
@@ -36,7 +35,7 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
     private XMLStreamReader reader;
 
     @SuppressWarnings("squid:S2637") // incorrect warning - Sonar doesn't know that createXMLStreamReader is Nonnull
-    XmlDataCursor(XmlFileDataContext dataContext, InputStream inputStream) {
+    XmlStreamDataCursor(XmlFileDataContext dataContext, InputStream inputStream) {
         super(dataContext);
         this.inputStream = Objects.requireNonNull(inputStream);
         try {
@@ -67,42 +66,65 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
         }
     }
 
+    private void processStartElement(int level) {
+
+    }
+
+    /**
+     * Skip elements other than our row tag (including content) and find next row element.
+     *
+     * @return true if row was found, false if end of mster element was reached first
+     * @throws XMLStreamException propagated from XML stream reader
+     */
+    private boolean findRow() throws XMLStreamException {
+        int level = 0;
+        while (reader.hasNext()) {
+            if (reader.isStartElement()) {
+                if ((level == 0) && (reader.getLocalName().equals(getDataContext().getRowTag()))) {
+                    return true;
+                }
+                level++;
+            } else if (reader.isEndElement()) {
+                level--;
+                if (level < 0) {
+                    // we found end element after all rows...
+                    if (!reader.getLocalName().equals(getDataContext().getDocumentTag())) {
+                        throw new RuntimeException("End tag " + getDataContext().getDocumentTag() + " expected, " +
+                                reader.getLocalName() + " found");
+                    }
+                    return false;
+                }
+            }
+            reader.nextTag();
+        }
+        throw new RuntimeException("End of document reached and end tag has not been found");
+    }
+
+    /**
+     * Skip whitespace and elements other than our designated row element.
+     *
+     * @return true if row element is found (reader positioned in this element), false if end of parent element is
+     * reached before finding row element
+     */
     @Override
     public boolean hasNext() {
         try {
-            if (!reader.hasNext()) {
-                return false;
+            if (!reader.isStartElement() && !reader.isEndElement()) {
+                // Transform might end up on newline or similar character - we want to skip whitespace and find next
+                // element; if we left it on next section, it would also skip non-whitespace, but we do want to throw
+                // exception in such situation
+                reader.nextTag();
             }
-            if (!reader.isStartElement()) {
-                throw new RuntimeException("Element expected in XML source, " + reader.getEventType() + " found");
-            }
-            // skip elements other than row element
-            int level = 0;
-            while (reader.hasNext()) {
-                if (reader.isStartElement()) {
-                    if ((level == 0) && (reader.getLocalName().equals(getDataContext().getRowTag()))) {
-                        return true;
-                    }
-                    level++;
-                } else if (reader.isEndElement()) {
-                    level--;
-                    if (level < 0) {
-                        // we found end element after all rows...
-                        return false;
-                    }
-                }
-                reader.next();
-            }
+            // we are on an element (because of nextTag), skip elements other than our row element
+            return findRow();
         } catch (XMLStreamException e) {
-            LOG.error("Exception {}", e);
             throw new RuntimeException("", e);
         }
-        return false;
     }
 
     @Nonnull
     @Override
-    DataRecord getNext(long rowNumber) {
+    XmlDataRecord getNext(long rowNumber) {
         // both error detection and navigation to next row...
         if (!hasNext()) {
             throw new NoSuchElementException();
@@ -112,13 +134,15 @@ class XmlDataCursor extends StreamDataCursorAncestor<XmlFileDataContext> {
             TransformerFactory factory = TransformerFactory.newDefaultInstance();
             Transformer transformer = null;
             transformer = factory.newTransformer();
-            File file = new File("xmlrow.xml");
-            transformer.transform(new StAXSource(reader), new StreamResult(file));
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
-            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-            document = builder.parse(file);
+            try (var memOutputStream = new ByteArrayOutputStream()) {
+                transformer.transform(new StAXSource(reader), new StreamResult(memOutputStream));
+                DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
+                DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+                try (var memInputStream = new ByteArrayInputStream(memOutputStream.toByteArray())) {
+                    document = builder.parse(memInputStream);
+                }
+            }
         } catch (TransformerException | ParserConfigurationException | SAXException | IOException e) {
-            LOG.error("Exception {}", e);
             throw new RuntimeException("", e);
         }
         return new XmlDataRecord(getDataContext().getReportContext(), rowNumber, document);
