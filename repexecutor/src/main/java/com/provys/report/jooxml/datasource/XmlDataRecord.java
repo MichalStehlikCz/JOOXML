@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * DataRecord based on element in XmlDom document. Values are retrieved from attributes and child elements of this
@@ -52,7 +53,51 @@ class XmlDataRecord extends DataRecordRowAncestor {
     @Override
     public Optional<Object> getValue(String columnName, @Nullable Class<?> prefClass) {
         String value = (columnName.charAt(0) == '@') ? getAttributeValue(columnName) : getElementValue(columnName);
-        return Optional.ofNullable(value);
+        Object result;
+        if (value == null){
+            result = null;
+        } else if (prefClass == null) {
+            result = value;
+        } else {
+            switch (prefClass.getName()) {
+                case "java.lang.String":
+                    result = value;
+                    break;
+                case "java.lang.Double":
+                    final String fpRegex =
+                            "[\\x00-\\x20]*" +                          // Optional leading "whitespace"
+                                    "[+-]?" +                          // Optional sign character
+                                    "(\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" + // digits and floating point
+                                    "[\\x00-\\x20]*";                         // Optional trailing "whitespace"
+                    if (Pattern.matches(fpRegex, value)) {
+                        result = Double.valueOf(value);
+                    } else {
+                        result = value;
+                    }
+                    break;
+                case "java.lang.Boolean":
+                    switch (value) {
+                        case "true":
+                        case "True":
+                        case "TRUE":
+                        case "1":
+                            result = Boolean.TRUE;
+                            break;
+                        case "false":
+                        case "False":
+                        case "FALSE":
+                        case "0":
+                            result = Boolean.FALSE;
+                            break;
+                        default:
+                            result = value;
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("Unsupported preferred result class " + prefClass.getName());
+            }
+        }
+        return Optional.ofNullable(result);
     }
 
     @Nonnull
