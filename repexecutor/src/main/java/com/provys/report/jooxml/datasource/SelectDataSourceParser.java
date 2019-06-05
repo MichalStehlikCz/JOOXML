@@ -10,6 +10,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Objects;
 
+/**
+ * Parses {@link SelectDataSource} from XML file.
+ * Definition is enclosed in SELECTDATASOURCE tag. It supports NAME_NM element for internal name and SELECT element for
+ * select statement. All other elements are interpreted as children and passed to {@link ChildDataSourceParser}
+ */
 class SelectDataSourceParser implements DataSourceParser {
 
     private static final Logger LOG = LogManager.getLogger(SelectDataSourceParser.class);
