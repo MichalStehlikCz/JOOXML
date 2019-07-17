@@ -1,7 +1,7 @@
 package com.provys.report.jooxml.workbook;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface CellValue {
@@ -43,6 +43,17 @@ public interface CellValue {
     @Nonnull
     default Optional<Double> getNumericValue() {
         throw new IllegalArgumentException("Cannot access numeric value - cell value is of wrong type");
+    }
+
+    /**
+     * Function retrieves date value. Should only be used on numeric type cell.
+     *
+     * @return date value for numeric cell
+     * @throw IllegalArgumentException if cell is not numeric cell
+     */
+    @Nonnull
+    default Optional<LocalDateTime> getDateValue() {
+        throw new IllegalArgumentException("Cannot access date value - cell value is of wrong type");
     }
 
     /**

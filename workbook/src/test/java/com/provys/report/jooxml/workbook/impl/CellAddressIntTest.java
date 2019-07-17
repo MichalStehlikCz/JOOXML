@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class CellAddressIntTest {
 
     @Nonnull
-    static Stream<Object[]> getREGEXPTest() {
+    static Stream<Object[]> getREGEXTest() {
         return Stream.of(
                 new Object[]{"A1", true}
                 , new Object[]{"AA7", true}
@@ -37,7 +37,7 @@ class CellAddressIntTest {
 
     @ParameterizedTest
     @MethodSource
-    void getREGEXPTest(String address, boolean match) {
+    void getREGEXTest(String address, boolean match) {
         var matcher = Pattern.compile(CellAddressInt.REGEX).matcher(address);
         assertThat(matcher.matches()).isEqualTo(match);
         if (match) {

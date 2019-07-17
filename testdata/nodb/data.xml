@@ -5,12 +5,15 @@
     <CHILDREN>
       <CHILD>
         <NAME>Child One</NAME>
+        <DATE>2019-11-24T12:10:00</DATE>
       </CHILD>
       <CHILD>
         <NAME>Child Two</NAME>
+        <DATE>2017-01-12T05:17:23</DATE>
       </CHILD>
       <CHILD>
         <NAME>Child Three</NAME>
+        <DATE>1998-05-17T22:47:12</DATE>
       </CHILD>
     </CHILDREN>
   </MASTER>
@@ -20,9 +23,11 @@
     <CHILDREN>
       <CHILD>
         <NAME>Child One'</NAME>
+        <DATE>2015-08-30T16:23:48</DATE>
       </CHILD>
       <CHILD>
         <NAME>Child Two'</NAME>
+        <DATE>2019-04-10T02:17:42</DATE>
       </CHILD>
     </CHILDREN>
   </MASTER>

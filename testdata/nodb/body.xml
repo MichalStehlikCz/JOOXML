@@ -35,6 +35,10 @@
 						<CELL>A9</CELL>
 						<COLUMN>NAME</COLUMN>
 					</BIND>
+					<BIND>
+						<CELL>D9</CELL>
+						<COLUMN>DATE</COLUMN>
+					</BIND>
 				</ROWCELLAREA>
 			</ROWREPEATER>
 		</ROWPARENTAREA>

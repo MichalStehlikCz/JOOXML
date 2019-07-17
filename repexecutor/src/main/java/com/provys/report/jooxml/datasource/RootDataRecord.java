@@ -1,6 +1,7 @@
 package com.provys.report.jooxml.datasource;
 
 import com.provys.report.jooxml.repexecutor.ReportContext;
+import com.provys.report.jooxml.workbook.CellType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,9 +16,9 @@ import java.util.regex.Pattern;
 public class RootDataRecord extends DataRecordAncestor {
 
     private static final Logger LOG = LogManager.getLogger(RootDataRecord.class.getName());
-    private static final Pattern FP_REGEX = Pattern.compile(
-            "[\\x00-\\x20]*" +                 // Optional leading "whitespace"
-            "[+-]?" +                          // Optional sign character
+    private static final Pattern FP_PATTERN = Pattern.compile("[\\x00-\\x20]*" +                          // Optional leading "whitespace"
+           "[\\x00-\\x20]*" +                 // Optional leading "whitespace"
+           "[+-]?" +                          // Optional sign character
             "(\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" + // digits and floating point
             "[\\x00-\\x20]*");
 
@@ -32,26 +33,26 @@ public class RootDataRecord extends DataRecordAncestor {
 
     @Nonnull
     @Override
-    public Optional<Object> getValue(String paramName, @Nullable Class<?> prefClass) {
+    public Optional<Object> getValue(String paramName, @Nullable CellType prefType) {
         String value = getReportContext().getParameterValue(paramName).orElse(null);
         Object result;
         if (value == null){
             result = null;
-        } else if (prefClass == null) {
+        } else if (prefType == null) {
             result = value;
         } else {
-            switch (prefClass.getName()) {
-                case "java.lang.String":
+            switch (prefType) {
+                case STRING:
                     result = value;
                     break;
-                case "java.lang.Double":
-                        if (FP_REGEX.matcher(value).matches()) {
-                            result = Double.valueOf(value);
-                        } else {
-                            result = value;
-                        }
+                case NUMERIC:
+                    if (FP_PATTERN.matcher(value).matches()) {
+                        result = Double.valueOf(value);
+                    } else {
+                        result = value;
+                    }
                     break;
-                case "java.lang.Boolean":
+                case BOOLEAN:
                     switch (value) {
                         case "Y":
                             result = Boolean.TRUE;
@@ -64,7 +65,7 @@ public class RootDataRecord extends DataRecordAncestor {
                     }
                     break;
                 default:
-                    throw new RuntimeException("Unsupported preferred result class " + prefClass.getName());
+                    throw new RuntimeException("Unsupported preferred result type " + prefType);
             }
         }
         return Optional.ofNullable(result);

@@ -2,6 +2,7 @@ package com.provys.report.jooxml.workbook;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.LocalDateTime;
 
 /**
  * Gives access to new instances of CellValues of various types
@@ -34,6 +35,15 @@ public interface CellValueFactory {
      */
     @Nonnull
     CellValue ofNumeric(@Nullable Double value);
+
+    /**
+     * Creates new cell value of numeric type from supplied value.
+     *
+     * @param value is value to be used for given cell
+     * @return numeric cell value with given value
+     */
+    @Nonnull
+    CellValue ofDateTime(@Nullable LocalDateTime value);
 
     /**
      * Creates new cell value of boolean type from supplied value.

@@ -36,40 +36,22 @@ abstract class DataRecordAncestor implements DataRecord {
     @Nonnull
     @Override
     public CellValue getCellValue(String columnName, @Nullable CellType prefType) {
-        @Nullable Class<?> prefClass;
-        if (prefType == null) {
-            prefClass = null;
-        } else {
-            switch (prefType) {
-                case FORMULA:
-                    LOG.warn("GetRecordValue: Request to retrieve data value made for cell type formula");
-                    prefClass = null;
-                    break;
-                case STRING:
-                    prefClass = String.class;
-                    break;
-                case NUMERIC:
-                    prefClass = Double.class;
-                    break;
-                case BOOLEAN:
-                    prefClass = Boolean.class;
-                    break;
-                case ERROR:
-                    LOG.warn("GetRecordValue: Request to retrieve data value made for cell type error");
-                    prefClass = null;
-                    break;
-                default:
-                    prefClass = null;
-            }
+        CellType effPrefType = prefType;
+        if (effPrefType == CellType.FORMULA) {
+            LOG.warn("GetRecordValue: Request to retrieve data value made for cell type formula");
+            effPrefType = null;
+        } else if (effPrefType == CellType.ERROR) {
+            LOG.warn("GetRecordValue: Request to retrieve data value made for cell type error");
+            effPrefType = null;
         }
-        Optional<Object> optValue = getValue(columnName, prefClass);
+        Optional<Object> optValue = getValue(columnName, prefType);
         final CellValueFactory cellValueFactory = reportContext.getCellValueFactory();
         CellValue result;
         if (optValue.isEmpty()) {
-            if (prefType == null) {
+            if (effPrefType == null) {
                 result = cellValueFactory.getBlank();
             } else {
-                switch (prefType) {
+                switch (effPrefType) {
                     case STRING:
                         result = cellValueFactory.ofString(null);
                         break;
@@ -84,10 +66,9 @@ abstract class DataRecordAncestor implements DataRecord {
                 }
             }
         } else {
-            //noinspection OptionalGetWithoutIsPresent isEmpty in if
             @SuppressWarnings("squid:S3655") // sonar doesn't recognise isEmpty yet...
             Object value = optValue.get();
-            if (prefClass == String.class) {
+            if (effPrefType == CellType.STRING) {
                 result = cellValueFactory.ofString(value.toString());
             } else {
                 switch (value.getClass().getName()) {
