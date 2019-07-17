@@ -15,6 +15,11 @@ import java.util.regex.Pattern;
 public class RootDataRecord extends DataRecordAncestor {
 
     private static final Logger LOG = LogManager.getLogger(RootDataRecord.class.getName());
+    private static final Pattern FP_REGEX = Pattern.compile(
+            "[\\x00-\\x20]*" +                 // Optional leading "whitespace"
+            "[+-]?" +                          // Optional sign character
+            "(\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" + // digits and floating point
+            "[\\x00-\\x20]*");
 
     public RootDataRecord(ReportContext reportContext) {
         super(reportContext);
@@ -40,12 +45,7 @@ public class RootDataRecord extends DataRecordAncestor {
                     result = value;
                     break;
                 case "java.lang.Double":
-                    final String fpRegex =
-                                "[\\x00-\\x20]*" +                          // Optional leading "whitespace"
-                                        "[+-]?" +                          // Optional sign character
-                                        "(\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" + // digits and floating point
-                                        "[\\x00-\\x20]*";                         // Optional trailing "whitespace"
-                        if (Pattern.matches(fpRegex, value)) {
+                        if (FP_REGEX.matcher(value).matches()) {
                             result = Double.valueOf(value);
                         } else {
                             result = value;
